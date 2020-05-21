@@ -8,6 +8,7 @@ from slugify import slugify
 from conduit.database import (Model, SurrogatePK, db, Column,
                               reference_col, relationship)
 from conduit.profile.models import UserProfile
+from conduit.tags.models import Tags
 
 favoriter_assoc = db.Table("favoritor_assoc",
                            db.Column("favoriter", db.Integer, db.ForeignKey("userprofile.id")),
@@ -16,19 +17,6 @@ favoriter_assoc = db.Table("favoritor_assoc",
 tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
-
-
-class Tags(Model):
-    __tablename__ = 'tags'
-
-    id = db.Column(db.Integer, primary_key=True)
-    tagname = db.Column(db.String(100))
-
-    def __init__(self, tagname):
-        db.Model.__init__(self, tagname=tagname)
-
-    def __repr__(self):
-        return self.tagname
 
 
 class Comment(Model, SurrogatePK):

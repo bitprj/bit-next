@@ -6,8 +6,8 @@ import pytest
 
 from conduit.user.models import User
 from conduit.profile.models import UserProfile
-from conduit.articles.models import Article, Tags, Comment
-
+from conduit.articles.models import Article, Comment
+from conduit.tags.models import Tags
 
 from .factories import UserFactory
 
