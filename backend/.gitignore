@@ -46,6 +46,7 @@ docs/_build
 env/
 dev.db
 .cache/v/cache
+.env
 
 # Intellij IDEA based IDEs folder
 .idea/**

@@ -20,6 +20,7 @@ PyJWT = "*"
 Flask-JWT-Extended = "*"
 Flask-Migrate = "*"
 Flask-Cors = "*"
+python-dotenv = "*"
 
 [dev-packages]
 # Testing
