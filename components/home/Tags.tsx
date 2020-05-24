@@ -6,7 +6,29 @@ import { usePageDispatch } from "../../lib/context/PageContext";
 import useSWR from "swr";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
+import styled from 'styled-components';
 import ErrorMessage from "../common/ErrorMessage";
+import { List, Avatar } from 'antd';
+
+const StyledAvatar = styled(Avatar)`
+  margin-right: 0.5em;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.15);
+`
+
+const StyledList = styled(List)`
+  .ant-list-item {
+    border: none;
+  }
+`
+
+const StyledListItem = styled(List.Item)`
+  padding: 5px 0;
+`
+
+const StyledSpan = styled.span`
+  color: black;
+`
 
 const Tags = () => {
   const setPage = usePageDispatch();
@@ -17,19 +39,37 @@ const Tags = () => {
   if (!data) return <LoadingSpinner />;
 
   const { tags } = data;
+
   return (
-    <div className="tag-list">
-      {tags?.map((tag) => (
-        <CustomLink
-          key={tag}
-          href={`/?tag=${tag}`}
-          as={`/?tag=${tag}`}
-          className="tag-default tag-pill"
-        >
-          <span onClick={handleClick}>{tag}</span>
-        </CustomLink>
-      ))}
-    </div>
+    <StyledList
+      itemLayout="horizontal"
+      dataSource={tags}
+      renderItem={tag => (
+        <StyledListItem>
+          <CustomLink
+            href={`/?tag=${tag}`}
+            as={`/?tag=${tag}`}
+          >
+            <StyledSpan onClick={handleClick}>
+              <StyledAvatar>🤩</StyledAvatar>
+              {tag}
+            </StyledSpan>
+          </CustomLink>
+        </StyledListItem>
+      )}
+    />
+    // <div className="tag-list">
+    // {tags?.map((tag) => (
+    //   <CustomLink
+    //     key={tag}
+    //     href={`/?tag=${tag}`}
+    //     as={`/?tag=${tag}`}
+    //     className="tag-default tag-pill"
+    //   >
+    //     <span onClick={handleClick}>{tag}</span>
+    //   </CustomLink>
+    // ))}
+    // </div>
   );
 };
 
