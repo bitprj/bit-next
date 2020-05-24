@@ -1,7 +1,8 @@
 import Router from "next/router";
-import React from "react";
 import useSWR from "swr";
-
+import React, { useState } from 'react';
+import { debounce } from "lodash";
+import Editor from 'rich-markdown-editor';
 import ListErrors from "../../components/common/ListErrors";
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
@@ -9,33 +10,62 @@ import storage from "../../lib/utils/storage";
 import editorReducer from "../../lib/utils/editorReducer";
 
 const PublishArticleEditor = () => {
-  const initialState = {
+  var initialState = {
     title: "",
     description: "",
     body: "",
     tagList: [],
   };
+  const [title,setTitle] = useState("")
+  
+  const [description,setDesc] = useState("")
+
+  var [values,setValue] = useState("")
+
+  var [value_dummy,setDummyValue] = useState("")
+
+  const [dark_theme,Change_theme] = useState(false)
 
   const [isLoading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState([]);
-  const [posting, dispatch] = React.useReducer(editorReducer, initialState);
   const { data: currentUser } = useSWR("user", storage);
 
-  const handleTitle = (e) =>
-    dispatch({ type: "SET_TITLE", text: e.target.value });
-  const handleDescription = (e) =>
-    dispatch({ type: "SET_DESCRIPTION", text: e.target.value });
-  const handleBody = (e) =>
-    dispatch({ type: "SET_BODY", text: e.target.value });
-  const addTag = (tag) => dispatch({ type: "ADD_TAG", tag: tag });
-  const removeTag = (tag) => dispatch({ type: "REMOVE_TAG", tag: tag });
+  const handleTitle = e =>{
+    setTitle(e.target.value)
+  }
+  const handleDesc = e =>{
+    setDesc(e.target.value)
+  } 
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const ChangeTheme = () => {
+    if(dark_theme){
+      Change_theme(false)
+    }
+    else{
+      Change_theme(true)
+    }
+  }
+
+  const Save = () => {
+    setValue(value_dummy)
+    handleSubmit()
+  }
+
+  const handleChange = (value => {
+    setDummyValue(value())
+  });
+
+  const handleSubmit = async () => {
+    initialState.title=title
+    if(description!=""){
+      initialState.description=description
+    }
+    else{
+      initialState.description="This article has no description"
+    }
+    initialState.body=value_dummy
     setLoading(true);
-
     const { data, status } = await ArticleAPI.create(
-      posting,
+      initialState,
       currentUser?.token
     );
 
@@ -49,64 +79,58 @@ const PublishArticleEditor = () => {
   };
 
   return (
-    <div className="editor-page">
-      <div className="container page">
-        <div className="row">
-          <div className="col-md-10 offset-md-1 col-xs-12">
-            <ListErrors errors={errors} />
-            <form>
-              <fieldset>
-                <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="text"
-                    placeholder="Article Title"
-                    value={posting.title}
-                    onChange={handleTitle}
-                  />
-                </fieldset>
-
-                <fieldset className="form-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="What's this article about?"
-                    value={posting.description}
-                    onChange={handleDescription}
-                  />
-                </fieldset>
-
-                <fieldset className="form-group">
-                  <textarea
-                    className="form-control"
-                    rows={8}
-                    placeholder="Write your article (in markdown)"
-                    value={posting.body}
-                    onChange={handleBody}
-                  />
-                </fieldset>
-
-                <TagInput
-                  tagList={posting.tagList}
-                  addTag={addTag}
-                  removeTag={removeTag}
-                />
-
-                <button
-                  className="btn btn-lg pull-xs-right btn-primary"
-                  type="button"
-                  disabled={isLoading}
-                  onClick={handleSubmit}
-                >
-                  Publish Article
-                </button>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+      <div style={{background:"white",width:'60%',marginLeft:'auto',marginRight:'auto'}}>
+          {/*<div style={{display:"flex"}}>
+            <br />
+            <button type="button" onClick={ChangeTheme}>
+              Change Theme
+            </button>
+          </div>*/}
+        <br />
+        <br />
+        <input
+          className="form-control form-control-lg"
+          type="text"
+          placeholder="Set a Title for Your Article"
+          value={title}
+          onChange={handleTitle}
+          style={{marginBottom:"2%",border:"none",padding:"0"}}
+        />
+        <input
+          className="form-control form-control-lg"
+          type="text"
+          placeholder="Set a description"
+          value={description}
+          onChange={handleDesc}
+          style={{marginBottom:"2%",border:"none",padding:"0"}}
+        />
+        <Editor
+          id="new_article"
+          value={values}
+          onChange={handleChange}
+          dark={dark_theme}
+          uploadImage={async file=>{
+            const data = new FormData();
+            data.append("file",file);
+            data.append("upload_preset", 'upload')
+            const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload",{
+              method:'POST',
+              body: data
+            });
+            const response = await res.json();
+            return response.secure_url;
+          }}
+        />
+        <button style={{marginTop:"2%"}}
+          className="btn btn-lg pull-xs-right btn-primary"
+          type="button"
+          disabled={isLoading}
+          onClick={Save}
+        >
+          Publish Article
+        </button>
+    </div>  
+  )
 };
 
 export default PublishArticleEditor;
