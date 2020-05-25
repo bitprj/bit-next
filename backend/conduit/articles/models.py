@@ -44,6 +44,7 @@ class Article(SurrogatePK, Model):
     body = Column(db.Text)
     createdAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    needsReview = Column(db.Boolean, nullable=False)
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('articles'))
     favoriters = relationship(
@@ -56,6 +57,8 @@ class Article(SurrogatePK, Model):
         'Tags', secondary=tag_assoc, backref='articles')
 
     comments = relationship('Comment', backref=db.backref('article'), lazy='dynamic')
+
+    organizations = relationship('Organization', backref=db.backref('article'))
 
     def __init__(self, author, title, body, description, slug=None, **kwargs):
         db.Model.__init__(self, author=author, title=title, description=description, body=body,
