@@ -40,25 +40,27 @@ class Organization(Model, SurrogatePK):
     description = Column(db.Text, nullable=False)
     createdAt = Column(db.DateTime, default=dt.datetime.utcnow)
     moderators = relationship('UserProfile', secondary=moderator_assoc,
-                              backref=db.backref('mod_organization'))
+                              backref=db.backref('mod_organization'), lazy='dynamic')
     members = relationship('UserProfile', secondary=member_assoc, 
-                           backref=db.backref('mem_organization'))
+                           backref=db.backref('mem_organization'),
+                           lazy='dynamic')
     followers = relationship('UserProfile', secondary=follower_assoc,
-                            backref=db.backref('org_follower'))
+                            backref=db.backref('org_follower'),
+                            lazy='dynamic')
 
     # Constructor to take in name, slug & description
     def __init__(self, name, slug=None, description, **kwargs):
         db.Model.__init__(self, name=name, slug=slug or slugify(name), 
                           description=description, **kwargs)
 
-    # Method to allow user to follow organization
+    # Method to allow current user to follow organization
     def follow(self, profile):
         if not self.is_following(profile):
             self.followers.append(profile)
             return True
         return False
 
-    # Method to allow user to unfollow
+    # Method to allow current user to unfollow
     def unfollow(self, profile):
         if self.is_following(profile):
             self.followers.remove(profile)
@@ -68,11 +70,25 @@ class Organization(Model, SurrogatePK):
     # Method to check if user is already following organization
     def is_following(self, profile):
         return bool(self.query.filter(
-                    follower_assoc.c.follower == profile.id)).count())
+                    follower_assoc.c.follower == profile.id).count())
 
 
     # Method to add member to the organization
     def add_member(self, user):
-        return
+        if not self.is_member(user):
+            self.members.append(user)
+            return True
+        return False
+        
     # Method to remove member from organization
+    def remove_member(self, user):
+        if self.is_member(user):
+            self.members.remove(user)
+            return True
+        return False
+
+    # Method to check if user is a member
+    def is_member(self, user):
+        return bool(self.members.filter(
+            member_assoc.c.organization == user.user.id).count())
     
