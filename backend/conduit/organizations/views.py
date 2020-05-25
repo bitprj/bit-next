@@ -95,6 +95,18 @@ def unfollow_an_organization(slug):
     organization.save()
     return organization
 
-# Add Member
+
+# Add Member to organization
+@blueprint.route('api/organizations/<slug>/members', methods=('POST',))
+@jwt_required
+@marshal_with(organization_schema)
+def add_member(slug):
+    # search user by username
+    # get user_id
+    user = User.query.filter_by(user_id=user_id).first()
+    organization = Organization.query.filter_by(slug=slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    organization.add_member(user)
 # Remove Member
 # Get all Members & Mods

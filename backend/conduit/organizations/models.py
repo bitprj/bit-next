@@ -69,4 +69,10 @@ class Organization(Model, SurrogatePK):
     def is_following(self, profile):
         return bool(self.query.filter(
                     follower_assoc.c.follower == profile.id)).count())
+
+
+    # Method to add member to the organization
+    def add_member(self, user):
+        return
+    # Method to remove member from organization
     
