@@ -7,13 +7,6 @@ from conduit.database import (Model, SurrogatePK, db, Column,
                               reference_col, relationship)
 from conduit.profile.models import UserProfile
 
-name: string(100)
-slug: text
-description: text
-createdAt: DateTime
-moderators: User relationship, use backref to make relationship.
-members: User relationship, use backref to make relationship.
-
 
 class Organization(Model, SurrogatePK):
     __tablename__ = 'organization'
