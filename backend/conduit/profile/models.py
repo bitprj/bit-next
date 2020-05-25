@@ -9,7 +9,6 @@ followers_assoc = db.Table("followers_assoc",
                            db.Column("followed_by", db.Integer, db.ForeignKey("userprofile.id")))
 
 
-
 class UserProfile(Model, SurrogatePK):
     __tablename__ = 'userprofile'
 
@@ -25,7 +24,6 @@ class UserProfile(Model, SurrogatePK):
                            backref='followed_by',
                            lazy='dynamic')
   
-
     def __init__(self, user, **kwargs):
         db.Model.__init__(self, user=user, **kwargs)
 
