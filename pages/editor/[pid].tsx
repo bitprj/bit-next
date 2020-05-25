@@ -18,6 +18,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     body: initialArticle.body,
     tagList: initialArticle.tagList,
   };
+  const Title = React.createRef();
 
   const [title,setTitle] = useState(initialState.title)
   
@@ -70,25 +71,30 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
       initialState.description="This article has no description"
     }
     initialState.body=value_dummy
-    setLoading(true);
-    const { data, status } = await axios.put(
-      `${SERVER_BASE_URL}/articles/${pid}`,
-      JSON.stringify({ article: initialState }),
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Token ${encodeURIComponent(currentUser?.token)}`,
-        },
+    if(title!=""){
+      setLoading(true);
+      const { data, status } = await axios.put(
+        `${SERVER_BASE_URL}/articles/${pid}`,
+        JSON.stringify({ article: initialState }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(currentUser?.token)}`,
+          },
+        }
+      );
+
+      setLoading(false);
+
+      if (status !== 200) {
+        setErrors(data.errors);
       }
-    );
 
-    setLoading(false);
-
-    if (status !== 200) {
-      setErrors(data.errors);
+      Router.push("/");
     }
-
-    Router.push("/");
+    else{
+      Title.current.focus();
+    }
   };
 
   return (
@@ -102,6 +108,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
           value={title}
           onChange={handleTitle}
           style={{marginBottom:"2%",border:"none",padding:"0"}}
+          ref={Title}
         />
         <input
           className="form-control form-control-lg"

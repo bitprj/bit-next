@@ -16,6 +16,7 @@ const PublishArticleEditor = () => {
     body: "",
     tagList: [],
   };
+  const Title = React.createRef();
   const [title,setTitle] = useState("")
   
   const [description,setDesc] = useState("")
@@ -63,29 +64,28 @@ const PublishArticleEditor = () => {
       initialState.description="This article has no description"
     }
     initialState.body=value_dummy
+    if(title!=""){
     setLoading(true);
-    const { data, status } = await ArticleAPI.create(
-      initialState,
-      currentUser?.token
-    );
+      const { data, status } = await ArticleAPI.create(
+        initialState,
+        currentUser?.token
+      );
 
-    setLoading(false);
+      setLoading(false);
 
-    if (status !== 200) {
-      setErrors(data.errors);
+      if (status !== 200) {
+        setErrors(data.errors);
+      }
+
+      Router.push("/");
     }
-
-    Router.push("/");
+    else{
+      Title.current.focus();
+    }
   };
 
   return (
       <div style={{background:"white",width:'60%',marginLeft:'auto',marginRight:'auto'}}>
-          {/*<div style={{display:"flex"}}>
-            <br />
-            <button type="button" onClick={ChangeTheme}>
-              Change Theme
-            </button>
-          </div>*/}
         <br />
         <br />
         <input
@@ -95,6 +95,7 @@ const PublishArticleEditor = () => {
           value={title}
           onChange={handleTitle}
           style={{marginBottom:"2%",border:"none",padding:"0"}}
+          ref={Title}
         />
         <input
           className="form-control form-control-lg"
