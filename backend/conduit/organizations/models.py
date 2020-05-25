@@ -42,6 +42,6 @@ class Organization(Model, SurrogatePK):
                            backref=db.backref('mem_organization'))
 
     # Constructor to take in name, slug & description
-    def __init__(self, name, slug=None, description):
-        db.Model.__init__(self, name=name, slug=slugify(name), 
-                          description=description)
+    def __init__(self, name, slug=None, description, **kwargs):
+        db.Model.__init__(self, name=name, slug=slug or slugify(name), 
+                          description=description, **kwargs)
