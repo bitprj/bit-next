@@ -49,9 +49,9 @@ class Organization(Model, SurrogatePK):
                             lazy='dynamic')
 
     # Constructor to take in name, slug & description
-    def __init__(self, name, slug=None, description, **kwargs):
-        db.Model.__init__(self, name=name, slug=slug or slugify(name), 
-                          description=description, **kwargs)
+    def __init__(self, name, description, slug=None, **kwargs):
+        db.Model.__init__(self, name=name, description=description, 
+                          slug=slug or slugify(name), **kwargs)
 
     # Method to allow current user to follow organization
     def follow(self, profile):
