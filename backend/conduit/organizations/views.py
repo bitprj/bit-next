@@ -18,17 +18,19 @@ blueprint = Blueprint('organizations', __name__)
 # Organizations
 ###############
 
-# @blueprint.route('/api/organizations', methods=('POST',))
-# @jwt_required
-# @use_kwargs(organization_schema)
-# def make_organization(name, description):
-#     organization = Organization(name=name, description=description,
-#                                 moderators=current_user.profile)
+# Create Organization
+@blueprint.route('/api/organizations', methods=('POST',))
+@jwt_required
+@use_kwargs(organization_schema)
+@marshal_with(organization_schema)
+def make_organization(name, description):
+    organization = Organization(name=name, description=description,
+                                moderators=current_user.profile)
     
-#     print(organization)
+    print(organization)
 
-#     organization.save()
-#     return organization
+    organization.save()
+    return organization
 
 
 # # Get Organization Data
@@ -73,3 +75,8 @@ blueprint = Blueprint('organizations', __name__)
 # # Remove follower from organization
 # @blueprint.route('/api/organizations/<slug>/follow', methods=('DELETE',))
 # @jwt_required
+
+
+# Add Member
+# Remove Member
+# Get all Members & Mods

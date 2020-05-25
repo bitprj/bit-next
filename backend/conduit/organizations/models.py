@@ -31,9 +31,9 @@ class Organization(Model, SurrogatePK):
     __tablename__ = 'organization'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = Column(db.String(100))
-    slug = Column(db.Text)
-    description = Column(db.Text)
+    name = Column(db.String(100), nullable=False)
+    slug = Column(db.Text, nullable=False)
+    description = Column(db.Text, nullable=False)
     createdAt = Column(db.DateTime, default=dt.datetime.utcnow)
     moderators = relationship('UserProfile', secondary=moderator_assoc,
                               backref=db.backref('mod_organization'))
