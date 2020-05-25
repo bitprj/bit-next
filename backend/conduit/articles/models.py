@@ -20,6 +20,10 @@ tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
 
+org_assoc = db.Table("org_assoc",
+                    db.Column("organization", db.Integer, db.ForeignKey("organization.id")),
+                    db.Column("article", db.Integer, db.ForeignKey("article.id"))
+                    )
 
 class Comment(Model, SurrogatePK):
     __tablename__ = 'comment'
@@ -60,7 +64,8 @@ class Article(SurrogatePK, Model):
 
     comments = relationship('Comment', backref=db.backref('article'), lazy='dynamic')
 
-    organizations = relationship('Organization', backref=db.backref('article'))
+    organizations = relationship('Organization', secondary=org_assoc,      
+                                 backref=db.backref('org_article'))
 
     def __init__(self, author, title, body, description, slug=None, **kwargs):
         db.Model.__init__(self, author=author, title=title, description=description, body=body,

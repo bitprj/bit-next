@@ -36,10 +36,10 @@ class Organization(Model, SurrogatePK):
     description = Column(db.Text)
     createdAt = Column(db.DateTime, default=dt.datetime.utcnow)
     moderators = relationship('UserProfile', secondary=moderator_assoc,
-                              backref=db.backref('organization'))
+                              backref=db.backref('mod_organization'))
     member_id = reference_col('userprofile', nullable=False)
     members = relationship('UserProfile', secondary=user_assoc, 
-                           backref=db.backref('organization'))
+                           backref=db.backref('mem_organization'))
 
     def __init__(self, name, description, moderators, slug=None, **kwargs):
         db.Model.__init__(self, name=name, description=description,
