@@ -4,7 +4,6 @@
 /node_modules
 /.pnp
 .pnp.js
-venv
 
 # testing
 /coverage
@@ -21,6 +20,7 @@ venv
 # misc
 .DS_Store
 .env*
+venv
 
 # debug
 npm-debug.log*
