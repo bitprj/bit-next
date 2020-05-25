@@ -21,8 +21,10 @@ tag_assoc = db.Table("tag_assoc",
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
 
 org_assoc = db.Table("org_assoc",
-                    db.Column("organization", db.Integer, db.ForeignKey("organization.id")),
-                    db.Column("article", db.Integer, db.ForeignKey("article.id"))
+                    db.Column("organization", db.Integer, 
+                        db.ForeignKey("organization.id")),
+                    db.Column("article", db.Integer, 
+                        db.ForeignKey("article.id"))
                     )
 
 class Comment(Model, SurrogatePK):
