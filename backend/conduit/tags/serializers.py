@@ -20,3 +20,5 @@ class TagSchema(Schema):
         return {'tag': data}
 
 tag_schema = TagSchema()
+tags_schemas = TagSchema(many=True)
+
