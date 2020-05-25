@@ -32,8 +32,24 @@ class Tags(Model):
     moderators = db.relationship('UserProfile', secondary=tag_moderators_assoc, lazy='subquery',
         backref=db.backref('moderated_tags', lazy='dynamic'))
 
-    def __init__(self, tagname):
-        db.Model.__init__(self, tagname=tagname)
+    def __init__(self, tagname, description, slug, icon, modSetting, **kwargs):
+        db.Model.__init__(self, tagname=tagname, description=description,
+                            slug=slug, icon=icon, modSetting=modSetting)
 
     def __repr__(self):
         return self.tagname
+
+    def follow(self, profile):
+        if not self.is_follow(profile):
+            self.tagFollowers.append(profile)
+            return True
+        return False
+
+    def unfollow(self, profile):
+        if self.is_follow(profile):
+            self.tagFollowers.remove(profile)
+            return True
+        return False
+
+    def is_follow(self, profile):
+        return bool(self.query.filter(tag_follower_assoc.c.follower_id == profile.id).count())
