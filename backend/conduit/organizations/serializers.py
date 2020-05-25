@@ -29,7 +29,7 @@ class OrganizationSchema(Schema):
 class OrganizationsSchema(OrganizationSchema):
     
     @post_dump
-    def dump_organization(self, data **kwargs):
+    def dump_organization(self, data, **kwargs):
         data['organization'] = data['organization']['profile']
         return data
     

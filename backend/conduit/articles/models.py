@@ -10,6 +10,7 @@ from conduit.database import (Model, SurrogatePK, db, Column,
 from conduit.profile.models import UserProfile
 from conduit.tags.models import Tags
 
+
 favoriter_assoc = db.Table("favoritor_assoc",
                            db.Column("favoriter", db.Integer, db.ForeignKey("userprofile.id")),
                            db.Column("favorited_article", db.Integer, db.ForeignKey("article.id")))
@@ -46,7 +47,7 @@ class Article(SurrogatePK, Model):
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     needsReview = Column(db.Boolean, nullable=False)
     author_id = reference_col('userprofile', nullable=False)
-    author = relationship('UserProfile', backref=db.backref('articles'))
+    author = relationship('UserProfile', backref=db.backref('article'))
     favoriters = relationship(
         'UserProfile',
         secondary=favoriter_assoc,
