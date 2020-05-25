@@ -41,6 +41,7 @@ class Organization(Model, SurrogatePK):
     members = relationship('UserProfile', secondary=user_assoc, 
                            backref=db.backref('mem_organization'))
 
-    def __init__(self, name, description, moderators, slug=None, **kwargs):
-        db.Model.__init__(self, name=name, description=description,
-                          moderators=moderators, slug=slugify(name), **kwargs)
+    # Constructor to take in name, slug & description
+    def __init__(self, name, slug=None, description):
+        db.Model.__init__(self, name=name, slug=slugify(name), 
+                          description=description)
