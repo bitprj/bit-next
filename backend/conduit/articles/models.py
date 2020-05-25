@@ -9,7 +9,7 @@ from conduit.database import (Model, SurrogatePK, db, Column,
                               reference_col, relationship)
 from conduit.profile.models import UserProfile
 from conduit.tags.models import Tags
-from conduit.organizations.models Organization
+from conduit.organizations.models import Organization
 
 
 favoriter_assoc = db.Table("favoritor_assoc",
