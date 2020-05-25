@@ -1,31 +1,27 @@
-import React from 'react';
+import React from 'react'
 import User from './User'
-import {List, Button} from 'antd';
+import styled from 'styled-components'
+import {List, Button} from 'antd'
+
+const StyledListItem = styled(List.Item)`
+    font-size: 0.85em;
+    width: 100%;
+    padding: 2em;
+    margin: 1.5em auto;
+    border-radius: 0.6em;
+    background: #FFFFFF;
+`
 
 const FollowerList = props =>(
-  <>
     <List
       itemLayout="horizontal"
       dataSource={props.followers}
       renderItem={follower => (
-        <List.Item
-          style={{
-            fontSize: "0.85em",
-            width: "100%",
-            padding: "2em",
-            margin: "1.5em auto",
-            borderRadius: "0.6em",
-            background: "#FFFFFF",
-            display:"flex",
-            justifyContent: "space-between",
-            alignItems: "center"
-    
-          }}
-        >
+        <StyledListItem>
            <User 
               name = {follower['name']}
-              imgLink = {follower['imgLink']}
-              userName = {follower['userName']}
+              img = {follower['img']}
+              username = {follower['username']}
               following = {follower['following']}
               onClick = {follower['onClick']}  
             >
@@ -44,10 +40,9 @@ const FollowerList = props =>(
             }}>
             {follower['following'] ? 'Delete' : '+ Follow'}
           </Button>
-        </List.Item>
+        </StyledListItem>
       )}
     />
-  </>
 );
 
 export default FollowerList

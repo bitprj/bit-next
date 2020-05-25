@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import User from './User';
-import { Row, Col, Button } from 'antd';
+import {Button, Space} from 'antd';
 
 const StyledInfoName = styled.p`
   font-size: 1em;
@@ -16,11 +16,13 @@ const StyledInfoData = styled.p`
   color: #000000;
 `
 const SyledDetailContainer = styled.div`
+  max-width: 20em;
   font-family: Apercu Pro, sans-serif;
   font-style: normal;
   font-weight: 500;
   padding: 0.5em 1em;
   margin-left:4em;
+  word-wrap: break-word;
 
 `
 const DetailInfo = ({infoName, infoData}) => (
@@ -31,15 +33,16 @@ const DetailInfo = ({infoName, infoData}) => (
 )
 
 const Header = props =>(
-    <Row>
-      <Col span={16}>
-        <Row justify={"start"}>            
+    <Space size = {"large"} align={"start"} >
+      <div>
+        <Space align={"start"}>            
           <User 
               name = {props.user.name}
-              imgLink = {props.user.imgLink}
-              userName = {props.user.userName}
+              img = {props.user.img}
+              username = {props.user.username}
               following = {props.user.following}
               onClick = {props.user.onClick}
+              avatarSize = {80}
             /> 
           <Button 
               type ={'primary'} 
@@ -50,23 +53,21 @@ const Header = props =>(
                 borderColor :  props.user.following ? '#4EC700':'#007BED' ,
                 borderRadius: '0.5em',
                 padding:'0em 1em',
-                margin:'0.5em',
+                margin:'1.6em',
                 fontSize: '0.9em',
                 fontWeight: 'bold',
               }}>
               {props.user.following ? 'Following' : '+ Follow'}
           </Button>
-        </Row>
-        <Row justify={"end"}>
-          <Col span={4}></Col>
-          <Col span={20}>{props.user.intro}</Col></Row>
-      </Col>
-      <Col  span={8}>
+        </Space>
+        <p style={{marginLeft:"7em"}}>{props.user.bio}</p>
+      </div>
+      <div>
         {props.user.location && <DetailInfo infoName = {'Location'} infoData={props.user.location}/>}
         {props.user.joined  && <DetailInfo infoName = {'Joined'} infoData={props.user.joined}/>}
         {props.user.occupation && <DetailInfo infoName = {'Occupation'} infoData={props.user.occupation}/>}
-      </Col>
-    </Row>
+      </div>
+    </Space>
 )
 export default Header
 
