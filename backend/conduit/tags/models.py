@@ -34,7 +34,7 @@ class Tags(Model):
 
     def __init__(self, tagname, description, slug, icon, modSetting, **kwargs):
         db.Model.__init__(self, tagname=tagname, description=description,
-                            slug=slug, icon=icon, modSetting=modSetting)
+                            slug=slug or slugify(tagname), icon=icon, modSetting=modSetting)
 
     def __repr__(self):
         return self.tagname

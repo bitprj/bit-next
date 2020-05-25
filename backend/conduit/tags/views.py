@@ -1,10 +1,10 @@
 from flask import Blueprint
-from flask_apispec import marshal_with, use_kwargs, current_user
-from flask_jwt_extended import jwt_required
+from flask_apispec import marshal_with, use_kwargs
+from flask_jwt_extended import current_user, jwt_required
 
 from conduit.exceptions import InvalidUsage
 from .models import Tags
-from .serializers import (tag_schema)
+from .serializers import (tag_schema, profile_schema)
 
 blueprint = Blueprint('tags', __name__)
 
@@ -56,3 +56,11 @@ def unfavorite_an_article(slug):
     tag.unfollow(profile)
     tag.save()
     return tag
+
+@blueprint.route('/api/tags/<slug>/members', methods=('GET',))
+@marshal_with(profile_schemas)
+def get_members_from_tag(slug):
+    followers = Tags.query.join(Tags.tagFollowers).filer_by(slug=slug).all()
+    moderators = Tags.query.join(Tags.moderators).filer_by(slug=slug)
+    console.log(followers)
+    return followers
