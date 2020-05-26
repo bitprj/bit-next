@@ -8,7 +8,8 @@ from conduit.exceptions import InvalidUsage
 from conduit.user.models import User
 from conduit.tags.models import Tags
 
-from .serializers import profile_schema, tags_schemas
+from .serializers import profile_schema
+from conduit.tags.serializers import tags_schemas
 
 blueprint = Blueprint('profiles', __name__)
 
@@ -46,11 +47,11 @@ def unfollow_user(username):
     current_user.profile.save()
     return user.profile
 
-@blueprint.route('/api/profiles/<username>/tags', methods=('GET',))
-@jwt_optional
+@blueprint.route('/profiles/<username>/tags', methods=('GET',))
+@jwt_required
 @marshal_with(tags_schemas)
 def profile_tags(username):
     user = User.query.filter_by(username=username).first()
     if not user:
         raise InvalidUsage.user_not_found()
-    return user.profile.followed_tags
+    return user.profile.followed_tags.with_entities(Tags.tagname, Tags.slug)

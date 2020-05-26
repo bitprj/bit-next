@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, pre_load, post_dump
 
+import sys
 
 class ProfileSchema(Schema):
     username = fields.Str()
@@ -17,6 +18,7 @@ class ProfileSchema(Schema):
 
     @post_dump
     def dump_user(self, data, **kwargs):
+        print('aaaaa', file=sys.stderr)
         return {'profile': data}
 
     class Meta:
