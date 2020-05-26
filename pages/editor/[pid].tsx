@@ -10,6 +10,7 @@ import ArticleAPI from "../../lib/api/article";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import editorReducer from "../../lib/utils/editorReducer";
 import storage from "../../lib/utils/storage";
+import { Alert } from 'antd';
 
 const UpdateArticleEditor = ({ article: initialArticle }) => {
   const initialState = {
@@ -30,6 +31,10 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const [dark_theme,Change_theme] = useState(false)
 
+  const [Title_required,setTitle_required] = useState(false)
+
+  const [tags,setTags] = useState(initialState.tagList)
+
   const [isLoading, setLoading] = React.useState(false);
   const { data: currentUser } = useSWR("user", storage);
   const router = useRouter();
@@ -37,8 +42,17 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     query: { pid },
   } = router;
 
+  const addTag = (tag) => {
+    setTags([...tags,tag])
+  }
+
+  const removeTag = (tag) => {
+    setTags(tags.filter(item=>item!=tag))
+  }
+
   const handleTitle = e =>{
     setTitle(e.target.value)
+    setTitle_required(false)
   }
   const handleDesc = e =>{
     setDesc(e.target.value)
@@ -71,10 +85,11 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
       initialState.description="This article has no description"
     }
     initialState.body=value_dummy
+    initialState.tagList = tags
     if(title!=""){
       setLoading(true);
       const { data, status } = await axios.put(
-        `${SERVER_BASE_URL}/articles/${pid}`,
+        `${SERVER_BASE_URL}/articles/${pid}/draft`,
         JSON.stringify({ article: initialState }),
         {
           headers: {
@@ -94,12 +109,14 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     }
     else{
       Title.current.focus();
+      setTitle_required(true);
     }
   };
 
   return (
     <div style={{background:"white",width:'60%',marginLeft:'auto',marginRight:'auto'}}>
         <br />
+        {Title_required?<Alert message="Title required" type="warning"/>:null}
         <br />
         <input
           className="form-control form-control-lg"
@@ -117,6 +134,11 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
           value={description}
           onChange={handleDesc}
           style={{marginBottom:"2%",border:"none",padding:"0"}}
+        />
+        <TagInput
+            tagList={tags}
+            addTag={addTag}
+            removeTag={removeTag}
         />
         <Editor
           id="new_article"
