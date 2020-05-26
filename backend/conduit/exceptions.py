@@ -11,7 +11,7 @@ UNKNOWN_ERROR = template([], code=500)
 ARTICLE_NOT_FOUND = template(['Article not found'], code=404)
 TAG_NOT_FOUND = template(['Tag not found'], code=404)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
-
+NOT_ADMIN = template(['Not Admin'], code=403)
 
 class InvalidUsage(Exception):
     status_code = 500
@@ -46,6 +46,10 @@ class InvalidUsage(Exception):
     @classmethod
     def tag_not_found(cls):
         return cls(**TAG_NOT_FOUND)
+    
+    @classmethod
+    def not_admin(cls):
+        return cls(**NOT_ADMIN)
 
     @classmethod
     def comment_not_owned(cls):
