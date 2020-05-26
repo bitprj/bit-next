@@ -8,7 +8,6 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import ErrorMessage from "../common/ErrorMessage";
 
-
 const Tags = () => {
   const setPage = usePageDispatch();
   const handleClick = React.useCallback(() => setPage(0), []);
@@ -18,19 +17,18 @@ const Tags = () => {
   if (!data) return <LoadingSpinner />;
 
   const { tags } = data;
-
   return (
     <div className="tag-list">
-    {tags?.map((tag) => (
-      <CustomLink
-        key={tag}
-        href={`/?tag=${tag}`}
-        as={`/?tag=${tag}`}
-        className="tag-default tag-pill"
-      >
-        <span onClick={handleClick}>{tag}</span>
-      </CustomLink>
-    ))}
+      {tags?.map((tag) => (
+        <CustomLink
+          key={tag}
+          href={`/?tag=${tag}`}
+          as={`/?tag=${tag}`}
+          className="tag-default tag-pill"
+        >
+          <span onClick={handleClick}>{tag}</span>
+        </CustomLink>
+      ))}
     </div>
   );
 };

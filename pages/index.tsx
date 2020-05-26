@@ -4,11 +4,6 @@ import React from "react";
 import Banner from "../components/home/Banner";
 import MainView from "../components/home/MainView";
 import Tags from "../components/home/Tags";
-import styled from 'styled-components';
-
-const StyledTagBox = styled.div`
-  background: #E5E5E5;
-`
 
 const Home = () => (
   <>
@@ -26,7 +21,7 @@ const Home = () => (
           <MainView />
           <div className="col-md-3">
             <div className="sidebar">
-              <h6>Tags</h6>
+              <p>Popular Tags</p>
               <Tags />
             </div>
           </div>
