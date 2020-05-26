@@ -22,7 +22,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       margin-bottom: 0.2em;
       color: #000000
     }
-
+    
     .ant-list-item-meta-description {
       font-family: Open Sans, sans-serif;
       font-style: normal;
@@ -31,7 +31,6 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       line-height: 1.2em;
       color: #000000;
     }
-
 `
 
 const User = (props) =>(
@@ -57,8 +56,6 @@ const User = (props) =>(
       ) 
     }
   />
-
-
 )
 
 export default User
