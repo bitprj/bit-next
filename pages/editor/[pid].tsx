@@ -19,7 +19,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     body: initialArticle.body,
     tagList: initialArticle.tagList,
   };
-  const Title = React.createRef();
+  const Title = React.createRef<HTMLInputElement>();
 
   const [title,setTitle] = useState(initialState.title)
   
@@ -129,7 +129,9 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
       Router.push("/");
     }
     else{
-      Title.current.focus();
+      if(Title.current){
+          Title.current.focus();
+        }
       setTitle_required(true);
     }
   };
@@ -164,7 +166,9 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         <Editor
           id="new_article"
           value={values}
+          readOnly={false}
           defaultValue={values}
+          onKeyDown={null}
           onChange={handleChange}
           dark={dark_theme}
           uploadImage={async file=>{
