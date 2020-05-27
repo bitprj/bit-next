@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
+import { Row, Col } from 'antd';
 
 import ArticleList from "../../components/article/ArticleList";
 import CustomImage from "../../components/common/CustomImage";
@@ -14,6 +15,8 @@ import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
+import User from "../../components/global/User";
+import Tab_list from "../../components/profile/Tab_list";
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -34,6 +37,7 @@ const Profile = ({ initialProfile }) => {
 
   const { profile } = fetchedProfile || initialProfile;
   const { username, bio, image, following } = profile;
+  const [list,setList] = React.useState([])
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
@@ -59,45 +63,41 @@ const Profile = ({ initialProfile }) => {
     trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
-  return (
-    <div className="profile-page">
-      <div className="user-info">
-        <div className="container">
-          <div className="row">
-            <div className="col-xs-12 col-md-10 offset-md-1">
-              <CustomImage
-                src={image}
-                alt="User's profile image"
-                className="user-img"
-              />
-              <h4>{username}</h4>
-              <p>{bio}</p>
-              <EditProfileButton isUser={isUser} />
-              <Maybe test={isLoggedIn}>
-                <FollowUserButton
-                  isUser={isUser}
-                  username={username}
-                  following={following}
-                  follow={handleFollow}
-                  unfollow={handleUnfollow}
-                />
-              </Maybe>
-            </div>
-          </div>
-        </div>
-      </div>
+  const Followers = () => {
+    const followers = UserAPI.followers(`${pid}`)
+    console.log(followers)
+  }
+  const Followings=()=>{
+    const followings = UserAPI.following(`${pid}`)
+    console.log(followings)
+  }
+  const TabChange = (key) =>{
+    console.log(key)
+  }
 
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-12 col-md-10 offset-md-1">
-            <div className="articles-toggle">
-              <ProfileTab profile={profile} />
-            </div>
-            <ArticleList />
-          </div>
-        </div>
-      </div>
-    </div>
+  return (
+    <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
+      <Col span={2}></Col>
+      <Col className="gutter-row" span={4}>
+      <Row gutter={[16, 40]}>
+        <Col span={24}>
+          <User name={username} img={image} username={username}/>
+        </Col>
+        <Col span={24}>
+        <Tab_list tabs={list} onClick={key=>TabChange(key)} position={"left"}/>
+        </Col>
+      </Row>
+      </Col>
+      <Col span={16}>
+        <Row gutter={[16, 40]}>
+        <Col span={24}>
+          <Tab_list tabs={list} onClick={key=>TabChange(key)} position={"top"}/>
+        </Col>
+        </Row>
+      </Col>
+      <Col span={2}>
+      </Col>
+    </Row>
   );
 };
 

@@ -74,7 +74,32 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const handleChange = (value => {
     setDummyValue(value())
+    if(title!=""){
+      saveDraft()
+    }
   });
+
+  const saveDraft = async () =>  {
+    initialState.title=title
+    if(description!=""){
+      initialState.description=description
+    }
+    else{
+      initialState.description="This article has no description"
+    }
+    initialState.body=value_dummy
+    initialState.tagList = tags
+    const { data, status } = await axios.put(
+        `${SERVER_BASE_URL}/articles/${pid}/draft`,
+        JSON.stringify({ article: initialState }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(currentUser?.token)}`,
+          },
+        }
+      );
+  }
 
   const handleSubmit = async () => {
     initialState.title=title
@@ -89,7 +114,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     if(title!=""){
       setLoading(true);
       const { data, status } = await axios.put(
-        `${SERVER_BASE_URL}/articles/${pid}/draft`,
+        `${SERVER_BASE_URL}/articles/${pid}`,
         JSON.stringify({ article: initialState }),
         {
           headers: {
@@ -100,10 +125,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
       );
 
       setLoading(false);
-
-      if (status !== 200) {
-        setErrors(data.errors);
-      }
 
       Router.push("/");
     }

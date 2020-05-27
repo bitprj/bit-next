@@ -100,6 +100,24 @@ const UserAPI = {
       return error.response;
     }
   },
+  followers: async (username)=> {
+      try{
+      const response = await axios.get(`${SERVER_BASE_URL}/profiles/${username}/followers`);
+      return response
+      }
+      catch(error){
+        return error.response
+      }
+  },
+  following: async (username)=>{
+    try{
+      const response = await axios.get(`${SERVER_BASE_URL}/profiles/${username}/following`);
+      return response
+      }
+      catch(error){
+        return error.response
+      }
+    },
   get: async (username) => axios.get(`${SERVER_BASE_URL}/profiles/${username}`),
 };
 

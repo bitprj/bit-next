@@ -34,6 +34,8 @@ const PublishArticleEditor = () => {
 
   const [tags,setTags] = useState([])
 
+  const [id,setId]=useState(null)
+
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
@@ -68,7 +70,68 @@ const PublishArticleEditor = () => {
 
   const handleChange = (value => {
     setDummyValue(value())
+    if(id!=null){
+      AutoSave()
+    }
   });
+
+  const AutoSave = async ()=>{
+    if(title!=""){
+    initialState.title=title
+    if(description!=""){
+      initialState.description=description
+    }
+    else{
+      initialState.description="This article has no description"
+    }
+    initialState.body=value_dummy
+    initialState.tagList = tags
+    const { data, status } = await axios.put(
+        `${SERVER_BASE_URL}/articles/${id}/draft`,
+        JSON.stringify({ article: initialState }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(currentUser?.token)}`,
+          },
+        }
+      );
+    }
+  }
+
+  const Save_Draft = async ()=>{
+    if(id==null){
+      if(title!=""){
+        initialState.title=title
+        if(description!=""){
+          initialState.description=description
+        }
+        else{
+          initialState.description="This article has no description"
+        }
+        initialState.body=value_dummy
+        initialState.tagList = tags
+          const { data, status } = await ArticleAPI.create(
+            initialState,
+            currentUser?.token
+          );
+          setId(data.article.slug)
+      }
+      else{
+        Title.current.focus();
+        setTitle_required(true);
+      }
+    }
+    else{
+      if(title!=""){
+        AutoSave()
+      }
+      else{
+        Title.current.focus();
+        setTitle_required(true);
+      }
+    }
+  }
 
   const handleSubmit = async () => {
     initialState.title=title
@@ -86,12 +149,7 @@ const PublishArticleEditor = () => {
         initialState,
         currentUser?.token
       );
-
       setLoading(false);
-
-      if (status !== 200) {
-        setErrors(data.errors);
-      }
 
       Router.push("/");
     }
@@ -152,6 +210,14 @@ const PublishArticleEditor = () => {
           onClick={Save}
         >
           Publish Article
+        </button>
+        <button style={{marginTop:"2%",marginRight:"2%"}}
+          className="btn btn-lg pull-xs-right btn-primary"
+          type="button"
+          disabled={isLoading}
+          onClick={Save_Draft}
+        >
+          Save Draft
         </button>
     </div>  
   )
