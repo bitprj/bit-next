@@ -12,7 +12,9 @@ const StyledListItemMeta = styled(List.Item.Meta)`
     .ant-list-item-meta-avatar {
       margin-right: 1.2em;
     }
+
     .ant-list-item-meta-title {
+      max-width: 10em;
       font-family: Apercu Pro, sans-serif;
       font-style: normal;
       font-weight: 500;
@@ -20,7 +22,9 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       line-height: 1.3em;
       margin-bottom: 0.2em;
       color: #000000
+      word-wrap: break-word;
     }
+    
     .ant-list-item-meta-description {
       font-family: Open Sans, sans-serif;
       font-style: normal;
@@ -28,32 +32,33 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       font-size: 0.8em;
       line-height: 1.2em;
       color: #000000;
+      word-wrap: break-word;
     }
 `
 
-const User = (props) => {
-    return (
-    <StyledListItemMeta
-        avatar={<Avatar src={props.image} size={50} />}
-        title={props.name}
-        description={'@' + props.username ||
-            <Button
-                type={'primary'}
-                size={'small'}
-                onClick={props.onClick}
-                style={{
-                    background: props.following ? '#4EC700' : '#007BED',
-                    borderColor: props.following ? '#4EC700' : '#007BED',
-                    borderRadius: '0.5em',
-                    padding: '0em 1em',
-                    fontSize: '0.9em',
-                    fontWeight: 'bold',
-                }}>
-                {props.following ? 'Following' : '+ Follow'}
-            </Button>
-        }
-    />
-)
+const User = (props) =>(
+  <StyledListItemMeta
+    avatar={ <Avatar src= {props.image} size = { props.avatarSize || 50}/>}
+    title={props.name}
+    description={props.username ||
+      (props.hasButton &&
+        <Button 
+          type ={'primary'} 
+          size={'small'}
+          onClick = {props.onClick}
+          style={{ 
+            background: props.following ? '#4EC700':'#007BED' ,
+            borderColor :  props.following ? '#4EC700':'#007BED' ,
+            borderRadius: '0.5em',
+            padding:'0em 1em',
+            fontSize: '0.9em',
+            fontWeight: 'bold',
+          }}>
+            {props.following ? 'Following' : '+ Follow'}
+        </Button>
+      ) 
     }
+  />
+)
 
-export default User 
+export default User
