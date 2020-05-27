@@ -21,6 +21,7 @@ class ArticleSchema(Schema):
     tagList = fields.List(fields.Str())
     favoritesCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
+    isPublished = fields.Bool()
 
     @pre_load
     def make_article(self, data, **kwargs):
