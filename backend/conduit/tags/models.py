@@ -33,12 +33,8 @@ class Tags(Model):
     moderators = db.relationship('UserProfile', secondary=tag_moderators_assoc, lazy='subquery',
         backref=db.backref('moderated_tags', lazy='dynamic'))
 
-    # def __init__(self, tagname, description, slug, icon, modSetting, **kwargs):
-    #     db.Model.__init__(self, tagname=tagname, description=description,
-    #                         slug=slug or slugify(tagname), icon=icon, modSetting=modSetting)
-
     def __init__(self, tagname, description=None, slug=None, icon=None, modSetting=None, **kwargs):
-        db.Model.__init__(self, tagname=tagname, description=description, slug=slug or slugify(title),
+        db.Model.__init__(self, tagname=tagname, description=description, slug=slug or slugify(tagname),
                             icon=icon,  modSetting=modSetting, **kwargs)
 
     def __repr__(self):
