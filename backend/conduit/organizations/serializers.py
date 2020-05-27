@@ -3,10 +3,10 @@
 from marshmallow import Schema, fields, pre_load, post_dump
 
 from conduit.profile.serializers import ProfileSchema
+from .models import Organization
 
 
 class OrganizationSchema(Schema):
-  
     name = fields.Str()
     slug = fields.Str()
     description = fields.Str()
@@ -20,6 +20,7 @@ class OrganizationSchema(Schema):
     
     @pre_load # unwraps data
     def make_organization(self, data, **kwargs):
+        print(data)
         return data['organization']
 
     @post_dump # wraps data

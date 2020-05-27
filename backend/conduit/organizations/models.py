@@ -48,11 +48,11 @@ class Organization(Model, SurrogatePK):
                             backref=db.backref('org_follower'),
                             lazy='dynamic')
 
-    # Constructor to take in name, slug & description
-    def __init__(self, name, description, slug=None, **kwargs):
-        db.Model.__init__(self, name=name, description=description, 
-                          slug=slug or slugify(name), **kwargs)
 
+    # Constructor to take in name, slug & description
+    def __init__(self, name, description, slug, **kwargs):
+        db.Model.__init__(self, name=name, description=description, 
+                          slug=slugify(slug), **kwargs)
 
     # Method to add moderator to organization
     def add_moderator(self, user):
@@ -61,24 +61,25 @@ class Organization(Model, SurrogatePK):
             return True
         return False
 
-    # # Method to add member to the organization
-    # def add_member(self, user):
-    #     if not self.is_member(user):
-    #         self.members.append(user)
-    #         return True
-    #     return False
-        
-    # # Method to remove member from organization
-    # def remove_member(self, user):
-    #     if self.is_member(user):
-    #         self.members.remove(user)
-    #         return True
-    #     return False
 
-    # # Method to check if user is a member
-    # def is_member(self, user):
-    #     return bool(self.members.filter(
-    #         member_assoc.c.organization == user.user.id).count())
+    # Method to add member to the organization
+    def add_member(self, user):
+        if not self.is_member(user):
+            self.members.append(user)
+            return True
+        return False
+        
+    # Method to remove member from organization
+    def remove_member(self, user):
+        if self.is_member(user):
+            self.members.remove(user)
+            return True
+        return False
+
+    # Method to check if user is a member
+    def is_member(self, user):
+        return bool(self.members.filter(
+            member_assoc.c.organization == user.user.id).count())
 
 
     ########################################################
