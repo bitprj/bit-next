@@ -3,12 +3,10 @@ import Router, { useRouter } from "next/router";
 import React, { useState } from "react";
 import useSWR from "swr";
 import Editor from 'rich-markdown-editor';
-
 import ListErrors from "../../components/common/ListErrors";
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
-import editorReducer from "../../lib/utils/editorReducer";
 import storage from "../../lib/utils/storage";
 import { Alert } from 'antd';
 
@@ -123,9 +121,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
           },
         }
       );
-
       setLoading(false);
-
       Router.push("/");
     }
     else{

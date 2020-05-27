@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
-import { Row, Col } from 'antd';
+import { Row, Col,Tabs } from 'antd';
 
 import ArticleList from "../../components/article/ArticleList";
 import CustomImage from "../../components/common/CustomImage";
@@ -37,21 +37,31 @@ const Profile = ({ initialProfile }) => {
 
   const { profile } = fetchedProfile || initialProfile;
   const { username, bio, image, following } = profile;
+  const [Following_Button,setFollowing] = React.useState(following)
   const [list,setList] = React.useState(["Posts","Followers","Following"])
   const [tab_select_list,setTabList] = React.useState(["Most Viewed","Most Liked","Most Recent"])
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
   const isUser = currentUser && username === currentUser?.username;
+  const {TabPane} = Tabs;
 
   const handleFollow = async () => {
-    mutate(
-      `${SERVER_BASE_URL}/profiles/${pid}`,
-      { profile: { ...profile, following: true } },
-      false
-    );
-    UserAPI.follow(pid);
-    trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
+    if(profile.following==false){
+      profile.following=true
+      setFollowing(true)
+    }
+    else{
+      profile.following=false
+      setFollowing(false)
+    }
+    // mutate(
+    //   `${SERVER_BASE_URL}/profiles/${pid}`,
+    //   { profile: { ...profile, following: true } },
+    //   false
+    // );
+    // UserAPI.follow(pid);
+    // trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   const handleUnfollow = async () => {
@@ -83,30 +93,67 @@ const Profile = ({ initialProfile }) => {
   const TabView = (key)=>{
   }
 
-  return (
-    <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
-      <Col span={2}></Col>
-      <Col className="gutter-row" span={4}>
-      <Row gutter={[16, 40]}>
-        <Col span={24}>
-          <User name={username} img={image} username={username}/>
+  if(!isUser){
+    return(
+      <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
+        <Col span={2}></Col>
+        <Col className="gutter-row" span={4}>
+        <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <User name={username} img={image} hasButton={true} following={Following_Button} onClick={handleFollow} />
+          </Col>
+          <Col span={24}>
+            <Tabs tabPosition={"left"} size={'large'} animated={false} onTabClick={key=>TabChange(key)}>
+                <TabPane tab="Posts" key="Posts">
+                </TabPane>
+            </Tabs>
+          </Col>
+        </Row>
         </Col>
-        <Col span={24}>
-        <Tab_list tabs={list} onClick={key=>TabChange(key)} position={"left"}/>
+        <Col span={16}>
+          <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
+          </Col>
+          <Col span={16}>
+            <ArticleList/>
+          </Col>
+          </Row>
+        </Col>
+        <Col span={2}>
         </Col>
       </Row>
-      </Col>
-      <Col span={16}>
+    )
+  }
+  else{
+    return (
+      <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
+        <Col span={2}></Col>
+        <Col className="gutter-row" span={4}>
         <Row gutter={[16, 40]}>
-        <Col span={24}>
-          <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
-        </Col>
+          <Col span={24}>
+            <User name={username} img={image} username={username}/>
+          </Col>
+          <Col span={24}>
+          <Tab_list tabs={list} onClick={key=>TabChange(key)} position={"left"}/>
+          </Col>
         </Row>
-      </Col>
-      <Col span={2}>
-      </Col>
-    </Row>
-  );
+        </Col>
+        <Col span={16}>
+          <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
+          </Col>
+          <Col span={16}>
+            <ArticleList/>
+          </Col>
+          </Row>
+        </Col>
+        <Col span={2}>
+        </Col>
+      </Row>
+    );
+  }
 };
 
 Profile.getInitialProps = async ({ query: { pid } }) => {

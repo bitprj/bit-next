@@ -111,7 +111,7 @@ const UserAPI = {
   },
   following: async (username)=>{
     try{
-      const response = await axios.get(`${SERVER_BASE_URL}/profiles/${username}/following`);
+      const response = await axios.get(`${SERVER_BASE_URL}/profiles/${username}/followings`);
       return response
       }
       catch(error){

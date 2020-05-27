@@ -1,17 +1,14 @@
 import Router from "next/router";
 import useSWR from "swr";
 import React, { useState,createRef } from 'react';
-import { debounce } from "lodash";
 import Editor from 'rich-markdown-editor';
 import ListErrors from "../../components/common/ListErrors";
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import storage from "../../lib/utils/storage";
-import editorReducer from "../../lib/utils/editorReducer";
 import { Alert } from 'antd';
 import axios from "axios";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
-
 
 const PublishArticleEditor = () => {
   var initialState = {
@@ -159,12 +156,25 @@ const PublishArticleEditor = () => {
     initialState.tagList = tags
     if(title!=""){
     setLoading(true);
+    if(id==null){
       const { data, status } = await ArticleAPI.create(
         initialState,
         currentUser?.token
       );
+    }
+    else{
+      const { data, status } = await axios.put(
+        `${SERVER_BASE_URL}/articles/${id}`,
+        JSON.stringify({ article: initialState }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(currentUser?.token)}`,
+          },
+        }
+      );
+    }
       setLoading(false);
-
       Router.push("/");
     }
     else{
