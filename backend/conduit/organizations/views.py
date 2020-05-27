@@ -30,8 +30,8 @@ blueprint = Blueprint('organizations', __name__)
 def make_organization(name, description, slug, **kwargs):
     try:
         organization = Organization(name=name, description=description, slug=slug)
-        user = current_user.profile
-        organization.add_moderator(user)
+        profile = current_user.profile
+        organization.add_moderator(profile)
         organization.save()
     except IntegrityError:
         db.session.rollback()
@@ -73,32 +73,32 @@ def delete_organization(slug):
     return '', 200
 
 
-# # Add follower to organization
-# @blueprint.route('/api/organizations/<slug>/follow', methods=('POST',))
-# @jwt_required
-# @marshal_with(organization_schema)
-# def follow_an_organization(slug):
-#     profile = current_user.profile
-#     organization = Organization.query.filter_by(slug=slug).first()
-#     if not organization:
-#         raise InvalidUsage.organization_not_found()
-#     organization.follow(profile)
-#     organization.save()
-#     return organization
+# Add follower to organization
+@blueprint.route('/api/organizations/<slug>/follow', methods=('POST',))
+@jwt_required
+@marshal_with(organization_schema)
+def follow_an_organization(slug):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    organization.add_member(profile)
+    organization.save()
+    return organization
 
 
-# # Remove follower from organization
-# @blueprint.route('/api/organizations/<slug>/follow', methods=('DELETE',))
-# @jwt_required
-# @marshal_with(organization_schema)
-# def unfollow_an_organization(slug):
-#     profile = current_user.profile
-#     organization = Organization.query.filter_by(slug=slug).first()
-#     if not organization:
-#         raise InvalidUsage.organization_not_found()
-#     organization.unfollow(profile)
-#     organization.save()
-#     return organization
+# Remove follower from organization
+@blueprint.route('/api/organizations/<slug>/follow', methods=('DELETE',))
+@jwt_required
+@marshal_with(organization_schema)
+def unfollow_an_organization(slug):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    organization.remove_member(profile)
+    organization.save()
+    return organization
 
 
 # # Add Member to organization
