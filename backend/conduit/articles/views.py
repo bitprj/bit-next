@@ -79,7 +79,7 @@ def delete_article(slug):
 @jwt_optional
 @marshal_with(article_schema)
 def get_article(slug):
-    article = Article.query.filter_by(slug=slug).first()
+    article = Article.query.filter_by(slug=slug, needsReview=False).first()
     if not article:
         raise InvalidUsage.article_not_found()
     return article
