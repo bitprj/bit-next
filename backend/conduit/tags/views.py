@@ -9,7 +9,7 @@ from conduit.profile.models import UserProfile
 from conduit.user.models import User
 
 from .serializers import tag_schema, tag_mebership_schema
-from conduit.profile.serializers import profile_schemas
+from conduit.profile.serializers import profile_schema, profile_schemas
 
 
 blueprint = Blueprint('tags', __name__)
@@ -91,6 +91,7 @@ def claim_tag(slug):
 
 @blueprint.route('/api/tags/<slug>/moderator/<username>', methods=('POST',))
 @jwt_required
+@marshal_with(profile_schema)
 def invite_moderator(slug, username):
     tag = Tags.query.filter_by(slug=slug).first()
     profile = current_user.profile
@@ -100,19 +101,8 @@ def invite_moderator(slug, username):
     toBeAddedUser = User.query.filter_by(username=username).first()
     if not toBeAddedUser:
         raise InvalidUsage.user_not_found()
-    
     tag.addModerator(toBeAddedUser.profile)
     tag.save()
-    moderators = profile_schemas.dump(tag.moderators)
-    response = {
-        'moderators' : []
-    }
-    for moderator in moderators:
-        userInfo = {
-            'username': moderator['profile']['username'],
-            'image': moderator['profile']['image']
-        }
-        response['moderators'].append(userInfo)
-    return response
+    return toBeAddedUser
 
 
