@@ -32,6 +32,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       font-size: 0.8em;
       line-height: 1.2em;
       color: #000000;
+      word-wrap: break-word;
     }
 
 `

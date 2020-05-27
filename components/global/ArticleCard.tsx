@@ -48,14 +48,13 @@ const StatDiv = styled(Row)`
   justify-content : space-between;
   align-items: center; 
 `
-/* article state: draft, review, pubished, public, complete*/
-const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonClick, onRightButtonClick}) => (
+/* article state: draft, review, pubished, complete*/
+const ArticleCard = ({article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null}) => (
   <StyledCard>
     <Row gutter={16} style={{flexWrap:"nowrap"}} >
-
       {/* left sider: show avatar or tag */}
       <Col >
-        {article.articleState === 'public' && <Avatar src= {article.author.image} size = {40} />}
+        {!article.articleState && <Avatar src= {article.author.image} size = {40} />}
         {article.articleState === 'draft'  && <StyledTag>Draft</StyledTag>}
         {article.articleState === 'review' && <StyledTag>Review</StyledTag>}
       </Col>
@@ -66,14 +65,14 @@ const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonC
         <TagsDiv>
           <Space>{article.tagList.map((tag, i) =>(<span key={i}>{"#" + tag}</span>))}</Space>
         </TagsDiv>
-        {article.articleState === "public" && 
-          <AuthDiv><span>{article.author.name + "・" + article.createdAt}</span></AuthDiv>
+        {!article.articleState && 
+          <AuthDiv><span>{article.author.username + "・" + article.createdAt}</span></AuthDiv>
         }
 
         <StatDiv>
           {/* left bottom: show author avatar or icons */}
           <Col style={{marginTop:"1em"}}>
-           {showAuth && 
+           {article.articleState && article.articleState !== "draft" && 
               <User 
                 name = {article.author.name}
                 image = {article.author.image}
@@ -81,7 +80,7 @@ const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonC
                 emptySubtitle = {true}
               />
             }
-            {showStat &&
+            {!article.articleState &&
               <Space size={"large"}> 
                 <span>{ "❤️ " + article.favoritesCount}</span>
                 <span>{ "💬 " + article.commentsCount}</span>
@@ -92,7 +91,7 @@ const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonC
           {/* rigt bottom: show two buttons */}
           <Col>
             <Button 
-              disabled={article.articleState === 'public'}
+              disabled={!article.articleState}
               onClick = {onLeftButtonClick}  
               style={{
                 border: "none",
@@ -100,7 +99,7 @@ const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonC
               }}
             >
               {
-                article.articleState === 'public' ? article.readtime + ' min read' :
+                !article.articleState ? (article.readtime && article.readtime + ' min read' ):
                 article.articleState === 'published' ? 'Reject' : 'Delete'
               }
             </Button>
@@ -115,7 +114,7 @@ const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonC
               }}
             > 
               {
-                article.articleState === 'public' ? 'BookMark' : 
+                !article.articleState ? 'BookMark' : 
                 article.articleState === 'published' ? 'Published' : 'Edit'
               }
             </Button>
