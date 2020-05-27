@@ -16,6 +16,7 @@ class ArticleSchema(Schema):
     createdAt = fields.DateTime()
     body = fields.Str()
     updatedAt = fields.DateTime(dump_only=True)
+    needsReview = fields.Boolean()
     author = fields.Nested(ProfileSchema)
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
     tagList = fields.List(fields.Str())

@@ -49,7 +49,14 @@ def make_article(body, title, description, tagList=None):
             if not mtag:
                 mtag = Tags(tag)
                 mtag.save()
-            article.add_tag(mtag)
+            if mtag.modSetting == 3:
+                if current_user.isAdmin:
+                    article.add_tag(mtag)                    
+            elif mtag.modSetting == 2:
+                article.add_tag(mtag)
+                article.needsReview = True
+            else: # mtag.modSetting == 1:
+                article.add_tag(mtag)
     article.save()
     return article
 
