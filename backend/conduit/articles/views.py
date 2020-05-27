@@ -127,6 +127,19 @@ def articles_feed(limit=20, offset=0):
         order_by(Article.createdAt.desc()).offset(offset).limit(limit).all()
 
 
+@blueprint.route('/api/articles/<slug>/bookmark', methods=('POST',))
+@jwt_required
+@marshal_with(article_schema)
+def bookmark_an_article(slug):
+    profile = current_user.profile
+    article = Article.query.filter_by(slug=slug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    article.bookmark(profile)
+    article.save()
+    return article
+
+
 ######
 # Tags
 ######

@@ -18,6 +18,10 @@ tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
 
+bookmarker_assoc = db.Table("bookmarker_assoc",
+                     db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
+                     db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
+
 
 class Comment(Model, SurrogatePK):
     __tablename__ = 'comment'
@@ -52,6 +56,11 @@ class Article(SurrogatePK, Model):
         secondary=favoriter_assoc,
         backref='favorites',
         lazy='dynamic')
+    bookmarkers = relationship(
+        'UserProfile',
+        secondary=bookmarker_assoc,
+        backref='bookmarks',
+        lazy='dynamic')
 
     tagList = relationship(
         'Tags', secondary=tag_assoc, backref='articles')
@@ -76,6 +85,15 @@ class Article(SurrogatePK, Model):
 
     def is_favourite(self, profile):
         return bool(self.query.filter(favoriter_assoc.c.favoriter == profile.id).count())
+
+    def bookmark(self, profile):
+        if not self.is_bookmarked(profile):
+            self.bookmarkers.append(profile)
+            return True
+        return False
+
+    def is_bookmarked(self, profile):
+        return bool(self.query.filter(bookmarker_assoc.c.bookmarker == profile.id).count())
 
     def add_tag(self, tag):
         if tag not in self.tagList:

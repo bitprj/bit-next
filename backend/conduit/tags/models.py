@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import datetime as dt
-import sys
+
 
 from flask_jwt_extended import current_user
 from slugify import slugify
