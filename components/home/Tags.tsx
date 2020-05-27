@@ -9,16 +9,26 @@ import fetcher from "../../lib/utils/fetcher";
 import styled from 'styled-components';
 import ErrorMessage from "../common/ErrorMessage";
 import { List, Avatar } from 'antd';
+import Twemoji from 'react-twemoji';
 
 const StyledAvatar = styled(Avatar)`
-  margin-right: 0.5em;
   background: #FFFFFF;
   box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.15);
+
+  .twemoji {
+    width: 20px;
+    height: 20px;
+    margin-left: 6.1px;
+    margin-top: 5.2px;
+  }
 `
 
 const StyledList = styled(List)`
   .ant-list-item {
     border: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `
 
@@ -29,6 +39,11 @@ const StyledListItem = styled(List.Item)`
 
 const StyledSpan = styled.span`
   color: black;
+`
+
+const StyledTwemoji = styled(Twemoji)`
+  display: inline;
+  padding-right: 11px;
 `
 
 const Tags = () => {
@@ -51,10 +66,12 @@ const Tags = () => {
             href={`/?tag=${tag}`}
             as={`/?tag=${tag}`}
           >
-            <StyledSpan onClick={handleClick}>
-              <StyledAvatar>🤩</StyledAvatar>
-              {tag}
-            </StyledSpan>
+            <span>
+              <StyledTwemoji options={{ className: 'twemoji' }}>
+                <StyledAvatar icon="🤩" />
+              </StyledTwemoji>
+              <StyledSpan>{tag}</StyledSpan>
+            </span>
           </CustomLink>
         </StyledListItem>
       )}
