@@ -26,7 +26,7 @@ blueprint = Blueprint('articles', __name__)
              'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int()})
 @marshal_with(articles_schema)
 def get_articles(tag=None, author=None, favorited=None, limit=20, offset=0):
-    res = Article.query
+    res = Article.query.filter_by(needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.tagname == tag))
     if author:
@@ -79,7 +79,7 @@ def delete_article(slug):
 @jwt_optional
 @marshal_with(article_schema)
 def get_article(slug):
-    article = Article.query.filter_by(slug=slug, needsReview=False).first()
+    article = Article.query.filter_by(slug=slug).first()
     if not article:
         raise InvalidUsage.article_not_found()
     return article
