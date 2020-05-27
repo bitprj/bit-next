@@ -51,12 +51,12 @@ def get_organization(slug):
 
 
 # Update Organization
-@blueprint.route('/api/organizations/<slug>', methods=('PUT',))
+@blueprint.route('/api/organizations/<id>', methods=('PUT',))
 @jwt_required
 @use_kwargs(organization_schema)
 @marshal_with(organization_schema)
-def update_organization(slug, **kwargs):
-    organization = Organization.query.filter_by(slug=slug).first()
+def update_organization(id, **kwargs):
+    organization = Organization.query.filter_by(id=id).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
     organization.update(**kwargs)
@@ -64,13 +64,13 @@ def update_organization(slug, **kwargs):
     return organization
 
 
-# # Delete Organization
-# @blueprint.route('/api/organizations/<slug>', methods=('DELETE',))
-# @jwt_required
-# def delete_organization(slug):
-#     organization = Organization.query.filter_by(slug=slug).first()
-#     organization.delete()
-#     return '', 200
+# Delete Organization
+@blueprint.route('/api/organizations/<slug>', methods=('DELETE',))
+@jwt_required
+def delete_organization(slug):
+    organization = Organization.query.filter_by(slug=slug).first()
+    organization.delete()
+    return '', 200
 
 
 # # Add follower to organization
