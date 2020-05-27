@@ -36,6 +36,7 @@ def make_organization(name, description, slug, **kwargs):
     except IntegrityError:
         db.session.rollback()
         raise InvalidUsage.slug_already_exists()
+
     return organization
 
 
@@ -47,6 +48,7 @@ def get_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
+
     return organization
 
 
@@ -61,6 +63,7 @@ def update_organization(id, **kwargs):
         raise InvalidUsage.organization_not_found()
     organization.update(**kwargs)
     organization.save()
+
     return organization
 
 
@@ -70,6 +73,7 @@ def update_organization(id, **kwargs):
 def delete_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     organization.delete()
+
     return '', 200
 
 
@@ -84,6 +88,7 @@ def follow_an_organization(slug):
         raise InvalidUsage.organization_not_found()
     organization.add_member(profile)
     organization.save()
+
     return organization
 
 
@@ -98,6 +103,7 @@ def unfollow_an_organization(slug):
         raise InvalidUsage.organization_not_found()
     organization.remove_member(profile)
     organization.save()
+    
     return organization
 
 
