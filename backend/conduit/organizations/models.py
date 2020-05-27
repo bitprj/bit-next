@@ -51,27 +51,18 @@ class Organization(Model, SurrogatePK):
             return True
         return False
 
-    def is_moderator(self, profile):
-        return bool(self.moderators.filter(
-            moderator_assoc.c.organization == profile.id).count()
-            )
-
     # Method to add member to the organization
     def add_member(self, profile):
-        if not self.is_member(profile):
+        print(profile)
+        if profile not in self.members:
             self.members.append(profile)
             return True
         return False
         
     # Method to remove member from organization
     def remove_member(self, profile):
-        if self.is_member(profile):
+        if profile in self.members:
             self.members.remove(profile)
-            return True
-        
+            return True  
         return False
 
-    # Method to check if user is a member
-    def is_member(self, profile):
-        return bool(self.members.filter(
-            member_assoc.c.organization == profile.id).count())
