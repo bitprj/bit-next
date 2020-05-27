@@ -67,7 +67,8 @@ def unfollow_a_tag(slug):
 @blueprint.route('/api/tags/<slug>/members', methods=('GET',))
 @marshal_with(tag_mebership_schema)
 def get_members_from_tag(slug):
-    return Tags.query.filter_by(slug=slug).first()
+    tag = Tags.query.filter_by(slug=slug).first()
+    return tag
 
 @blueprint.route('/api/tags/<slug>/admin', methods=('POST',))
 @jwt_required
