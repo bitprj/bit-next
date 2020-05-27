@@ -53,14 +53,16 @@ def get_organization(slug):
 
 
 # Update Organization
-@blueprint.route('/api/organizations/<id>', methods=('PUT',))
+@blueprint.route('/api/organizations/<slug>', methods=('PUT',))
 @jwt_required
 @use_kwargs(organization_schema)
 @marshal_with(organization_schema)
-def update_organization(id, **kwargs):
-    organization = Organization.query.filter_by(id=id).first()
+def update_organization(slug, old_slug, **kwargs):
+    # print(old_slug)
+    organization = Organization.query.filter_by(slug=old_slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
+    organization.update_slug(slug)
     organization.update(**kwargs)
     organization.save()
 
@@ -103,7 +105,7 @@ def unfollow_an_organization(slug):
         raise InvalidUsage.organization_not_found()
     organization.remove_member(profile)
     organization.save()
-    
+
     return organization
 
 
@@ -117,3 +119,10 @@ def show_all_members_mods(slug):
         raise InvalidUsage.organization_not_found()
     
     return organization
+
+@blueprint.route('/api/organizations/<slug>/members', methods=('POST',))
+@jwt_required
+@marshal_with(organization_schema)
+def promote_member(slug):
+    organization = Organization.query.filter_by(slug=slug).first()
+    

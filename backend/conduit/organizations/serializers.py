@@ -7,14 +7,13 @@ from .models import Organization
 
 
 class OrganizationSchema(Schema):
-    id = fields.Integer()
     name = fields.Str()
     slug = fields.Str()
+    old_slug = fields.Str()
     description = fields.Str()
     createdAt = fields.DateTime()
     moderators = fields.Nested(ProfileSchema, many=True)
     members = fields.Nested(ProfileSchema, many=True)
-
 
     # for the envelope
     organization = fields.Nested('self', exclude=('organization',), 
@@ -22,13 +21,15 @@ class OrganizationSchema(Schema):
     
     @pre_load # unwraps data
     def make_organization(self, data, **kwargs):
+        print(data)
         return data['organization']
 
     @post_dump # wraps data
     def dump_organization(self, data, **kwargs):
+        # print(data)
         data['moderators'] = data['moderators']
         data['members'] = data['members']
-        data['id'] = data['id']
+        
         return {'organization': data }
 
     class Meta:
@@ -41,7 +42,8 @@ class OrganizationsSchema(OrganizationSchema):
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
-        data['id'] = data['id']
+
+
         return data
     
     @post_dump(pass_many=True)
