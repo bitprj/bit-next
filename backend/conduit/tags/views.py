@@ -8,7 +8,7 @@ from .models import Tags
 from conduit.profile.models import UserProfile
 from conduit.user.models import User
 
-from .serializers import tag_schema
+from .serializers import tag_schema, tag_mebership_schema
 from conduit.profile.serializers import profile_schemas
 
 
@@ -65,22 +65,9 @@ def unfollow_a_tag(slug):
     return tag
 
 @blueprint.route('/api/tags/<slug>/members', methods=('GET',))
+@marshal_with(tag_mebership_schema)
 def get_members_from_tag(slug):
-    followers = UserProfile.query.filter(UserProfile.followed_tags.any(slug=slug)).all()
-    moderators = UserProfile.query.filter(UserProfile.moderated_tags.any(slug=slug)).all()
-    followers = profile_schemas.dump(followers)
-    moderators = profile_schemas.dump(moderators)
-    res = {
-        'moderators': [],
-        'followers': []
-    }
-    for moderator in moderators:
-        moderator['profile'].pop("email", None)
-        res['moderators'].append(moderator['profile'])
-    for follower in followers:
-        follower['profile'].pop("email", None)
-        res['followers'].append(follower['profile'])
-    return res
+    return Tags.query.filter_by(slug=slug).first()
 
 @blueprint.route('/api/tags/<slug>/admin', methods=('POST',))
 @jwt_required
