@@ -53,42 +53,51 @@ class Organization(Model, SurrogatePK):
         db.Model.__init__(self, name=name, description=description, 
                           slug=slug or slugify(name), **kwargs)
 
-    # Method to allow current user to follow organization
-    def follow(self, profile):
-        if not self.is_following(profile):
-            self.followers.append(profile)
+
+    # Method to add moderator to organization
+    def add_moderator(self, user):
+        if user not in self.moderators:
+            self.moderators.append(user)
             return True
         return False
 
-    # Method to allow current user to unfollow
-    def unfollow(self, profile):
-        if self.is_following(profile):
-            self.followers.remove(profile)
-            return True
-        return False
-
-    # Method to check if user is already following organization
-    def is_following(self, profile):
-        return bool(self.query.filter(
-                    follower_assoc.c.follower == profile.id).count())
-
-
-    # Method to add member to the organization
-    def add_member(self, user):
-        if not self.is_member(user):
-            self.members.append(user)
-            return True
-        return False
+    # # Method to add member to the organization
+    # def add_member(self, user):
+    #     if not self.is_member(user):
+    #         self.members.append(user)
+    #         return True
+    #     return False
         
-    # Method to remove member from organization
-    def remove_member(self, user):
-        if self.is_member(user):
-            self.members.remove(user)
-            return True
-        return False
+    # # Method to remove member from organization
+    # def remove_member(self, user):
+    #     if self.is_member(user):
+    #         self.members.remove(user)
+    #         return True
+    #     return False
 
-    # Method to check if user is a member
-    def is_member(self, user):
-        return bool(self.members.filter(
-            member_assoc.c.organization == user.user.id).count())
+    # # Method to check if user is a member
+    # def is_member(self, user):
+    #     return bool(self.members.filter(
+    #         member_assoc.c.organization == user.user.id).count())
+
+
+    ########################################################
+    # # Method to allow current user to follow organization
+    # def follow(self, profile):
+    #     if not self.is_following(profile):
+    #         self.followers.append(profile)
+    #         return True
+    #     return False
+
+    # # Method to allow current user to unfollow
+    # def unfollow(self, profile):
+    #     if self.is_following(profile):
+    #         self.followers.remove(profile)
+    #         return True
+    #     return False
+
+    # # Method to check if user is already following organization
+    # def is_following(self, profile):
+    #     return bool(self.query.filter(
+    #                 follower_assoc.c.follower == profile.id).count())
     

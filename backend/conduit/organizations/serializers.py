@@ -6,21 +6,28 @@ from conduit.profile.serializers import ProfileSchema
 
 
 class OrganizationSchema(Schema):
+  
     name = fields.Str()
     slug = fields.Str()
     description = fields.Str()
-    createdAt = fields.DateTime(dump_only=True)
-    moderators = fields.Nested(ProfileSchema)
-    members = fields.Nested(ProfileSchema)
+    createdAt = fields.DateTime()
+    moderators = fields.Nested(ProfileSchema, many=True)
+    members = fields.Nested(ProfileSchema, many=True)
 
-    @pre_load
+    # for the envelope
+    organization = fields.Nested('self', exclude=('organization',), 
+                                default=True, load_only=True)
+    
+    @pre_load # unwraps data
     def make_organization(self, data, **kwargs):
         return data['organization']
-    
-    @post_dump
+
+    @post_dump # wraps data
     def dump_organization(self, data, **kwargs):
-        data['organization'] = data['organization']['profile']
-        return {'organization': data}
+        data['moderators'] = data['moderators']
+        data['members'] = data['members']
+
+        return {'organization': data }
 
     class Meta:
         strict = True
@@ -30,11 +37,12 @@ class OrganizationsSchema(OrganizationSchema):
     
     @post_dump
     def dump_organization(self, data, **kwargs):
-        data['organization'] = data['organization']['profile']
+        data['moderators'] = data['organization']['moderators']
+        data['members'] = data['organization']['members']
         return data
     
     @post_dump(pass_many=True)
-    def dump_organizations(self, many, **kwargs):
+    def dump_organizations(self, data, many, **kwargs):
         return {'organizations': data, 'organizationsCount': len(data)}
 
 

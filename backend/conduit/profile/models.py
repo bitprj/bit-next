@@ -23,7 +23,8 @@ class UserProfile(Model, SurrogatePK):
                            secondaryjoin=id == followers_assoc.c.followed_by,
                            backref='followed_by',
                            lazy='dynamic')
-  
+    
+    
     def __init__(self, user, **kwargs):
         db.Model.__init__(self, user=user, **kwargs)
 
