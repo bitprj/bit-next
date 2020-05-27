@@ -36,7 +36,7 @@ class Organization(Model, SurrogatePK):
 
     id = db.Column(db.Integer, primary_key=True)
     name = Column(db.String(100), nullable=False)
-    slug = Column(db.Text, nullable=False)
+    slug = Column(db.Text, nullable=False, unique=True)
     description = Column(db.Text, nullable=False)
     createdAt = Column(db.DateTime, default=dt.datetime.utcnow)
     moderators = relationship('UserProfile', secondary=moderator_assoc,
