@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields, pre_load, post_dump
 
-import sys
+
 
 class ProfileSchema(Schema):
     username = fields.Str()

@@ -11,7 +11,7 @@ from conduit.user.models import User
 from .serializers import tag_schema
 from conduit.profile.serializers import profile_schemas
 
-import sys
+
 blueprint = Blueprint('tags', __name__)
 
 
