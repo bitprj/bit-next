@@ -25,6 +25,10 @@ const StyledAvatar = styled(Avatar)`
 
 const StyledList = styled(List)`
   .ant-list-item {
+    padding: 0;
+  }
+  
+  .ant-list-item {
     border: none;
     white-space: nowrap;
     overflow: hidden;

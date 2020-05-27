@@ -10,8 +10,9 @@ const StyledCard = styled(Card)`
   font-style: normal;
   font-weight: 600;
   background: #FFFFFF;
-  border: 0.4em solid rgba(210, 210, 210, 0.2);
   border-radius: 0px 0px 0.5em 0.5em;
+  margin-top: 30px;
+  margin-bottom: 15px;
 `
 const StyledTag = styled.p`
   font-size: 1em;

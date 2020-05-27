@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 
-import ArticlePreview from "./ArticlePreview";
+// import ArticlePreview from "./ArticlePreview";
 import ErrorMessage from "../common/ErrorMessage";
 import LoadingSpinner from "../common/LoadingSpinner";
 import Maybe from "../common/Maybe";
@@ -15,6 +15,7 @@ import {
 import useViewport from "../../lib/hooks/useViewport";
 import { SERVER_BASE_URL, DEFAULT_LIMIT } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
+import ArticleCard from "../../components/global/ArticleCard";
 
 const ArticleList = () => {
   const page = usePageState();
@@ -82,7 +83,7 @@ const ArticleList = () => {
   return (
     <>
       {articles?.map((article) => (
-        <ArticlePreview key={article.slug} article={article} />
+        <ArticleCard key={article.slug} article={article} />
       ))}
 
       <Maybe test={articlesCount && articlesCount > 20}>
