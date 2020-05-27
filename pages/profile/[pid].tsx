@@ -37,7 +37,8 @@ const Profile = ({ initialProfile }) => {
 
   const { profile } = fetchedProfile || initialProfile;
   const { username, bio, image, following } = profile;
-  const [list,setList] = React.useState([])
+  const [list,setList] = React.useState(["Posts","Followers","Following"])
+  const [tab_select_list,setTabList] = React.useState(["Most Viewed","Most Liked","Most Recent"])
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
@@ -72,7 +73,14 @@ const Profile = ({ initialProfile }) => {
     console.log(followings)
   }
   const TabChange = (key) =>{
-    console.log(key)
+    if(key=="Posts"){
+      setTabList(["Most Viewed","Most Liked","Most Recent"])
+    }
+    else{
+      setTabList(["Old -> New","New -> Old"])
+    }
+  }
+  const TabView = (key)=>{
   }
 
   return (
@@ -91,7 +99,7 @@ const Profile = ({ initialProfile }) => {
       <Col span={16}>
         <Row gutter={[16, 40]}>
         <Col span={24}>
-          <Tab_list tabs={list} onClick={key=>TabChange(key)} position={"top"}/>
+          <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
         </Col>
         </Row>
       </Col>

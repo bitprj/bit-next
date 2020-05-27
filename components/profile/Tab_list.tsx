@@ -16,12 +16,10 @@ const Tab_list=(props)=>{
 	  return(
 	  	<>
 		<Tabs tabPosition={props.position} size={'large'} animated={false} onTabClick={key=>props.onClick(key)}>
-		     <TabPane tab="Posts" key="Posts">
-		     </TabPane>
-		     <TabPane tab="Followers" key="Followers">
-		     </TabPane>
-		     <TabPane tab="Following" key="Following">
-		     </TabPane>
+			{[...props.tabs].map(i=>(
+				<TabPane tab={i} key={i}>
+            	</TabPane>
+			))}
 		</Tabs>
 		</>
 	);
