@@ -18,7 +18,6 @@ class ProfileSchema(Schema):
 
     @post_dump
     def dump_user(self, data, **kwargs):
-        print('aaaaa', file=sys.stderr)
         return {'profile': data}
 
     class Meta:

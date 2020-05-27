@@ -14,7 +14,6 @@ from conduit.profile.serializers import profile_schemas
 import sys
 blueprint = Blueprint('tags', __name__)
 
-print('This is error output', file=sys.stderr)
 
 ##########
 # Tags
@@ -25,13 +24,10 @@ print('This is error output', file=sys.stderr)
 @use_kwargs(tag_schema)
 @marshal_with(tag_schema)
 def update_tag(slug, **kwargs):
-    print('aaaa', file=sys.stderr)
     tag = Tags.query.filter_by(slug=slug).first()
     if not tag:
         raise InvalidUsage.tag_not_found()
-    print('bbbb', file=sys.stderr)
     tag.update(**kwargs)
-    print('eeee', file=sys.stderr)
     tag.save()
     return tag
 

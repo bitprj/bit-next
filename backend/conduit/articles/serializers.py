@@ -24,9 +24,6 @@ class ArticleSchema(Schema):
 
     @pre_load
     def make_article(self, data, **kwargs):
-        print('make_article 2', file=sys.stderr)
-        print(data, file=sys.stderr)
-        print('make_article 3', file=sys.stderr)
         return data['article']
 
     @post_dump

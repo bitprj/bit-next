@@ -26,8 +26,6 @@ class TagsSchema(TagSchema):
 
     @post_dump
     def dump_Tag(self, data, **kwargs):
-        print('check tag', file = sys.stderr)
-        print(data, file = sys.stderr)
         return data
 
     @post_dump(pass_many=True)

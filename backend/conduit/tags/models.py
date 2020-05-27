@@ -38,7 +38,6 @@ class Tags(Model):
     #                         slug=slug or slugify(tagname), icon=icon, modSetting=modSetting)
 
     def __init__(self, tagname, description=None, slug=None, icon=None, modSetting=None, **kwargs):
-        print('ffffff', file=sys.stderr)
         db.Model.__init__(self, tagname=tagname, description=description, slug=slug or slugify(title),
                             icon=icon,  modSetting=modSetting, **kwargs)
 
