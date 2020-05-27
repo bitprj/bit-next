@@ -6,6 +6,7 @@ from conduit.exceptions import InvalidUsage
 
 from .models import Tags
 from conduit.profile.models import UserProfile
+from conduit.user.models import User
 
 from .serializers import tag_schema
 from conduit.profile.serializers import profile_schemas
@@ -85,13 +86,50 @@ def get_members_from_tag(slug):
         res['followers'].append(follower['profile'])
     return res
 
-@blueprint.route('/api/tags/<slug>/moderator', methods=('POST',))
+@blueprint.route('/api/tags/<slug>/admin', methods=('POST',))
 @jwt_required
-@marshal_with(tag_schema)
 def claim_tag(slug):
     if not current_user.isAdmin:
         raise InvalidUsage.not_admin()
     tag = Tags.query.filter_by(slug=slug).first()
-    tag.addModerator()
+    tag.addModerator(current_user.profile)
     tag.save()
-    return tag
+    moderators = profile_schemas.dump(tag.moderators)
+    response = {
+        'moderators' : []
+    }
+    for moderator in moderators:
+        userInfo = {
+            'username': moderator['profile']['username'],
+            'image': moderator['profile']['image']
+        }
+        response['moderators'].append(userInfo)
+    return response
+
+@blueprint.route('/api/tags/<slug>/moderator/<username>', methods=('POST',))
+@jwt_required
+def invite_moderator(slug, username):
+    tag = Tags.query.filter_by(slug=slug).first()
+    profile = current_user.profile
+    if not current_user.isAdmin and not tag.isModerator(profile):
+        raise InvalidUsage.not_admin_or_moderator()
+    
+    toBeAddedUser = User.query.filter_by(username=username).first()
+    if not toBeAddedUser:
+        raise InvalidUsage.user_not_found()
+    
+    tag.addModerator(toBeAddedUser.profile)
+    tag.save()
+    moderators = profile_schemas.dump(tag.moderators)
+    response = {
+        'moderators' : []
+    }
+    for moderator in moderators:
+        userInfo = {
+            'username': moderator['profile']['username'],
+            'image': moderator['profile']['image']
+        }
+        response['moderators'].append(userInfo)
+    return response
+
+
