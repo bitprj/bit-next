@@ -14,6 +14,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
     }
 
     .ant-list-item-meta-title {
+      max-width: 10em;
       font-family: Apercu Pro, sans-serif;
       font-style: normal;
       font-weight: 500;
@@ -21,6 +22,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       line-height: 1.3em;
       margin-bottom: 0.2em;
       color: #000000
+      word-wrap: break-word;
     }
 
     .ant-list-item-meta-description {

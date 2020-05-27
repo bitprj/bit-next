@@ -5,6 +5,7 @@ import {Row, Col, Card, Avatar, Button, Space} from 'antd';
 
 
 const StyledCard = styled(Card)`
+  flex:auto;
   font-family: Open Sans, sans-serif;
   font-style: normal;
   font-weight: 600;
@@ -48,42 +49,42 @@ const StatDiv = styled(Row)`
   align-items: center; 
 `
 /* article state: draft, review, pubished, public, complete*/
-const ArticleCard = props => (
+const ArticleCard = ({article, showAuth = false, showStat = false, onLeftButtonClick, onRightButtonClick}) => (
   <StyledCard>
     <Row gutter={16} style={{flexWrap:"nowrap"}} >
 
       {/* left sider: show avatar or tag */}
       <Col >
-        {props.article.articleState === 'public' && <Avatar src= {props.article.author.image} size = {40} />}
-        {props.article.articleState === 'draft'  && <StyledTag>Draft</StyledTag>}
-        {props.article.articleState === 'review' && <StyledTag>Review</StyledTag>}
+        {article.articleState === 'public' && <Avatar src= {article.author.image} size = {40} />}
+        {article.articleState === 'draft'  && <StyledTag>Draft</StyledTag>}
+        {article.articleState === 'review' && <StyledTag>Review</StyledTag>}
       </Col>
 
       <Col style={{flex : "auto"}}>
         {/* middle: show three information lines */}
-        <TitleDiv>{props.article.title}</TitleDiv>
+        <TitleDiv>{article.title}</TitleDiv>
         <TagsDiv>
-          <Space>{props.article.tagList.map((tag, i) =>(<span key={i}>{"#" + tag}</span>))}</Space>
+          <Space>{article.tagList.map((tag, i) =>(<span key={i}>{"#" + tag}</span>))}</Space>
         </TagsDiv>
-        {props.article.articleState === "public" && 
-          <AuthDiv><span>{props.article.author.name + "・" + props.article.createdAt}</span></AuthDiv>
+        {article.articleState === "public" && 
+          <AuthDiv><span>{article.author.name + "・" + article.createdAt}</span></AuthDiv>
         }
 
         <StatDiv>
           {/* left bottom: show author avatar or icons */}
           <Col style={{marginTop:"1em"}}>
-           {props.showAuth && 
+           {showAuth && 
               <User 
-                name = {props.article.author.name}
-                image = {props.article.author.image}
+                name = {article.author.name}
+                image = {article.author.image}
                 avatarSize = {"20"}
                 emptySubtitle = {true}
               />
             }
-            {props.showStat &&
+            {showStat &&
               <Space size={"large"}> 
-                <span>{ "❤️ " + props.article.favoritesCount}</span>
-                <span>{ "💬 " + props.article.commentsCount}</span>
+                <span>{ "❤️ " + article.favoritesCount}</span>
+                <span>{ "💬 " + article.commentsCount}</span>
               </Space>
             }
           </Col>
@@ -91,31 +92,31 @@ const ArticleCard = props => (
           {/* rigt bottom: show two buttons */}
           <Col>
             <Button 
-              disabled={props.article.articleState === 'public'}
-              onClick = {props.onLeftButtonClick}  
+              disabled={article.articleState === 'public'}
+              onClick = {onLeftButtonClick}  
               style={{
                 border: "none",
                 background: "inherit"
               }}
             >
               {
-                props.article.articleState === 'public' ? props.article.readtime + ' min read' :
-                props.article.articleState === 'published' ? 'Reject' : 'Delete'
+                article.articleState === 'public' ? article.readtime + ' min read' :
+                article.articleState === 'published' ? 'Reject' : 'Delete'
               }
             </Button>
             <Button 
               type={"primary"}
-              onClick = {props.onRightButtonClick}  
+              onClick = {onRightButtonClick}  
               style={{
                 fontWeight: 'bold',
                 borderRadius: "0.5em",
-                background: props.article.articleState === 'published' ? '#4EC700':'#007BED' ,
-                borderColor :  props.article.articleState === 'published' ? '#4EC700':'#007BED' ,
+                background: article.articleState === 'published' ? '#4EC700':'#007BED' ,
+                borderColor :  article.articleState === 'published' ? '#4EC700':'#007BED' ,
               }}
             > 
               {
-                props.article.articleState === 'public' ? 'BookMark' : 
-                props.article.articleState === 'published' ? 'Published' : 'Edit'
+                article.articleState === 'public' ? 'BookMark' : 
+                article.articleState === 'published' ? 'Published' : 'Edit'
               }
             </Button>
           </Col>
