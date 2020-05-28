@@ -1,14 +1,28 @@
 import Head from "next/head";
 import React from "react";
 
-import Banner from "../components/home/Banner";
 import MainView from "../components/home/MainView";
 import Tags from "../components/home/Tags";
 import styled from 'styled-components';
+import Twemoji from 'react-twemoji';
 
-const StyledTagBox = styled.div`
-  background: #E5E5E5;
+const StyledEmoji = styled(Twemoji)`
+  .emoji {
+    width: 20px;
+    height: 20px;
+  }
 `
+
+const StyledSpan = styled.span`
+  font-size: 15px;
+  font-weight: bold;
+  line-height: 20px;
+  color: #000000;
+`
+
+const StyledTagTitle = styled.div`
+  padding-bottom: 1.5em;
+` 
 
 const Home = () => (
   <>
@@ -20,16 +34,17 @@ const Home = () => (
       />
     </Head>
     <div className="home-page">
-      <Banner />
       <div className="container page">
         <div className="row">
-          <MainView />
           <div className="col-md-3">
-            <div className="sidebar">
-              <h6>Tags</h6>
-              <Tags />
-            </div>
+            <StyledTagTitle>
+              <Twemoji options={{ className: 'twemoji' }}>
+                <StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
+              </Twemoji>
+            </StyledTagTitle>
+            <Tags />
           </div>
+          <MainView />
         </div>
       </div>
     </div>
