@@ -15,18 +15,15 @@ class OrganizationSchema(Schema):
     moderators = fields.Nested(ProfileSchema, many=True)
     members = fields.Nested(ProfileSchema, many=True)
 
-    # for the envelope
     organization = fields.Nested('self', exclude=('organization',), 
                                 default=True, load_only=True)
     
-    @pre_load # unwraps data
+    @pre_load 
     def make_organization(self, data, **kwargs):
-        print(data)
         return data['organization']
 
-    @post_dump # wraps data
+    @post_dump
     def dump_organization(self, data, **kwargs):
-        # print(data)
         data['moderators'] = data['moderators']
         data['members'] = data['members']
         
@@ -42,7 +39,6 @@ class OrganizationsSchema(OrganizationSchema):
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
-
 
         return data
     

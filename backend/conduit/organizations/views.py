@@ -22,7 +22,7 @@ blueprint = Blueprint('organizations', __name__)
 # Organizations
 ###############
 
-# Create Organization
+
 @blueprint.route('/api/organizations', methods=('POST',))
 @jwt_required
 @use_kwargs(organization_schema)
@@ -40,7 +40,6 @@ def make_organization(name, description, slug, **kwargs):
     return organization
 
 
-# Get Organization Data
 @blueprint.route('/api/organizations/<slug>', methods=('GET',))
 @jwt_optional
 @marshal_with(organization_schema)
@@ -52,13 +51,11 @@ def get_organization(slug):
     return organization
 
 
-# Update Organization
 @blueprint.route('/api/organizations/<slug>', methods=('PUT',))
 @jwt_required
 @use_kwargs(organization_schema)
 @marshal_with(organization_schema)
 def update_organization(slug, old_slug, **kwargs):
-    # print(old_slug)
     organization = Organization.query.filter_by(slug=old_slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
@@ -69,7 +66,6 @@ def update_organization(slug, old_slug, **kwargs):
     return organization
 
 
-# Delete Organization
 @blueprint.route('/api/organizations/<slug>', methods=('DELETE',))
 @jwt_required
 def delete_organization(slug):
@@ -79,7 +75,6 @@ def delete_organization(slug):
     return '', 200
 
 
-# Add member to organization
 @blueprint.route('/api/organizations/<slug>/follow', methods=('POST',))
 @jwt_required
 @marshal_with(organization_schema)
@@ -94,7 +89,6 @@ def follow_an_organization(slug):
     return organization
 
 
-# Remove member from organization
 @blueprint.route('/api/organizations/<slug>/follow', methods=('DELETE',))
 @jwt_required
 @marshal_with(organization_schema)
@@ -109,7 +103,6 @@ def unfollow_an_organization(slug):
     return organization
 
 
-# Get all Members & Mods
 @blueprint.route('/api/organizations/<slug>/members', methods=('GET',))
 @jwt_required
 @marshal_with(organization_schema)
@@ -119,6 +112,7 @@ def show_all_members_mods(slug):
         raise InvalidUsage.organization_not_found()
     
     return organization
+
 
 @blueprint.route('/api/organizations/<slug>/members', methods=('POST',))
 @jwt_required

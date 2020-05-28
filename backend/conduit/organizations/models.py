@@ -6,7 +6,6 @@ from slugify import slugify
 from conduit.database import (Model, SurrogatePK, db, Column,
                               reference_col, relationship)
 from conduit.profile.models import UserProfile
-# from conduit.user.models import User
 
 
 moderator_assoc = db.Table("moderator_assoc",
@@ -39,19 +38,16 @@ class Organization(Model, SurrogatePK):
                            lazy='dynamic')
 
 
-    # Constructor to take in name, slug & description
     def __init__(self, name, description, slug, **kwargs):
         db.Model.__init__(self, name=name, description=description, 
                           slug=slugify(slug), **kwargs)
 
-    # Method to add moderator to organization
     def add_moderator(self, profile):
         if profile not in self.moderators:
             self.moderators.append(profile)
             return True
         return False
 
-    # Method to add member to the organization
     def add_member(self, profile):
         print(profile)
         if profile not in self.members:
@@ -59,7 +55,6 @@ class Organization(Model, SurrogatePK):
             return True
         return False
         
-    # Method to remove member from organization
     def remove_member(self, profile):
         if profile in self.members:
             self.members.remove(profile)
