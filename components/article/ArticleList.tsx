@@ -37,7 +37,7 @@ const ArticleList = () => {
     case !!tag:
       fetchURL = `${SERVER_BASE_URL}/articles${asPath}&offset=${
         page * DEFAULT_LIMIT
-      }`;
+        }`;
       break;
     case isProfilePage && !!favorite:
       fetchURL = `${SERVER_BASE_URL}/articles?favorited=${encodeURIComponent(
@@ -52,7 +52,7 @@ const ArticleList = () => {
     case !isProfilePage && !!follow:
       fetchURL = `${SERVER_BASE_URL}/articles/feed?offset=${
         page * DEFAULT_LIMIT
-      }`;
+        }`;
       break;
     default:
       break;

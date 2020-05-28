@@ -13,7 +13,6 @@ import Twemoji from 'react-twemoji';
 
 const StyledAvatar = styled(Avatar)`
   background: #FFFFFF;
-  box-shadow: 0px 4px 25px rgba(0, 0, 0, 0.15);
 
   .twemoji {
     width: 20px;
