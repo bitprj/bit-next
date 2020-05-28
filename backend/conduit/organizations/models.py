@@ -22,13 +22,6 @@ member_assoc = db.Table("member_assoc",
                         db.ForeignKey('organization.id'))
                     )   
 
-follower_assoc = db.Table("follower_assoc",
-                    db.Column("follower", db.Integer, 
-                        db.ForeignKey('userprofile.id')),
-                    db.Column("organization", db.Integer,
-                        db.ForeignKey('organization.id'))
-                    )
-
 
 class Organization(Model, SurrogatePK):
     __tablename__ = 'organization'
@@ -43,9 +36,6 @@ class Organization(Model, SurrogatePK):
     members = relationship('UserProfile', secondary=member_assoc, 
                            backref=db.backref('mem_organization'),
                            lazy='dynamic')
-    followers = relationship('UserProfile', secondary=follower_assoc,
-                            backref=db.backref('org_follower'),
-                            lazy='dynamic')
 
 
     def __init__(self, name, description, slug, **kwargs):
@@ -75,5 +65,3 @@ class Organization(Model, SurrogatePK):
             self.slug = slug
             return True
         return False
-
-    

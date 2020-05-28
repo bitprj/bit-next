@@ -56,7 +56,6 @@ def get_organization(slug):
 @use_kwargs(organization_schema)
 @marshal_with(organization_schema)
 def update_organization(slug, old_slug, **kwargs):
-    # print(old_slug)
     organization = Organization.query.filter_by(slug=old_slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
