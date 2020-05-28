@@ -25,7 +25,7 @@ class OrganizationSchema(Schema):
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
-        data['id'] = data['id']
+
         return {'organization': data }
 
     class Meta:
@@ -38,7 +38,7 @@ class OrganizationsSchema(OrganizationSchema):
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
-        data['id'] = data['id']
+     
         return data
     
     @post_dump(pass_many=True)
