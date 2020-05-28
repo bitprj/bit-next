@@ -38,7 +38,7 @@ const Header = props =>(
         <Space align={"start"}>            
           <User 
               name = {props.user.name}
-              img = {props.user.img}
+              image = {props.user.image}
               username = {props.user.username}
               following = {props.user.following}
               onClick = {props.user.onClick}
