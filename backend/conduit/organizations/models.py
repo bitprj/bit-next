@@ -49,7 +49,6 @@ class Organization(Model, SurrogatePK):
         return False
 
     def add_member(self, profile):
-        print(profile)
         if profile not in self.members:
             self.members.append(profile)
             return True
@@ -66,3 +65,22 @@ class Organization(Model, SurrogatePK):
             self.slug = slug
             return True
         return False
+
+    def is_member(self, profile):
+        if profile in self.members:
+            return True
+        return False
+
+    def moderator(self, profile):
+        if profile in self.moderators:
+            return True
+        return False
+
+    def promote(self, user_profile):
+        if user in self.members:
+            self.members.remove(user_profile)
+            self.moderators.append(user_profile)
+            return True
+        return False
+
+        

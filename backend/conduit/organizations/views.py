@@ -78,7 +78,7 @@ def delete_organization(slug):
 @blueprint.route('/api/organizations/<slug>/follow', methods=('POST',))
 @jwt_required
 @marshal_with(organization_schema)
-def follow_an_organization(slug):
+def follow_organization(slug):
     profile = current_user.profile
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
@@ -92,7 +92,7 @@ def follow_an_organization(slug):
 @blueprint.route('/api/organizations/<slug>/follow', methods=('DELETE',))
 @jwt_required
 @marshal_with(organization_schema)
-def unfollow_an_organization(slug):
+def unfollow_organization(slug):
     profile = current_user.profile
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
@@ -117,6 +117,26 @@ def show_all_members_mods(slug):
 @blueprint.route('/api/organizations/<slug>/members', methods=('POST',))
 @jwt_required
 @marshal_with(organization_schema)
-def promote_member(slug):
+def promote_member(slug, username):
+    profile = current_user.profile
     organization = Organization.query.filter_by(slug=slug).first()
-    
+    user = User.query.filter_by(username=username).first()
+    if organization.moderator(profile):
+        organization.promote(user.profile)
+    organization.save()
+
+    return user.profile
+
+
+@blueprint.route('/api/organizations/<slug>/members', methods=('DEL',))
+@jwt_required
+@marshal_with(organization_schema)
+def remove_member(slug, username):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    user = User.query.filter_by(username=username).first()
+    if organization.moderator(profile):
+        organization.remove_member(user.profile)
+    organization.save()
+
+    return user.profile
