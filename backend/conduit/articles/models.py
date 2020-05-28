@@ -20,28 +20,17 @@ tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 275514b0251b99021422dfdb7fa1e7c82957542a
 org_assoc = db.Table("org_assoc",
                     db.Column("organization", db.Integer, 
                         db.ForeignKey("organization.id")),
                     db.Column("article", db.Integer, 
                         db.ForeignKey("article.id"))
                     )
-<<<<<<< HEAD
-                    
-bookmarker_assoc = db.Table("bookmarker_assoc",
-                     db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
-                     db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
-=======
 
 bookmarker_assoc = db.Table("bookmarker_assoc",
                      db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
                      db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
 
->>>>>>> 275514b0251b99021422dfdb7fa1e7c82957542a
 
 
 class Comment(Model, SurrogatePK):
