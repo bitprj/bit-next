@@ -9,6 +9,7 @@ from .models import Organization
 class OrganizationSchema(Schema):
     name = fields.Str()
     slug = fields.Str()
+    old_slug = fields.Str()
     description = fields.Str()
     createdAt = fields.DateTime()
     moderators = fields.Nested(ProfileSchema, many=True)
