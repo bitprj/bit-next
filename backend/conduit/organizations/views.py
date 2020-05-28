@@ -51,14 +51,15 @@ def get_organization(slug):
     return organization
 
 
-@blueprint.route('/api/organizations/<id>', methods=('PUT',))
+@blueprint.route('/api/organizations/<slug>', methods=('PUT',))
 @jwt_required
 @use_kwargs(organization_schema)
 @marshal_with(organization_schema)
-def update_organization(id, **kwargs):
-    organization = Organization.query.filter_by(id=id).first()
+def update_organization(slug, old_slug, **kwargs):
+    organization = Organization.query.filter_by(slug=old_slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
+    organization.update_slug(slug)
     organization.update(**kwargs)
     organization.save()
 
