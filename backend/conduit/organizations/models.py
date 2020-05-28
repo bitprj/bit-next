@@ -101,4 +101,12 @@ class Organization(Model, SurrogatePK):
     # def is_following(self, profile):
     #     return bool(self.query.filter(
     #                 follower_assoc.c.follower == profile.id).count())
+
+    # Method to update slug
+    def update_slug(self, slug):
+    if slug != self.slug:
+        self.slug = slug
+        return True
+    return False
+
     

@@ -36,6 +36,7 @@ def make_organization(name, description, slug, **kwargs):
     except IntegrityError:
         db.session.rollback()
         raise InvalidUsage.slug_already_exists()
+
     return organization
 
 
@@ -47,20 +48,24 @@ def get_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
+
     return organization
 
 
 # Update Organization
-@blueprint.route('/api/organizations/<id>', methods=('PUT',))
+@blueprint.route('/api/organizations/<slug>', methods=('PUT',))
 @jwt_required
 @use_kwargs(organization_schema)
 @marshal_with(organization_schema)
-def update_organization(id, **kwargs):
-    organization = Organization.query.filter_by(id=id).first()
+def update_organization(slug, old_slug, **kwargs):
+    # print(old_slug)
+    organization = Organization.query.filter_by(slug=old_slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
+    organization.update_slug(slug)
     organization.update(**kwargs)
     organization.save()
+
     return organization
 
 
@@ -70,6 +75,7 @@ def update_organization(id, **kwargs):
 def delete_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     organization.delete()
+    
     return '', 200
 
 
