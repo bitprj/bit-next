@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 
-// import ArticlePreview from "./ArticlePreview";
 import ErrorMessage from "../common/ErrorMessage";
 import LoadingSpinner from "../common/LoadingSpinner";
 import Maybe from "../common/Maybe";

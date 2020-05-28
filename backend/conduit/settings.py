@@ -25,6 +25,7 @@ class Config(object):
         'http://localhost:4200',
         'http://0.0.0.0:4000',
         'http://localhost:4000',
+        'http://localhost:3000',
     ]
     JWT_HEADER_TYPE = 'Token'
 

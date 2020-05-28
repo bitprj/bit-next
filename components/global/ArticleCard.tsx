@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components'
+import Twemoji from 'react-twemoji';
 import User from '../global/User'
 import { Row, Col, Card, Avatar, Button, Space } from 'antd';
 import CustomLink from "../common/CustomLink";
@@ -51,6 +52,14 @@ const StatDiv = styled(Row)`
   align-items: center; 
 `
 
+const StyledEmoji = styled.span`
+  padding-right: 15px;
+
+  img {
+      width: 20px;
+    }
+`
+
 /* article state: draft, review, pubished, complete*/
 const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => (
   <StyledCard>
@@ -92,8 +101,10 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
             }
             {!article.articleState &&
               <Space size={"large"}>
-                <span>{"❤️ " + article.favoritesCount}</span>
-                <span>{"💬 " + article.commentsCount}</span>
+                <Twemoji options={{ className: 'twemoji' }}>
+                  <StyledEmoji>{"❤️ " + article.favoritesCount}</StyledEmoji>
+                  <StyledEmoji>{"💬 " + article.commentsCount}</StyledEmoji>
+                </Twemoji>
               </Space>
             }
           </Col>
