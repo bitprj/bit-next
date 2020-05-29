@@ -26,10 +26,11 @@ org_assoc = db.Table("org_assoc",
                     db.Column("article", db.Integer, 
                         db.ForeignKey("article.id"))
                     )
-                    
+
 bookmarker_assoc = db.Table("bookmarker_assoc",
                      db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
                      db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
+
 
 
 class Comment(Model, SurrogatePK):
