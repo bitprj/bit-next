@@ -20,5 +20,5 @@ def isAdmin(fn):
         else:
             return {
                 "message": "User is not an admin"
-            }, 404
+            }, 403
     return wrapper
