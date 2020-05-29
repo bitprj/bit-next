@@ -15,6 +15,9 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import Header from "../../components/global/Header"
+import {Row} from "antd"
+
+
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -47,7 +50,7 @@ const Profile = ({ initialProfile }) => {
       true
     );
     UserAPI.follow(pid, email);
-    // trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
+    trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   const handleUnfollow = async () => {
@@ -57,7 +60,7 @@ const Profile = ({ initialProfile }) => {
       true
     );
     UserAPI.unfollow(pid);
-    // trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
+    trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   return (
@@ -65,7 +68,7 @@ const Profile = ({ initialProfile }) => {
       <div className="user-info">
         <div className="container">
           <div className="row">
-            <div className="col-xs-12 col-md-10 offset-md-1">
+            <div className="col-xs-12 col-md-10 ">
               <Header 
                 user = {profile}
                 follow={handleFollow}

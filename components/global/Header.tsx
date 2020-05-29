@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import User from './User';
-import {Button, Space} from 'antd';
+import {Button, Space, Row, Col} from 'antd';
 
 const StyledInfoName = styled.p`
   font-size: 1em;
@@ -44,9 +44,9 @@ const Header = ({user, follow, unfollow}) =>{
   };
 
   return (
-    <Space size = {"large"} align={"start"} >
-      <div>
-        <Space align={"start"}>            
+    <Row>
+      <Col span = {14}>
+        <Row>           
           <User 
               name = {user.username}
               image = {user.image}
@@ -69,15 +69,15 @@ const Header = ({user, follow, unfollow}) =>{
               }}>
               {user.following ? 'Following' : '+ Follow'}
           </Button>
-        </Space>
+        </Row>  
         <p style={{marginLeft:"7em"}}>{user.bio}</p>
-      </div>
-      <div>
+      </Col>
+      <Col span = {10}>
         {<DetailInfo infoName = {'Location'} infoData={user.location}/>}
         {<DetailInfo infoName = {'Joined'} infoData={user.joined}/>}
         {<DetailInfo infoName = {'Occupation'} infoData={user.occupation}/>}
-      </div>
-    </Space>
+      </Col>
+    </Row>
   )
 }
 export default Header
