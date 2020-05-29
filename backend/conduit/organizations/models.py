@@ -82,9 +82,3 @@ class Organization(Model, SurrogatePK):
             self.moderators.append(user_profile)
             return True
         return False
-
-    def delete_member(self, user_profile):
-        if user_profile in self.members:
-            self.members.remove(user_profile)
-            return True
-        return False
