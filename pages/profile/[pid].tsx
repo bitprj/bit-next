@@ -16,7 +16,9 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import User from "../../components/global/User";
+import FollowerList from "../../components/global/FollowerList";
 import Tab_list from "../../components/profile/Tab_list";
+import AccountSettings from "../../components/profile/AccountSettings";
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -38,8 +40,15 @@ const Profile = ({ initialProfile }) => {
   const { profile } = fetchedProfile || initialProfile;
   const { username, bio, image, following } = profile;
   const [Following_Button,setFollowing] = React.useState(following)
-  const [list,setList] = React.useState(["Posts","Followers","Following"])
+  const [list,setList] = React.useState(["Posts","Followers","Following","Account Settings"])
   const [tab_select_list,setTabList] = React.useState(["Most Viewed","Most Liked","Most Recent"])
+  const [isPosts,setPostsPage]= React.useState(true)
+  const [isFollowers,setFollowersPage] = React.useState(false)
+  const [isFollowings,setFollowingsPage] = React.useState(false)
+  const [isTag,setTagPage] = React.useState(false)
+  const [isSettings,setSettingsPage] = React.useState(false)
+  const [followersList,setFollowersList] = React.useState(null)
+  const [followingsList,setFollowingsList] = React.useState(null)
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
@@ -48,26 +57,25 @@ const Profile = ({ initialProfile }) => {
 
   const handleFollow = async () => {
     if(profile.following==false){
-      profile.following=true
       setFollowing(true)
+      mutate(
+        `${SERVER_BASE_URL}/profiles/${pid}`,
+        { profile: { ...profile, following: true } },
+        false
+      );
+      UserAPI.follow(pid);
+      trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
     }
     else{
-      profile.following=false
       setFollowing(false)
+      handleUnfollow()
     }
-    // mutate(
-    //   `${SERVER_BASE_URL}/profiles/${pid}`,
-    //   { profile: { ...profile, following: true } },
-    //   false
-    // );
-    // UserAPI.follow(pid);
-    // trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   const handleUnfollow = async () => {
     mutate(
       `${SERVER_BASE_URL}/profiles/${pid}`,
-      { profile: { ...profile, following: true } },
+      { profile: { ...profile, following: false } },
       true
     );
     UserAPI.unfollow(pid);
@@ -75,19 +83,55 @@ const Profile = ({ initialProfile }) => {
   };
 
   const Followers = () => {
-    const followers = UserAPI.followers(`${pid}`)
-    console.log(followers)
+    const response = UserAPI.followers(pid)
+    setFollowersList(response)
   }
   const Followings=()=>{
-    const followings = UserAPI.following(`${pid}`)
-    console.log(followings)
+    const response = UserAPI.followings(pid)
+    setFollowingsList(response)
   }
   const TabChange = (key) =>{
     if(key=="Posts"){
       setTabList(["Most Viewed","Most Liked","Most Recent"])
+      setPostsPage(true)
+      setFollowersPage(false)
+      setFollowingsPage(false)
+      setTagPage(false)
+      setSettingsPage(false)
+    }
+    else if(key=="Followers"){
+      setTabList(["Old -> New","New -> Old"])
+      setPostsPage(false)
+      setFollowersPage(true)
+      setFollowingsPage(false)
+      setTagPage(false)
+      setSettingsPage(false)
+      Followers()
+    }
+    else if(key=="Following"){
+      setTabList(["Old -> New","New -> Old"])
+      setPostsPage(false)
+      setFollowersPage(false)
+      setFollowingsPage(true)
+      setTagPage(false)
+      setSettingsPage(false)
+      Followings()
+    }
+    else if(key=="Account Settings"){
+      setTabList(["Settings","Organization","API Keys"])
+      setPostsPage(false)
+      setFollowersPage(false)
+      setFollowingsPage(false)
+      setTagPage(false)
+      setSettingsPage(true)
     }
     else{
-      setTabList(["Old -> New","New -> Old"])
+      setTabList(["Most Viewed","Most Liked","Most Recent"])
+      setPostsPage(false)
+      setFollowersPage(false)
+      setFollowingsPage(false)
+      setTagPage(true)
+      setSettingsPage(false)
     }
   }
   const TabView = (key)=>{
@@ -139,17 +183,22 @@ const Profile = ({ initialProfile }) => {
           </Col>
         </Row>
         </Col>
-        <Col span={16}>
+        <Col span={12}>
           <Row gutter={[16, 40]}>
           <Col span={24}>
             <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
           </Col>
-          <Col span={16}>
-            <ArticleList/>
+          <Col span={24} style={{paddingTop:"0"}}>
+            {isPosts?<ArticleList/>:null}
+            {isFollowers?<FollowerList followers={followersList}/>:null}
+            {isFollowings?<FollowerList followers={followingsList}/>:null}
+            {isTag?<ArticleList/>:null}
+            {isSettings?<AccountSettings/>:null}
           </Col>
           </Row>
         </Col>
-        <Col span={2}>
+        <Col span={3}>
+          {isSettings?<p style={{opacity:"0.7",marginTop:"16px",fontSize:"18px"}}>Live Website</p>:null}
         </Col>
       </Row>
     );
