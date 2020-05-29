@@ -35,29 +35,29 @@ const StyledListItemMeta = styled(List.Item.Meta)`
     }
 `
 
-const User = (props) => (
-    <StyledListItemMeta
-        avatar={<Avatar src={props.image} size={props.avatarSize || 50} />}
-        title={props.name}
-        description={props.username ||
-            (props.hasButton &&
-                <Button
-                    type={'primary'}
-                    size={'small'}
-                    onClick={props.onClick}
-                    style={{
-                        background: props.following ? '#4EC700' : '#007BED',
-                        borderColor: props.following ? '#4EC700' : '#007BED',
-                        borderRadius: '0.5em',
-                        padding: '0em 1em',
-                        fontSize: '0.9em',
-                        fontWeight: 'bold',
-                    }}>
-                    {props.following ? 'Following' : '+ Follow'}
-                </Button>
-            )
-        }
-    />
+const User = (props) =>(
+  <StyledListItemMeta
+    avatar={ <Avatar src= {props.image} size = { props.avatarSize || 50}/>}
+    title={props.name}
+    description={props.username ||
+      (props.hasButton &&
+        <Button 
+          type ={'primary'} 
+          size={'small'}
+          onClick = {props.onClick}
+          style={{ 
+            background: props.following ? '#4EC700':'#007BED' ,
+            borderColor :  props.following ? '#4EC700':'#007BED' ,
+            borderRadius: '0.5em',
+            padding:'0em 1em',
+            fontSize: '0.9em',
+            fontWeight: 'bold',
+          }}>
+            {props.following ? 'Following' : '+ Follow'}
+        </Button>
+      ) 
+    }
+  />
 )
 
 export default User

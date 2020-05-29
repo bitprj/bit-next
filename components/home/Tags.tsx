@@ -58,6 +58,7 @@ const Tags = () => {
   if (!data) return <LoadingSpinner />;
 
   const { tags } = data;
+
   return (
     <StyledList
       itemLayout="horizontal"

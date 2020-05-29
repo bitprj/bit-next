@@ -1,7 +1,7 @@
 import React from 'react';
 import User from './User'
 import styled from 'styled-components'
-import { List, Skeleton } from 'antd';
+import {List, Skeleton} from 'antd';
 
 const StyledHeader = styled.div`
   font-family: Open Sans, sans-serif;
@@ -13,27 +13,27 @@ const StyledHeader = styled.div`
   margin-bottom: 1em;
 `
 const UserList = (props) => (
-    <>
-        <StyledHeader>{props.header}</StyledHeader>
-        <List
-            className="user-list"
-            itemLayout="horizontal"
-            dataSource={props.users}
-            renderItem={user => (
-                <List.Item style={{ border: 'none' }}>
-                    <Skeleton avatar title={false} loading={props.loading} active>
-                        <User
-                            name={user['name']}
-                            image={user['image']}
-                            userName={user['username']}
-                            following={user['following']}
-                            onClick={props['onClick']}
-                        />
-                    </Skeleton>
-                </List.Item>
-            )}
-        />
-    </>
+  <>
+    <StyledHeader>{props.header}</StyledHeader>
+    <List
+      className="user-list"
+      itemLayout="horizontal"
+      dataSource={props.users}
+      renderItem={ user => (
+        <List.Item style={{border: 'none'}}>
+          <Skeleton avatar title={false} loading={props.loading} active>
+            <User 
+              name = {user['name']}
+              image = {user['image']}
+              userName = {user['username']}
+              following = {user['following']}
+              onClick = {props['onClick']}
+            />
+          </Skeleton>
+        </List.Item>
+      )}
+    />
+  </>
 )
 
 export default UserList
