@@ -2,7 +2,7 @@ from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
 from flask_jwt_extended import current_user, jwt_required
 
-from conduit.utils import isAdmin
+from conduit.decorators import isAdmin
 from .models import Tags
 from .serializers import tag_schema, tag_mebership_schema
 from conduit.exceptions import InvalidUsage
