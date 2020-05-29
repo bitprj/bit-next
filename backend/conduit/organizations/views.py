@@ -98,7 +98,7 @@ def unfollow_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
-    organization.delete_member(profile)
+    organization.remove_member(profile)
     organization.save()
 
     return organization
@@ -139,7 +139,7 @@ def remove_member(slug, username, **kwargs):
     organization = Organization.query.filter_by(slug=slug).first()
     user = User.query.filter_by(username=username).first()
     if organization.moderator(profile):
-        organization.delete_member(user.profile)
+        organization.remove_member(user.profile)
     organization.save()
 
     return '', 200
