@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import User from './User';
-import { Button, Space } from 'antd';
+import { Button, Row, Col } from 'antd';
 
 const StyledInfoName = styled.p`
   font-size: 1em;
