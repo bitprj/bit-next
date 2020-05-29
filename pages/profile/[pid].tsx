@@ -14,6 +14,7 @@ import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
+import Header from "../../components/global/Header"
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -33,7 +34,7 @@ const Profile = ({ initialProfile }) => {
   if (profileError) return <ErrorMessage message="Can't load profile" />;
 
   const { profile } = fetchedProfile || initialProfile;
-  const { username, bio, image, following } = profile;
+  const { username, bio, image, following, location, joined, occupation } = profile;
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
@@ -65,7 +66,8 @@ const Profile = ({ initialProfile }) => {
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <CustomImage
+              <Header user = {profile}/>
+              {/* <CustomImage
                 src={image}
                 alt="User's profile image"
                 className="user-img"
@@ -81,13 +83,13 @@ const Profile = ({ initialProfile }) => {
                   follow={handleFollow}
                   unfollow={handleUnfollow}
                 />
-              </Maybe>
+              </Maybe> */}
             </div>
           </div>
         </div>
       </div>
 
-      <div className="container">
+      {/* <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-10 offset-md-1">
             <div className="articles-toggle">
@@ -96,7 +98,7 @@ const Profile = ({ initialProfile }) => {
             <ArticleList />
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

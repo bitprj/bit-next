@@ -32,40 +32,40 @@ const DetailInfo = ({infoName, infoData}) => (
   </SyledDetailContainer>
 )
 
-const Header = props =>(
+const Header = ({user}) =>(
     <Space size = {"large"} align={"start"} >
       <div>
         <Space align={"start"}>            
           <User 
-              name = {props.user.name}
-              image = {props.user.image}
-              username = {props.user.username}
-              following = {props.user.following}
-              onClick = {props.user.onClick}
+              name = {user.username}
+              image = {user.image}
+              username = {user.username}
+              following = {user.following}
+              onClick = {user.onClick}
               avatarSize = {80}
             /> 
           <Button 
               type ={'primary'} 
               size={'small'}
-              onClick = {props.user.onClick}
+              onClick = {user.onClick}
               style={{ 
-                background: props.user.following ? '#4EC700':'#007BED' ,
-                borderColor :  props.user.following ? '#4EC700':'#007BED' ,
+                background: user.following ? '#4EC700':'#007BED' ,
+                borderColor :  user.following ? '#4EC700':'#007BED' ,
                 borderRadius: '0.5em',
                 padding:'0em 1em',
                 margin:'1.6em',
                 fontSize: '0.9em',
                 fontWeight: 'bold',
               }}>
-              {props.user.following ? 'Following' : '+ Follow'}
+              {user.following ? 'Following' : '+ Follow'}
           </Button>
         </Space>
-        <p style={{marginLeft:"7em"}}>{props.user.bio}</p>
+        <p style={{marginLeft:"7em"}}>{user.bio}</p>
       </div>
       <div>
-        {props.user.location && <DetailInfo infoName = {'Location'} infoData={props.user.location}/>}
-        {props.user.joined  && <DetailInfo infoName = {'Joined'} infoData={props.user.joined}/>}
-        {props.user.occupation && <DetailInfo infoName = {'Occupation'} infoData={props.user.occupation}/>}
+        {user.location && <DetailInfo infoName = {'Location'} infoData={user.location}/>}
+        {user.joined  && <DetailInfo infoName = {'Joined'} infoData={user.joined}/>}
+        {user.occupation && <DetailInfo infoName = {'Occupation'} infoData={user.occupation}/>}
       </div>
     </Space>
 )
