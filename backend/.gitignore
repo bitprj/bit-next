@@ -56,3 +56,6 @@ dev.db
 
 # Vagrant machines
 .vagrant/**
+
+# Migrations
+migrations
