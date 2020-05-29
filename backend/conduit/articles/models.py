@@ -56,7 +56,7 @@ class Article(SurrogatePK, Model):
     body = Column(db.Text)
     createdAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    needsReview = Column(db.Boolean, nullable=False)
+    needsReview = Column(db.Boolean, default=False)
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('articles'))
     favoriters = relationship(
