@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components'
-import {Row, Col, Card, Avatar} from 'antd';
+import CustomLink from "../common/CustomLink";
+import { Row, Col, Card, Avatar } from 'antd';
 
 
 const StyledCard = styled(Card)`
@@ -42,15 +43,21 @@ const ArticleCard = (props) => {
     <StyledCard>
       <Row>
         <Col>
-          <TitleDiv>{props.article.title}</TitleDiv>
+          <CustomLink
+            href="/article/[pid]"
+            as={`/article/${props.article.slug}`}
+            className="preview-link"
+          >
+            <TitleDiv>{props.article.title}</TitleDiv>
+          </CustomLink>
         </Col>
       </Row>
       <BottomDiv>
         <TagCol>
-          <div>{props.article.tagList.map((tag, i) =>(<StyledTag key={i}>{"#" + tag}</StyledTag>))}</div>
+          <div>{props.article.tagList.map((tag, i) => (<StyledTag key={i}>{"#" + tag}</StyledTag>))}</div>
         </ TagCol>
         <Col>
-          <Avatar src= {props.article.author.image} size = {50} />
+          <Avatar src={props.article.author.image} size={50} />
         </ Col>
       </BottomDiv>
     </StyledCard>
