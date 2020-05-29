@@ -14,6 +14,7 @@ from conduit.user.models import User
 from conduit.profile.models import UserProfile
 from .models import Organization
 from .serializers import (organization_schema, organizations_schema)
+from conduit.profile.serializers import (profile_schema, profile_schemas)
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -97,7 +98,7 @@ def unfollow_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
-    organization.remove_member(profile)
+    organization.delete_member(profile)
     organization.save()
 
     return organization
@@ -116,8 +117,9 @@ def show_all_members_mods(slug):
 
 @blueprint.route('/api/organizations/<slug>/members', methods=('POST',))
 @jwt_required
-@marshal_with(organization_schema)
-def promote_member(slug, username):
+@use_kwargs(profile_schema)
+@marshal_with(profile_schema)
+def promote_member(slug, username, **kwargs):
     profile = current_user.profile
     organization = Organization.query.filter_by(slug=slug).first()
     user = User.query.filter_by(username=username).first()
@@ -128,15 +130,16 @@ def promote_member(slug, username):
     return user.profile
 
 
-@blueprint.route('/api/organizations/<slug>/members', methods=('DEL',))
+@blueprint.route('/api/organizations/<slug>/members', methods=('DELETE',))
 @jwt_required
-@marshal_with(organization_schema)
-def remove_member(slug, username):
+@use_kwargs(profile_schema)
+@marshal_with(profile_schema)
+def remove_member(slug, username, **kwargs):
     profile = current_user.profile
     organization = Organization.query.filter_by(slug=slug).first()
     user = User.query.filter_by(username=username).first()
     if organization.moderator(profile):
-        organization.remove_member(user.profile)
+        organization.delete_member(user.profile)
     organization.save()
 
-    return user.profile
+    return '', 200

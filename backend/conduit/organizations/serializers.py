@@ -12,6 +12,7 @@ class OrganizationSchema(Schema):
     old_slug = fields.Str()
     description = fields.Str()
     createdAt = fields.DateTime()
+    username = fields.Str()
     moderators = fields.Nested(ProfileSchema, many=True)
     members = fields.Nested(ProfileSchema, many=True)
 
