@@ -115,6 +115,10 @@ class Article(SurrogatePK, Model):
         return len(self.favoriters.all())
 
     @property
+    def commentsCount(self):
+        return len(self.comments.all())
+
+    @property
     def favorited(self):
         if current_user:
             profile = current_user.profile
