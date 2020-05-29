@@ -43,6 +43,7 @@ def get_articles(tag=None, author=None, favorited=None, limit=20, offset=0):
 def make_article(body, title, description, tagList=None):
     article = Article(title=title, description=description, body=body,
                       author=current_user.profile)
+    needReviewTags = []
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()
@@ -51,8 +52,9 @@ def make_article(body, title, description, tagList=None):
                 mtag.save()
             if mtag.modSetting == 3:
                 if current_user.isAdmin:
-                    article.add_tag(mtag)                    
+                    article.add_tag(mtag)
             elif mtag.modSetting == 2:
+                article.add_needReviewTag(mtag)
                 article.add_tag(mtag)
                 article.needsReview = True
             else: # mtag.modSetting == 1:

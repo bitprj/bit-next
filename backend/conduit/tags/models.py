@@ -17,6 +17,9 @@ tag_moderators_assoc = db.Table("tag_moderators_assoc",
                      db.Column("tag_id", db.Integer, db.ForeignKey("tags.id"), primary_key=True),
                      db.Column("moderator_id", db.Integer, db.ForeignKey("userprofile.id"), primary_key=True))
 
+tag_needReviewArticle_assoc = db.Table("tag_needReviewArticle_assoc",
+                     db.Column("tag_id", db.Integer, db.ForeignKey("tags.id"), primary_key=True),
+                     db.Column("needReviewArticle_id", db.Integer, db.ForeignKey("article.id"), primary_key=True))
 
 class Tags(Model):
     __tablename__ = 'tags'
@@ -32,6 +35,8 @@ class Tags(Model):
         backref=db.backref('followed_tags', lazy='dynamic'))
     moderators = db.relationship('UserProfile', secondary=tag_moderators_assoc, lazy='subquery',
         backref=db.backref('moderated_tags', lazy='dynamic'))
+    needReviewArticles = db.relationship('Article', secondary=tag_needReviewArticle_assoc, lazy='subquery',
+        backref=db.backref('needReviewTags', lazy='dynamic'))
 
     def __init__(self, tagname, description=None, slug=None, icon=None, **kwargs):
         db.Model.__init__(self, tagname=tagname, description=description, slug=slug or slugify(tagname),

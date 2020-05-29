@@ -8,8 +8,9 @@ from .serializers import tag_schema, tag_mebership_schema
 from conduit.exceptions import InvalidUsage
 from conduit.profile.models import UserProfile
 from conduit.profile.serializers import profile_schema, profile_schemas
+from conduit.articles.serializers import article_schema
+from conduit.articles.models import Article
 from conduit.user.models import User
-
 
 blueprint = Blueprint('tags', __name__)
 
@@ -69,6 +70,8 @@ def unfollow_a_tag(slug):
 @marshal_with(tag_mebership_schema)
 def get_members_from_tag(slug):
     tag = Tags.query.filter_by(slug=slug).first()
+    if not tag:
+        raise InvalidUsage.tag_not_found()
     return tag
 
 
@@ -77,8 +80,11 @@ def get_members_from_tag(slug):
 @isAdmin
 @marshal_with(tag_schema)
 def claim_tag(slug):
+    profile = current_user.profile
     tag = Tags.query.filter_by(slug=slug).first()
-    tag.addModerator(current_user.profile)
+    if not tag:
+        raise InvalidUsage.tag_not_found()
+    tag.addModerator(profile)
     tag.save()
     return tag
 
@@ -99,3 +105,23 @@ def invite_moderator(slug, username):
     tag.save()
     return toBeAddedUser
 
+@blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('PUT',))
+@jwt_required
+@marshal_with(article_schema)
+def review_article(slug, articleSlug):
+    profile = current_user.profile
+    tag = Tags.query.filter_by(slug=slug).first()
+    if not tag:
+        raise InvalidUsage.tag_not_found()
+    if tag not in profile.moderated_tags:
+        raise InvalidUsage.not_moderator()
+    
+    article = Article.query.filter_by(slug='how-to-science-psychology').first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    if article.needsReview:
+        article.remove_needReviewTag(tag)
+        if article.is_allTagReviewed():
+            article.set_needsReview(False)
+    article.save()
+    return article
