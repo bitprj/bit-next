@@ -2,7 +2,6 @@
 
 import datetime as dt
 
-
 from flask_jwt_extended import current_user
 from slugify import slugify
 
@@ -58,10 +57,16 @@ class Tags(Model):
         return False
 
     def is_follow(self, profile):
-        return bool(self.query.filter(tag_follower_assoc.c.follower_id == profile.id).count())
+        if profile in self.tagFollowers:
+            return True
+        else:
+            return False
 
     def is_moderator(self, profile):
-        return bool(self.query.filter(tag_moderators_assoc.c.moderator_id == profile.id).count())
+        if profile in self.moderators:
+            return True
+        else:
+            return False
 
     def addModerator(self, profile):
         if not self.is_moderator(profile):

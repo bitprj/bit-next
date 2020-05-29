@@ -116,7 +116,7 @@ def review_article(slug, articleSlug):
     if tag not in profile.moderated_tags:
         raise InvalidUsage.not_moderator()
     
-    article = Article.query.filter_by(slug='how-to-science-psychology').first()
+    article = Article.query.filter_by(slug=articleSlug).first()
     if not article:
         raise InvalidUsage.article_not_found()
     if article.needsReview:

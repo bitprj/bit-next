@@ -118,7 +118,7 @@ class Article(SurrogatePK, Model):
         return False
     
     def is_allTagReviewed(self):
-        return len(needReviewTags) == 0
+        return self.needReviewTags.count() == 0
 
     def set_needsReview(self, val):
         self.needsReview = val
