@@ -2,22 +2,18 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
 
-import ArticleList from "../../components/article/ArticleList";
-import CustomImage from "../../components/common/CustomImage";
 import ErrorMessage from "../../components/common/ErrorMessage";
-import Maybe from "../../components/common/Maybe";
-import EditProfileButton from "../../components/profile/EditProfileButton";
-import FollowUserButton from "../../components/profile/FollowUserButton";
-import ProfileTab from "../../components/profile/ProfileTab";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import Header from "../../components/global/Header"
-import {Row} from "antd"
+import styled from 'styled-components';
 
-
+const StyledDiv = styled.div`
+  padding-top: 3em;
+`
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -37,7 +33,7 @@ const Profile = ({ initialProfile }) => {
   if (profileError) return <ErrorMessage message="Can't load profile" />;
 
   const { profile } = fetchedProfile || initialProfile;
-  const { username, email} = profile;
+  const { username, email } = profile;
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
@@ -64,49 +60,21 @@ const Profile = ({ initialProfile }) => {
   };
 
   return (
-    <div className="profile-page">
+    <StyledDiv>
       <div className="user-info">
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 ">
-              <Header 
-                user = {profile}
+              <Header
+                user={profile}
                 follow={handleFollow}
                 unfollow={handleUnfollow}
               />
-              {/* <CustomImage
-                src={image}
-                alt="User's profile image"
-                className="user-img"
-              />
-              <h4>{username}</h4>
-              <p>{bio}</p>
-              <EditProfileButton isUser={isUser} />
-              <Maybe test={isLoggedIn}>
-                <FollowUserButton
-                  isUser={isUser}
-                  username={username}
-                  following={following}
-                  follow={handleFollow}
-                  unfollow={handleUnfollow}
-                />
-              </Maybe> */}
             </div>
           </div>
         </div>
       </div>
-
-      {/* <div className="container">
-        <div className="row">
-          <div className="col-xs-12 col-md-10 offset-md-1">
-            <div className="articles-toggle">
-              <ProfileTab profile={profile} />
-            </div>
-            <ArticleList />
-          </div>
-        </div>
-      </div> */}
-    </div>
+    </StyledDiv>
   );
 };
 
