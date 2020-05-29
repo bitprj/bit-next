@@ -23,6 +23,7 @@ const SyledDetailContainer = styled.div`
   padding: 0.5em 1em;
   margin-left:4em;
   word-wrap: break-word;
+  text-align: left;
 
 `
 const DetailInfo = ({infoName, infoData}) => (
@@ -32,7 +33,17 @@ const DetailInfo = ({infoName, infoData}) => (
   </SyledDetailContainer>
 )
 
-const Header = ({user}) =>(
+
+
+
+const Header = ({user, follow, unfollow}) =>{
+  
+  const handleClick = (e) => {
+    e.preventDefault();
+    user.following ? unfollow(user.username) : follow(user.username);
+  };
+
+  return (
     <Space size = {"large"} align={"start"} >
       <div>
         <Space align={"start"}>            
@@ -41,13 +52,12 @@ const Header = ({user}) =>(
               image = {user.image}
               username = {user.username}
               following = {user.following}
-              onClick = {user.onClick}
               avatarSize = {80}
             /> 
           <Button 
               type ={'primary'} 
               size={'small'}
-              onClick = {user.onClick}
+              onClick = {handleClick}
               style={{ 
                 background: user.following ? '#4EC700':'#007BED' ,
                 borderColor :  user.following ? '#4EC700':'#007BED' ,
@@ -63,11 +73,12 @@ const Header = ({user}) =>(
         <p style={{marginLeft:"7em"}}>{user.bio}</p>
       </div>
       <div>
-        {user.location && <DetailInfo infoName = {'Location'} infoData={user.location}/>}
-        {user.joined  && <DetailInfo infoName = {'Joined'} infoData={user.joined}/>}
-        {user.occupation && <DetailInfo infoName = {'Occupation'} infoData={user.occupation}/>}
+        {<DetailInfo infoName = {'Location'} infoData={user.location}/>}
+        {<DetailInfo infoName = {'Joined'} infoData={user.joined}/>}
+        {<DetailInfo infoName = {'Occupation'} infoData={user.occupation}/>}
       </div>
     </Space>
-)
+  )
+}
 export default Header
 

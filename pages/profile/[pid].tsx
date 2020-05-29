@@ -34,7 +34,7 @@ const Profile = ({ initialProfile }) => {
   if (profileError) return <ErrorMessage message="Can't load profile" />;
 
   const { profile } = fetchedProfile || initialProfile;
-  const { username, bio, image, following, location, joined, occupation } = profile;
+  const { username, email} = profile;
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
@@ -44,20 +44,20 @@ const Profile = ({ initialProfile }) => {
     mutate(
       `${SERVER_BASE_URL}/profiles/${pid}`,
       { profile: { ...profile, following: true } },
-      false
+      true
     );
-    UserAPI.follow(pid);
-    trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
+    UserAPI.follow(pid, email);
+    // trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   const handleUnfollow = async () => {
     mutate(
       `${SERVER_BASE_URL}/profiles/${pid}`,
-      { profile: { ...profile, following: true } },
+      { profile: { ...profile, following: false } },
       true
     );
     UserAPI.unfollow(pid);
-    trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
+    // trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   return (
@@ -66,7 +66,11 @@ const Profile = ({ initialProfile }) => {
         <div className="container">
           <div className="row">
             <div className="col-xs-12 col-md-10 offset-md-1">
-              <Header user = {profile}/>
+              <Header 
+                user = {profile}
+                follow={handleFollow}
+                unfollow={handleUnfollow}
+              />
               {/* <CustomImage
                 src={image}
                 alt="User's profile image"
@@ -89,7 +93,7 @@ const Profile = ({ initialProfile }) => {
         </div>
       </div>
 
-      <div className="container">
+      {/* <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-10 offset-md-1">
             <div className="articles-toggle">
@@ -98,7 +102,7 @@ const Profile = ({ initialProfile }) => {
             <ArticleList />
           </div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
