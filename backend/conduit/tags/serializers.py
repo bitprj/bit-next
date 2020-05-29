@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from marshmallow import Schema, fields, pre_load, post_dump
-import sys
+
 from conduit.profile.serializers import ProfileSchema
 
 class TagSchema(Schema):
@@ -26,13 +26,21 @@ class TagsSchema(TagSchema):
 
     @post_dump
     def dump_Tag(self, data, **kwargs):
-        print('check tag', file = sys.stderr)
-        print(data, file = sys.stderr)
         return data
 
     @post_dump(pass_many=True)
     def dump_Tags(self, data, many, **kwargs):
         return {'tags': data}
 
+class TagMembershipSchema(Schema):
+    tagFollowers = fields.List(fields.Nested("ProfileSchema"))
+    moderators = fields.List(fields.Nested("ProfileSchema"))
+
+    @post_dump
+    def dump_Tag(self, data, **kwargs):
+        return data
+
+
 tag_schema = TagSchema()
 tags_schemas = TagsSchema(many=True)
+tag_mebership_schema = TagMembershipSchema()

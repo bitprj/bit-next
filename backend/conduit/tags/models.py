@@ -1,7 +1,7 @@
 # coding: utf-8
 
 import datetime as dt
-import sys
+
 
 from flask_jwt_extended import current_user
 from slugify import slugify
@@ -32,10 +32,6 @@ class Tags(Model):
         backref=db.backref('followed_tags', lazy='dynamic'))
     moderators = db.relationship('UserProfile', secondary=tag_moderators_assoc, lazy='subquery',
         backref=db.backref('moderated_tags', lazy='dynamic'))
-
-    # def __init__(self, tagname, description, slug, icon, modSetting, **kwargs):
-    #     db.Model.__init__(self, tagname=tagname, description=description,
-    #                         slug=slug or slugify(tagname), icon=icon, modSetting=modSetting)
 
     def __init__(self, tagname, description=None, slug=None, icon=None, **kwargs):
         db.Model.__init__(self, tagname=tagname, description=description, slug=slug or slugify(tagname),

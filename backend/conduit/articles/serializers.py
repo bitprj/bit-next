@@ -1,7 +1,7 @@
 # coding: utf-8
 
 from marshmallow import Schema, fields, pre_load, post_dump
-import sys
+
 from conduit.profile.serializers import ProfileSchema
 
 
@@ -13,21 +13,19 @@ class ArticleSchema(Schema):
     slug = fields.Str()
     title = fields.Str()
     description = fields.Str()
-    createdAt = fields.DateTime()
+    createdAt = fields.DateTime(format='%m-%d-%Y')
     body = fields.Str()
-    updatedAt = fields.DateTime(dump_only=True)
     needsReview = fields.Boolean()
+    updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
     author = fields.Nested(ProfileSchema)
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
     tagList = fields.List(fields.Str())
     favoritesCount = fields.Int(dump_only=True)
+    commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
 
     @pre_load
     def make_article(self, data, **kwargs):
-        print('make_article 2', file=sys.stderr)
-        print(data, file=sys.stderr)
-        print('make_article 3', file=sys.stderr)
         return data['article']
 
     @post_dump

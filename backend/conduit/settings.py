@@ -25,6 +25,9 @@ class Config(object):
         'http://localhost:4200',
         'http://0.0.0.0:4000',
         'http://localhost:4000',
+        'http://localhost:3000',
+        'https://bit-next-ixppal0sd.now.sh',
+        'https://bit-next-git-staging.bitproject.now.sh'
     ]
     JWT_HEADER_TYPE = 'Token'
 
