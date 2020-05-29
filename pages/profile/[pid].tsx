@@ -89,7 +89,7 @@ const Profile = ({ initialProfile }) => {
         </div>
       </div>
 
-      {/* <div className="container">
+      <div className="container">
         <div className="row">
           <div className="col-xs-12 col-md-10 offset-md-1">
             <div className="articles-toggle">
@@ -98,7 +98,7 @@ const Profile = ({ initialProfile }) => {
             <ArticleList />
           </div>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
