@@ -24,7 +24,7 @@ const UserList = (props) => (
           <Skeleton avatar title={false} loading={props.loading} active>
             <User 
               name = {user['name']}
-              image = {user['image']}
+              img = {user['img']}
               userName = {user['username']}
               following = {user['following']}
               onClick = {props['onClick']}

@@ -20,7 +20,7 @@ const FollowerList = props =>(
         <StyledListItem>
            <User 
               name = {follower['name']}
-              image = {follower['image']}
+              img = {follower['img']}
               username = {follower['username']}
               following = {follower['following']}
               onClick = {follower['onClick']}  

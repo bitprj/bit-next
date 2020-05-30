@@ -13,16 +13,14 @@ class ArticleSchema(Schema):
     slug = fields.Str()
     title = fields.Str()
     description = fields.Str()
-    createdAt = fields.DateTime(format='%m-%d-%Y')
+    createdAt = fields.DateTime()
     body = fields.Str()
-    updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
+    updatedAt = fields.DateTime(dump_only=True)
     author = fields.Nested(ProfileSchema)
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
     tagList = fields.List(fields.Str())
     favoritesCount = fields.Int(dump_only=True)
-    commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
-    isPublished = fields.Bool()
 
     @pre_load
     def make_article(self, data, **kwargs):
