@@ -28,15 +28,16 @@ blueprint = Blueprint('articles', __name__)
 @marshal_with(articles_schema)
 def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
     res = Article.query
+    if isPublished is not None:
+        if isPublished != 'all':
+            res = Article.query.filter_by(isPublished=isPublished)
     if tag:
         res = res.filter(Article.tagList.any(Tags.tagname == tag))
     if author:
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
-    if isPublished is not None:
-        if isPublished != 'all':
-            res = Article.query.filter_by(isPublished=isPublished)
+
     return res.offset(offset).limit(limit).all()
 
 
