@@ -32,7 +32,7 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
         if isPublished != 'all':
             res = Article.query.filter_by(isPublished=isPublished)
     if tag:
-        res = res.filter(Article.tagList.any(Tags.tagname == tag))
+        res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:

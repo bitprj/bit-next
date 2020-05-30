@@ -66,14 +66,14 @@ const Tags = () => {
       renderItem={tag => (
         <StyledListItem>
           <CustomLink
-            href={`/?tag=${tag}`}
-            as={`/?tag=${tag}`}
+            href={`/tag/[pid]`}
+            as={`/tag/${encodeURIComponent(tag[1])}`}
           >
             <span>
               <StyledTwemoji options={{ className: 'twemoji' }}>
                 <StyledAvatar icon="🤩" />
               </StyledTwemoji>
-              <StyledSpan>{tag}</StyledSpan>
+              <StyledSpan>{tag[0]}</StyledSpan>
             </span>
           </CustomLink>
         </StyledListItem>

@@ -48,7 +48,7 @@ const Home = () => {
                   </Twemoji>
                 </StyledTagTitle>
                 <Tags />
-              </Affix>,
+              </Affix>
             </div>
             <MainView />
           </div>
