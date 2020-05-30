@@ -39,24 +39,5 @@ class UserSchema(Schema):
         strict = True
 
 
-class FollowSchema(Schema):
-    username = fields.Str()
-    email = fields.Email()
-
-    user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
-
-    @pre_load
-    def make_user(self, data, **kwargs):
-        return data['user']
-
-    @post_dump
-    def dump_user(self, data, **kwargs):
-        return {'user': data}
-
-    class Meta:
-        strict = True
-
-
 user_schema = UserSchema()
 user_schemas = UserSchema(many=True)
-followers_schema = FollowSchema(many=True)

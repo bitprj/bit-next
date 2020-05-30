@@ -10,7 +10,6 @@ from conduit.tags.models import Tags
 
 from .serializers import profile_schema
 from conduit.tags.serializers import tags_schemas
-from conduit.user.serializers import followers_schema
 
 blueprint = Blueprint('profiles', __name__)
 
@@ -48,7 +47,6 @@ def unfollow_user(username):
     current_user.profile.save()
     return user.profile
 
-
 @blueprint.route('/profiles/<username>/tags', methods=('GET',))
 @jwt_required
 @marshal_with(tags_schemas)
@@ -57,17 +55,3 @@ def profile_tags(username):
     if not user:
         raise InvalidUsage.user_not_found()
     return user.profile.followed_tags.with_entities(Tags.tagname, Tags.slug)
-
-
-@blueprint.route('/api/profiles/followers', methods=('GET',))
-@jwt_required
-@marshal_with(followers_schema)
-def get_followers():
-    return current_user.profile.followed_by
-
-
-@blueprint.route('/api/profiles/followings', methods=('GET',))
-@jwt_required
-@marshal_with(followers_schema)
-def get_followings():
-    return current_user.profile.follows
