@@ -16,6 +16,7 @@ develop-eggs
 .installed.cfg
 lib
 lib64
+migrations
 
 # Installer logs
 pip-log.txt
@@ -43,6 +44,7 @@ docs/_build
 .webassets-cache
 
 # Virtualenvs
+venv/
 env/
 dev.db
 .cache/v/cache
@@ -53,6 +55,7 @@ dev.db
 
 # Pytest cache
 .pytest_cache/**
+__pycache__/
 
 # Vagrant machines
 .vagrant/**
