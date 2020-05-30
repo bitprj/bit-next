@@ -28,9 +28,8 @@ blueprint = Blueprint('articles', __name__)
 @marshal_with(articles_schema)
 def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
     res = Article.query
-    if isPublished is not None:
-        if isPublished != 'all':
-            res = Article.query.filter_by(isPublished=isPublished)
+    if isPublished is None:
+        res = Article.query.filter_by(isPublished=True)
     if tag:
         res = res.filter(Article.tagList.any(Tags.tagname == tag))
     if author:
