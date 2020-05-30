@@ -5,7 +5,6 @@ from marshmallow import Schema, fields, pre_load, post_dump
 from conduit.profile.serializers import ProfileSchema
 
 
-
 class TagSchema(Schema):
     tagname = fields.Str()
 
@@ -18,8 +17,6 @@ class ArticleSchema(Schema):
     body = fields.Str()
     updatedAt = fields.DateTime(dump_only=True)
     author = fields.Nested(ProfileSchema)
-
-    # for the envelope
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
     tagList = fields.List(fields.Str())
     favoritesCount = fields.Int(dump_only=True)
