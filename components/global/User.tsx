@@ -12,8 +12,8 @@ const StyledListItemMeta = styled(List.Item.Meta)`
     .ant-list-item-meta-avatar {
       margin-right: 1.2em;
     }
-
     .ant-list-item-meta-title {
+      max-width: 10em;
       font-family: Apercu Pro, sans-serif;
       font-style: normal;
       font-weight: 500;
@@ -21,8 +21,9 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       line-height: 1.3em;
       margin-bottom: 0.2em;
       color: #000000
+      word-wrap: break-word;
     }
-
+    
     .ant-list-item-meta-description {
       font-family: Open Sans, sans-serif;
       font-style: normal;
@@ -30,13 +31,13 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       font-size: 0.8em;
       line-height: 1.2em;
       color: #000000;
+      word-wrap: break-word;
     }
-
 `
 
 const User = (props) =>(
   <StyledListItemMeta
-    avatar={ <Avatar src= {props.img} size = { props.avatarSize || 50}/>}
+    avatar={ <Avatar src= {props.image} size = { props.avatarSize || 50}/>}
     title={props.name}
     description={props.username ||
       (props.hasButton &&
@@ -57,8 +58,6 @@ const User = (props) =>(
       ) 
     }
   />
-
-
 )
 
 export default User
