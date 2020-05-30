@@ -1,14 +1,13 @@
 import axios from "axios";
 import Router, { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import useSWR from "swr";
-
-import ListErrors from "../../components/common/ListErrors";
+import Editor from 'rich-markdown-editor';
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
-import editorReducer from "../../lib/utils/editorReducer";
 import storage from "../../lib/utils/storage";
+import { Alert } from 'antd';
 
 const UpdateArticleEditor = ({ article: initialArticle }) => {
   const initialState = {
@@ -16,33 +15,76 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     description: initialArticle.description,
     body: initialArticle.body,
     tagList: initialArticle.tagList,
+    isPublished: false
   };
+  const Title = React.createRef<HTMLInputElement>();
+
+  const [title, setTitle] = useState(initialState.title)
+
+  const [description, setDesc] = useState(initialState.description)
+
+  var [values, setValue] = useState(initialState.body)
+
+  var [value_dummy, setDummyValue] = useState(initialState.body)
+
+  const [dark_theme, Change_theme] = useState(false)
+
+  const [Title_required, setTitle_required] = useState(false)
+
+  const [tags, setTags] = useState(initialState.tagList)
 
   const [isLoading, setLoading] = React.useState(false);
-  const [errors, setErrors] = React.useState([]);
-  const [posting, dispatch] = React.useReducer(editorReducer, initialState);
   const { data: currentUser } = useSWR("user", storage);
   const router = useRouter();
   const {
     query: { pid },
   } = router;
 
-  const handleTitle = (e) =>
-    dispatch({ type: "SET_TITLE", text: e.target.value });
-  const handleDescription = (e) =>
-    dispatch({ type: "SET_DESCRIPTION", text: e.target.value });
-  const handleBody = (e) =>
-    dispatch({ type: "SET_BODY", text: e.target.value });
-  const addTag = (tag) => dispatch({ type: "ADD_TAG", tag: tag });
-  const removeTag = (tag) => dispatch({ type: "REMOVE_TAG", tag: tag });
+  const addTag = (tag) => {
+    setTags([...tags, tag])
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const removeTag = (tag) => {
+    setTags(tags.filter(item => item != tag))
+  }
 
+  const handleTitle = e => {
+    setTitle(e.target.value)
+    setTitle_required(false)
+  }
+  const handleDesc = e => {
+    setDesc(e.target.value)
+  }
+
+  const ChangeTheme = () => {
+    if (dark_theme) {
+      Change_theme(false)
+    }
+    else {
+      Change_theme(true)
+    }
+  }
+
+  const Save = () => {
+    setValue(value_dummy)
+    handleSubmit()
+  }
+
+  const handleChange = (value => {
+    setDummyValue(value())
+    if (title != "") {
+      saveDraft()
+    }
+  });
+
+  const saveDraft = async () => {
+    initialState.title = title
+    initialState.description = description ? description : "This article has no description"
+    initialState.body = value_dummy
+    initialState.tagList = tags
     const { data, status } = await axios.put(
       `${SERVER_BASE_URL}/articles/${pid}`,
-      JSON.stringify({ article: posting }),
+      JSON.stringify({ article: initialState }),
       {
         headers: {
           "Content-Type": "application/json",
@@ -50,73 +92,93 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         },
       }
     );
-    setLoading(false);
+  }
 
-    if (status !== 200) {
-      setErrors(data.errors);
+  const handleSubmit = async () => {
+    initialState.title = title
+    initialState.description = description ? description : "This article has no description"
+    initialState.body = value_dummy
+    initialState.tagList = tags
+    initialState.isPublished = true
+    if (title != "") {
+      setLoading(true);
+      const { data, status } = await axios.put(
+        `${SERVER_BASE_URL}/articles/${pid}`,
+        JSON.stringify({ article: initialState }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(currentUser?.token)}`,
+          },
+        }
+      );
+      setLoading(false);
+      Router.push("/");
     }
-
-    Router.push(`/`);
+    else {
+      if (Title.current) {
+        Title.current.focus();
+      }
+      setTitle_required(true);
+    }
   };
 
   return (
-    <div className="editor-page">
-      <div className="container page">
-        <div className="row">
-          <div className="col-md-10 offset-md-1 col-xs-12">
-            <ListErrors errors={errors} />
-
-            <form>
-              <fieldset>
-                <fieldset className="form-group">
-                  <input
-                    className="form-control form-control-lg"
-                    type="text"
-                    placeholder="Article Title"
-                    value={posting.title}
-                    onChange={handleTitle}
-                  />
-                </fieldset>
-
-                <fieldset className="form-group">
-                  <input
-                    className="form-control"
-                    type="text"
-                    placeholder="What's this article about?"
-                    value={posting.description}
-                    onChange={handleDescription}
-                  />
-                </fieldset>
-
-                <fieldset className="form-group">
-                  <textarea
-                    className="form-control"
-                    rows={8}
-                    placeholder="Write your article (in markdown)"
-                    value={posting.body}
-                    onChange={handleBody}
-                  />
-                </fieldset>
-
-                <TagInput
-                  tagList={posting.tagList}
-                  addTag={addTag}
-                  removeTag={removeTag}
-                />
-
-                <button
-                  className="btn btn-lg pull-xs-right btn-primary"
-                  type="button"
-                  disabled={isLoading}
-                  onClick={handleSubmit}
-                >
-                  Update Article
-                </button>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-      </div>
+    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
+      <br />
+      {Title_required ? <Alert message="Title required" type="warning" /> : null}
+      <br />
+      <input
+        className="form-control form-control-lg"
+        type="text"
+        placeholder="Set a Title for Your Article"
+        value={title}
+        onChange={handleTitle}
+        style={{ marginBottom: "2%", border: "none", padding: "0" }}
+        ref={Title}
+      />
+      <input
+        className="form-control form-control-lg"
+        type="text"
+        placeholder="Set a description"
+        value={description}
+        onChange={handleDesc}
+        style={{ marginBottom: "2%", border: "none", padding: "0" }}
+      />
+      <TagInput
+        tagList={tags}
+        addTag={addTag}
+        removeTag={removeTag}
+      />
+      <Editor
+        id="new_article"
+        value={values}
+        readOnly={false}
+        defaultValue={values}
+        onKeyDown={null}
+        onChange={handleChange}
+        dark={dark_theme}
+        uploadImage={async file => {
+          const data = new FormData();
+          data.append("file", file);
+          data.append("upload_preset", 'upload')
+          const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
+            method: 'POST',
+            body: data
+          });
+          const response = await res.json();
+          return response.secure_url;
+        }}
+        autoFocus
+      />
+      <button style={{ marginTop: "2%" }}
+        className="btn btn-lg pull-xs-right btn-primary"
+        type="button"
+        disabled={isLoading}
+        onClick={Save}
+      >
+        Publish Article
+        </button>
     </div>
   );
 };
