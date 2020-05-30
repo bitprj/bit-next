@@ -65,7 +65,11 @@ const UserAPI = {
       return error.response;
     }
   },
+<<<<<<< HEAD
   follow: async (username,email) => {
+=======
+  follow: async (username, email) => {
+>>>>>>> dbb485122854520759e3fb9238bf1ecc808769c8
     const user: any = JSON.parse(window.localStorage.getItem("user"));
     const token = user?.token;
     try {
