@@ -48,7 +48,7 @@ def unfollow_user(username):
     current_user.profile.save()
     return user.profile
 
-@blueprint.route('/profiles/<username>/tags', methods=('GET',))
+@blueprint.route('/api/profiles/<username>/tags', methods=('GET',))
 @jwt_required
 @marshal_with(tags_schemas)
 def profile_tags(username):
