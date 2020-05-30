@@ -16,7 +16,7 @@ import { SERVER_BASE_URL, DEFAULT_LIMIT } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import ArticleCard from "../../components/global/ArticleCard";
 
-const ArticleList = (props) => {
+const ArticleList = () => {
   const page = usePageState();
   const pageCount = usePageCountState();
   const setPageCount = usePageCountDispatch();
@@ -71,9 +71,8 @@ const ArticleList = (props) => {
   }
 
   if (!data) return <LoadingSpinner />;
-  
-  const { articles, articlesCount } = !props.articles && !props.articlesCount ? data : props;
 
+  const { articles, articlesCount } = data;
   setPageCount(articlesCount);
 
   if (articles && articles.length === 0) {

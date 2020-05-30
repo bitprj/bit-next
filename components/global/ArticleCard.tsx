@@ -5,6 +5,7 @@ import User from '../global/User'
 import { Row, Col, Card, Avatar, Button, Space } from 'antd';
 import CustomLink from "../common/CustomLink";
 
+
 const StyledCard = styled(Card)`
   flex:auto;
   font-family: Open Sans, sans-serif;
@@ -15,7 +16,6 @@ const StyledCard = styled(Card)`
   margin-top: 30px;
   margin-bottom: 15px;
 `
-
 const StyledTag = styled.p`
   font-size: 1em;
   line-height: 1em;
@@ -61,110 +61,91 @@ const StyledEmoji = styled.span`
 `
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
-  const tags = article.tagList.map((tag, i) =>
-    (<CustomLink
-      key={i}
-      href={`/tag/[pid]`}
-      as={`/tag/${encodeURIComponent(tag.slug)}`}
-    >
-      #{tag.tagname}
-    </CustomLink>))
+const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => (
+  <StyledCard>
+    <Row gutter={16} style={{ flexWrap: "nowrap" }} >
+      {/* left sider: show avatar or tag */}
+      <Col >
+        {!article.articleState && <Avatar src={article.author.image} size={40} />}
+        {article.articleState === 'draft' && <StyledTag>Draft</StyledTag>}
+        {article.articleState === 'review' && <StyledTag>Review</StyledTag>}
+      </Col>
 
-  return (
-    <StyledCard>
-      <Row gutter={16} style={{ flexWrap: "nowrap" }} >
-        {/* left sider: show avatar or tag */}
-        <Col >
+      <Col style={{ flex: "auto" }}>
+        {/* middle: show three information lines */}
+        <TitleDiv>
           <CustomLink
-            href="/profile/[pid]"
-            as={`/profile/${encodeURIComponent(article.author?.username)}`}
-            className="author"
-          >
-            {!article.articleState && <Avatar src={article.author.image} size={40} />}
-          </CustomLink>
-          {article.articleState === 'draft' && <StyledTag>Draft</StyledTag>}
-          {article.articleState === 'review' && <StyledTag>Review</StyledTag>}
-        </Col>
-
-        <Col style={{ flex: "auto" }}>
-          {/* middle: show three information lines */}
-          <TitleDiv>
-
+            href="/article/[pid]"
+            as={`/article/${article.slug}`}
+            className="preview-link">
             {article.title}
-          </TitleDiv>
-          <TagsDiv>
-            <Space>{tags}</Space>
-          </TagsDiv>
-          {!article.articleState &&
-            <CustomLink
-              href="/profile/[pid]"
-              as={`/profile/${encodeURIComponent(article.author?.username)}`}
-              className="author"
+          </CustomLink>
+        </TitleDiv>
+        <TagsDiv>
+          <Space>{article.tagList.map((tag, i) => (<span key={i}>{"#" + tag}</span>))}</Space>
+        </TagsDiv>
+        {!article.articleState &&
+          <AuthDiv><span>{article.author.username + "・" + article.createdAt}</span></AuthDiv>
+        }
+
+        <StatDiv>
+          {/* left bottom: show author avatar or icons */}
+          <Col style={{ marginTop: "1em" }}>
+            {article.articleState && article.articleState !== "draft" &&
+              <User
+                name={article.author.name}
+                image={article.author.image}
+                avatarSize={"20"}
+                emptySubtitle={true}
+              />
+            }
+            {!article.articleState &&
+              <Space size={"large"}>
+                <Twemoji options={{ className: 'twemoji' }}>
+                  <StyledEmoji>{"❤️ " + article.favoritesCount}</StyledEmoji>
+                  <StyledEmoji>{"💬 " + article.commentsCount}</StyledEmoji>
+                </Twemoji>
+              </Space>
+            }
+          </Col>
+
+          {/* rigt bottom: show two buttons */}
+          <Col>
+            <Button
+              disabled={!article.articleState}
+              onClick={onLeftButtonClick}
+              style={{
+                border: "none",
+                background: "inherit"
+              }}
             >
-              <AuthDiv><span>{article.author.username + "・" + article.createdAt}</span></AuthDiv>
-            </CustomLink>
-          }
-
-          <StatDiv>
-            {/* left bottom: show author avatar or icons */}
-            <Col style={{ marginTop: "1em" }}>
-              {article.articleState && article.articleState !== "draft" &&
-                <User
-                  name={article.author.name}
-                  image={article.author.image}
-                  avatarSize={"20"}
-                  emptySubtitle={true}
-                />
+              {
+                !article.articleState ? (article.readtime && article.readtime + ' min read') :
+                  article.articleState === 'published' ? 'Reject' : 'Delete'
               }
-              {!article.articleState &&
-                <Space size={"large"}>
-                  <Twemoji options={{ className: 'twemoji' }}>
-                    <StyledEmoji>{"❤️ " + article.favoritesCount}</StyledEmoji>
-                    <StyledEmoji>{"💬 " + article.commentsCount}</StyledEmoji>
-                  </Twemoji>
-                </Space>
+            </Button>
+            <Button
+              type={"primary"}
+              onClick={onRightButtonClick}
+              style={{
+                fontWeight: 'bold',
+                borderRadius: "0.5em",
+                background: article.articleState === 'published' ? '#4EC700' : '#007BED',
+                borderColor: article.articleState === 'published' ? '#4EC700' : '#007BED',
+              }}
+            >
+              {
+                !article.articleState ? 'BookMark' :
+                  article.articleState === 'published' ? 'Published' : 'Edit'
               }
-            </Col>
+            </Button>
+          </Col>
+        </StatDiv>
+      </Col>
+    </Row>
+  </StyledCard>
 
-            {/* rigt bottom: show two buttons */}
-            <Col>
-              <Button
-                disabled={!article.articleState}
-                onClick={onLeftButtonClick}
-                style={{
-                  border: "none",
-                  background: "inherit"
-                }}
-              >
-                {
-                  !article.articleState ? (article.readtime && article.readtime + ' min read') :
-                    article.articleState === 'published' ? 'Reject' : 'Delete'
-                }
-              </Button>
-              <Button
-                type={"primary"}
-                onClick={onRightButtonClick}
-                style={{
-                  fontWeight: 'bold',
-                  borderRadius: "0.5em",
-                  background: article.articleState === 'published' ? '#4EC700' : '#007BED',
-                  borderColor: article.articleState === 'published' ? '#4EC700' : '#007BED',
-                }}
-              >
-                {
-                  !article.articleState ? 'BookMark' :
-                    article.articleState === 'published' ? 'Published' : 'Edit'
-                }
-              </Button>
-            </Col>
-          </StatDiv>
-        </Col>
-      </Row>
-    </StyledCard>
-  )
-}
-
+)
 
 export default ArticleCard
 
