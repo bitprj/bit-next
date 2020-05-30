@@ -12,6 +12,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
     .ant-list-item-meta-avatar {
       margin-right: 1.2em;
     }
+
     .ant-list-item-meta-title {
       max-width: 10em;
       font-family: Apercu Pro, sans-serif;

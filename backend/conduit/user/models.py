@@ -16,11 +16,6 @@ class User(SurrogatePK, Model):
     updated_at = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     bio = Column(db.String(300), nullable=True)
     image = Column(db.String(120), nullable=True)
-    occupation = Column(db.Text(), nullable = True)
-    githubLink = Column(db.String(100), nullable=True)
-    twitterLink = Column(db.String(100), nullable=True)
-    linkedinLink = Column(db.String(100), nullable=True)
-    website = Column(db.Text(), nullable = True)
     isAdmin = Column(db.Boolean, nullable=True)
     token: str = ''
 

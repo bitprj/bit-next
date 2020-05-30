@@ -59,6 +59,3 @@ __pycache__/
 
 # Vagrant machines
 .vagrant/**
-
-# Migrations
-migrations
