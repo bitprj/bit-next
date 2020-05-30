@@ -38,7 +38,7 @@ const Profile = ({ initialProfile }) => {
   if (profileError) return <ErrorMessage message="Can't load profile" />;
 
   const { profile } = fetchedProfile || initialProfile;
-  const { username, bio, image, following } = profile;
+  const { username, bio, image, following, email } = profile;
   const [Following_Button,setFollowing] = React.useState(following)
   const [list,setList] = React.useState(["Posts","Followers","Following","Account Settings"])
   const [tab_select_list,setTabList] = React.useState(["Most Viewed","Most Liked","Most Recent"])
@@ -63,7 +63,7 @@ const Profile = ({ initialProfile }) => {
         { profile: { ...profile, following: true } },
         false
       );
-      UserAPI.follow(pid);
+      UserAPI.follow(pid,email);
       trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
     }
     else{

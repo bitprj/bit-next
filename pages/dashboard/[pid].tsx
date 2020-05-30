@@ -51,21 +51,11 @@ const Profile = ({ initialProfile }) => {
 
   const Followers = () => {
     const response = UserAPI.followers(pid)
-    if (response!=[]){
-      setFollowersList(response)
-    }
-    else{
-      setFollowersList(null)
-    }
+    setFollowersList(response)
   }
   const Followings=()=>{
     const response = UserAPI.followings(pid)
-    if (response!=[]){
     setFollowingsList(response)
-    }
-    else{
-      setFollowingsList(null)
-    }
   }
   const TabChange = (key) =>{
     if(key=="Posts"){
