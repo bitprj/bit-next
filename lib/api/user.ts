@@ -65,13 +65,13 @@ const UserAPI = {
       return error.response;
     }
   },
-  follow: async (username) => {
+  follow: async (username, email) => {
     const user: any = JSON.parse(window.localStorage.getItem("user"));
     const token = user?.token;
     try {
       const response = await axios.post(
         `${SERVER_BASE_URL}/profiles/${username}/follow`,
-        {},
+        JSON.stringify({ user: {email}}),
         {
           headers: {
             Authorization: `Token ${encodeURIComponent(token)}`,
@@ -100,6 +100,11 @@ const UserAPI = {
       return error.response;
     }
   },
+
+  followers: async (username)=> axios.get(`${SERVER_BASE_URL}/profiles/${username}/followers`),
+
+  followings: async (username)=> axios.get(`${SERVER_BASE_URL}/profiles/${username}/followings`),
+
   get: async (username) => axios.get(`${SERVER_BASE_URL}/profiles/${username}`),
 };
 

@@ -22,7 +22,7 @@ const StyledSpan = styled.span`
 
 const StyledTagTitle = styled.div`
   padding-bottom: 1.5em;
-`
+` 
 
 const Home = () => (
   <>
