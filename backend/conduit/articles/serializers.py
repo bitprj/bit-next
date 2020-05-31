@@ -18,6 +18,7 @@ class ArticleSchema(Schema):
     createdAt = fields.DateTime(format='%m-%d-%Y')
     body = fields.Str()
     updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
+    needsReview = fields.Boolean()
     author = fields.Nested(ProfileSchema)
 
     # for the envelope
