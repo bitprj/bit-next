@@ -1,16 +1,17 @@
 import React from "react";
 import { Input } from "antd";
 import algoliasearch from "algoliasearch/lite";
+import styled from "styled-components";
 import { InstantSearch, connectSearchBox } from "react-instantsearch-dom";
 
 import Content from "./content";
 
-const searchStyle = {
-  borderRadius: "5px",
-  backgroundColor: "#EDEDED",
-  height: "38px",
-  fontSize: "15px"
-}
+const StyledSearch = styled(Input)`
+    border-radius: "5px";
+    background-color: "#EDEDED";
+    height: "38px";
+    font-size: "15px";
+`
 
 //first argument is app ID, second is search-only API key (not write to
 //index API key)
@@ -28,8 +29,7 @@ const Search = () => {
 };
 
 const SearchBox = ({ currentRefinement, refine }) => (
-    <Input
-      style={searchStyle}
+    <StyledSearch
       type="search"
       value={currentRefinement}
       onChange={event => refine(event.currentTarget.value)}
