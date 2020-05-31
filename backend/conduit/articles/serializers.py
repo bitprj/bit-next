@@ -17,6 +17,7 @@ class ArticleSchema(Schema):
     description = fields.Str()
     createdAt = fields.DateTime(format='%m-%d-%Y')
     body = fields.Str()
+    needsReview = fields.Boolean()
     updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
     needsReview = fields.Boolean()
     author = fields.Nested(ProfileSchema)

@@ -2,6 +2,7 @@ from flask import Blueprint
 from flask_apispec import marshal_with, use_kwargs
 from flask_jwt_extended import current_user, jwt_required
 
+from conduit.decorators import isAdmin
 from .models import Tags
 from .serializers import tag_schema, tag_mebership_schema
 from conduit.exceptions import InvalidUsage
@@ -84,12 +85,9 @@ def get_members_from_tag(slug):
 
 @blueprint.route('/api/tags/<slug>/admin', methods=('POST',))
 @jwt_required
+@isAdmin
 @marshal_with(tag_schema)
 def claim_tag(slug):
-    current_user.isAdmin = True
-
-    if not current_user.isAdmin:
-        raise InvalidUsage.not_admin()
     tag = Tags.query.filter_by(slug=slug).first()
     tag.addModerator(current_user.profile)
     tag.save()
