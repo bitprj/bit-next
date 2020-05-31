@@ -35,10 +35,10 @@ const PostButtonStyle = styled(Button)`
   color: #FFFFFF;
   padding: 0px 30px;
   font-dize: 17px;
-  margin: 0px 20px;
+  margin: 0px 25px;
 `
 const StyledBell = styled(BellOutlined)`
-  margin: 5px;
+  margin: 0px 20px;
   font-size: 20px;
 `
 const StyledAvatar = styled(Avatar)`
@@ -47,7 +47,7 @@ const StyledAvatar = styled(Avatar)`
   flex: none;
 `
 const StyledMenuOutlined = styled(MenuOutlined)`
-  margin: 0px 20px;
+  margin: 0px 30px;
   font-size: 25px;
 `
 
@@ -69,7 +69,7 @@ const Navbar = () => {
         <Link href="/editor/new">
           <PostButtonStyle>Write a Post</PostButtonStyle>
         </Link>
-        <Badge count={1} offset={[-7,5]} dot>
+        <Badge count={1} offset={[-25,5]} dot>
         <StyledBell />
         </Badge>
         {
