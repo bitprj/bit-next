@@ -6,7 +6,10 @@ from flask_jwt_extended import current_user, jwt_required, jwt_optional
 
 from conduit.exceptions import InvalidUsage
 from conduit.user.models import User
+from conduit.tags.models import Tags
+
 from .serializers import profile_schema
+from conduit.tags.serializers import tags_schemas
 
 blueprint = Blueprint('profiles', __name__)
 
@@ -43,3 +46,12 @@ def unfollow_user(username):
     current_user.profile.unfollow(user.profile)
     current_user.profile.save()
     return user.profile
+
+@blueprint.route('/profiles/<username>/tags', methods=('GET',))
+@jwt_required
+@marshal_with(tags_schemas)
+def profile_tags(username):
+    user = User.query.filter_by(username=username).first()
+    if not user:
+        raise InvalidUsage.user_not_found()
+    return user.profile.followed_tags.with_entities(Tags.tagname, Tags.slug)

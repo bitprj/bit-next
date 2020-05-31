@@ -82,3 +82,9 @@ class Organization(Model, SurrogatePK):
             self.moderators.append(user_profile)
             return True
         return False
+
+    def update_slug(self, slug):
+        if slug != self.slug:
+            self.slug = slug
+            return True
+        return False
