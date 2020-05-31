@@ -19,6 +19,17 @@ blueprint = Blueprint('tags', __name__)
 # Tags
 ##########
 
+
+@blueprint.route('/api/tags/<slug>', methods=('GET',))
+@jwt_required
+@marshal_with(tag_schema)
+def get_tag(slug, **kwargs):
+    tag = Tags.query.filter_by(slug=slug).first()
+    if not tag:
+        raise InvalidUsage.tag_not_found()
+    return tag
+
+
 @blueprint.route('/api/tags/<slug>', methods=('PUT',))
 @jwt_required
 @use_kwargs(tag_schema)
