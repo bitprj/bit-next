@@ -4,8 +4,6 @@ import algoliasearch from "algoliasearch/lite";
 import styled from "styled-components";
 import { InstantSearch, connectSearchBox } from "react-instantsearch-dom";
 
-import Content from "./content";
-
 const StyledSearch = styled(Input)`
     border-radius: 5px;
     background-color: #EDEDED;
@@ -33,7 +31,6 @@ const Search = () => {
   return (
       <InstantSearch indexName={indexName} searchClient={client}>
         <SearchBox />
-        {/*<Content />*/}
       </InstantSearch>
   );
 };

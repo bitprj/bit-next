@@ -3,7 +3,6 @@ import { BellOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import Search from "../search/search";
 import Link from 'next/link';
 import styled from "styled-components";
-import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import useSWR from "swr";
 import storage from "../../lib/utils/storage";
 
