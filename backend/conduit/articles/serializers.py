@@ -8,6 +8,7 @@ from conduit.profile.serializers import ProfileSchema
 
 class TagSchema(Schema):
     tagname = fields.Str()
+    slug = fields.Str()
 
 
 class ArticleSchema(Schema):
@@ -16,15 +17,18 @@ class ArticleSchema(Schema):
     description = fields.Str()
     createdAt = fields.DateTime(format='%m-%d-%Y')
     body = fields.Str()
+    needsReview = fields.Boolean()
     updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
+    needsReview = fields.Boolean()
     author = fields.Nested(ProfileSchema)
 
     # for the envelope
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
-    tagList = fields.List(fields.Str())
+    tagList = fields.Nested(TagSchema, many=True)
     favoritesCount = fields.Int(dump_only=True)
     commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
+    isPublished = fields.Bool()
 
     @pre_load
     def make_article(self, data, **kwargs):
