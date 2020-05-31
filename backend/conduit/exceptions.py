@@ -11,6 +11,8 @@ UNKNOWN_ERROR = template([], code=500)
 ARTICLE_NOT_FOUND = template(['Article not found'], code=404)
 TAG_NOT_FOUND = template(['Tag not found'], code=404)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
+ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
+SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
 NOT_ADMIN = template(['Not Admin'], code=403)
 NOT_ADMIN_OR_MODERATOR = template(['Not Admin or Moderator'], code=403)
 
@@ -59,3 +61,13 @@ class InvalidUsage(Exception):
     @classmethod
     def comment_not_owned(cls):
         return cls(**COMMENT_NOT_OWNED)
+
+    @classmethod
+    def organization_not_found(cls):
+        return cls(**ORGANIZATION_NOT_FOUND)
+
+    @classmethod
+    def slug_already_exists(cls):
+        return cls(**SLUG_ALREADY_EXISTS)
+
+
