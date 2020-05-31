@@ -31,7 +31,7 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
     if isPublished is None:
         res = Article.query.filter_by(isPublished=True)
     if tag:
-        res = res.filter(Article.tagList.any(Tags.tagname == tag))
+        res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
@@ -145,7 +145,7 @@ def bookmark_an_article(slug):
 
 @blueprint.route('/api/tags', methods=('GET',))
 def get_tags():
-    return jsonify({'tags': [tag.tagname for tag in Tags.query.all()]})
+    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
 
 
 ##########
