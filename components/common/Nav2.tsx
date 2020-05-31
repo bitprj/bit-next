@@ -7,12 +7,19 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 
 const { Header } = Layout;
 
-{/*async function isLoggedIn() {
-  const data = await axios.get(`${SERVER_BASE_URL}/user`);
+async function isLoggedIn() {
+  const data = await axios.get(`${SERVER_BASE_URL}/user`, {
+    headers: {
+      authorization: 'Token eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTA4Mjc4MjUsIm5iZiI6MTU5MDgyNzgyNSwianRpIjoiYzgxZTRiNDEtNzVhOC00NjZkLWIyYmYtMGZmODA2MGE5MDAyIiwiZXhwIjo4Nzk5MDgyNzgyNSwiaWRlbnRpdHkiOjEsImZyZXNoIjp0cnVlLCJ0eXBlIjoiYWNjZXNzIn0.OF7y4--5PWq3IM0P8kX2Qt_v8kedIwvbGJaos39QQkI'
+    }
+  });
+  console.log(data);
   return data;
-}*/}
+}
 
 const Navbar = () => {
+
+  const userData = isLoggedIn();
 
   const headerStyle = {
     backgroundColor: "#FFFFFF",
