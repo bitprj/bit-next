@@ -22,6 +22,13 @@ member_assoc = db.Table("member_assoc",
                         db.ForeignKey('organization.id'))
                     )   
 
+article_assoc = db.Table("article_assoc",
+                    db.Column("article", db.Integer,
+                        db.ForeignKey('article.id')),
+                    db.Column("organization", db.Integer,
+                        db.ForeignKey('organization.id'))
+                    )
+
 
 class Organization(Model, SurrogatePK):
     __tablename__ = 'organization'
@@ -36,6 +43,9 @@ class Organization(Model, SurrogatePK):
     members = relationship('UserProfile', secondary=member_assoc, 
                            backref=db.backref('mem_organization'),
                            lazy='dynamic')
+    review_article = relationship('Article', secondary=article_assoc,
+                                backref=db.backref=('rev_organization'),
+                                lazy='dynamic')
 
 
     def __init__(self, name, description, slug, **kwargs):

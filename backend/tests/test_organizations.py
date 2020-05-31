@@ -55,4 +55,4 @@ class TestOrganizationViews:
             'Authorization': 'Token {}'.format(token)
             })
 
-        assert resp.json['organization']['nanm'] == 'ree'
+        assert slug == 'ree'

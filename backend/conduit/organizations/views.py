@@ -143,3 +143,16 @@ def remove_member(slug, username, **kwargs):
     organization.save()
 
     return '', 200
+
+
+
+@blueprint.route('/api/organization/<slug>/articles', methods=('DELETE',))
+@jwt_required
+def publish_article():
+
+
+
+@blueprint.route('/api/organization/<slug>/articles', methods=('POST',))
+@jwt_required
+def submit_article_for_review():
+
