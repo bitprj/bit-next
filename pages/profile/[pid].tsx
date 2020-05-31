@@ -10,6 +10,7 @@ import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import Header from "../../components/global/Header"
 import styled from 'styled-components';
+import {Tabs} from 'antd';
 
 const StyledDiv = styled.div`
   padding-top: 3em;
@@ -70,6 +71,17 @@ const Profile = ({ initialProfile }) => {
                 follow={handleFollow}
                 unfollow={handleUnfollow}
               />
+              <Tabs defaultActiveKey={"Posts"} size = {"large"} type={"card"} tabBarGutter={32} tabBarStyle={{border:"none"}}>
+                <Tabs.TabPane key={"Posts"} tab={"Posts"}>
+                    Posts 
+                </Tabs.TabPane>
+                <Tabs.TabPane key={"Followers"} tab={"Followers"}> 
+                    Followers 
+                </Tabs.TabPane>
+                <Tabs.TabPane key={"Following"} tab={"Following"}> 
+                   Following 
+                </Tabs.TabPane>
+              </Tabs>
             </div>
           </div>
         </div>
