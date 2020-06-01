@@ -16,6 +16,13 @@ const StyledCard = styled(Card)`
   margin-bottom: 15px;
 `
 
+const StyledSpan = styled.span`
+  a {
+    color: black;
+    font-weight: 500;
+  }
+`
+
 const StyledTag = styled.p`
   font-size: 1em;
   line-height: 1em;
@@ -63,13 +70,15 @@ const StyledEmoji = styled.span`
 /* article state: draft, review, pubished, complete*/
 const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
   const tags = article.tagList.map((tag, i) =>
-    (<CustomLink
-      key={i}
-      href={`/tag/[pid]`}
-      as={`/tag/${encodeURIComponent(tag.slug)}`}
-    >
-      #{tag.tagname}
-    </CustomLink>))
+    (<StyledSpan>
+      <CustomLink
+        key={i}
+        href={`/tag/[pid]`}
+        as={`/tag/${encodeURIComponent(tag.slug)}`}
+      >
+        #{tag.tagname}
+      </CustomLink>
+    </StyledSpan>))
 
   return (
     <StyledCard>
