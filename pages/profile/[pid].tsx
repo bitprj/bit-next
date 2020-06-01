@@ -3,6 +3,7 @@ import React from "react";
 import useSWR, { mutate, trigger } from "swr";
 
 import ErrorMessage from "../../components/common/ErrorMessage";
+import ArticleList from "../../components/article/ArticleList";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
@@ -14,6 +15,19 @@ import {Tabs} from 'antd';
 
 const StyledDiv = styled.div`
   padding-top: 3em;
+`
+
+const StyledTabs = styled.div`
+
+    .ant-tabs-nav::before {
+      display: none;
+    }
+
+    .ant-tabs-tab-active {
+      border-color: #000;
+      background: #fff;
+    }
+
 `
 
 const Profile = ({ initialProfile }) => {
@@ -71,17 +85,19 @@ const Profile = ({ initialProfile }) => {
                 follow={handleFollow}
                 unfollow={handleUnfollow}
               />
-              <Tabs defaultActiveKey={"Posts"} size = {"large"} type={"card"} tabBarGutter={32} tabBarStyle={{border:"none"}}>
-                <Tabs.TabPane key={"Posts"} tab={"Posts"}>
-                    Posts 
-                </Tabs.TabPane>
-                <Tabs.TabPane key={"Followers"} tab={"Followers"}> 
-                    Followers 
-                </Tabs.TabPane>
-                <Tabs.TabPane key={"Following"} tab={"Following"}> 
-                   Following 
-                </Tabs.TabPane>
-              </Tabs>
+              <StyledTabs>        
+                <Tabs defaultActiveKey="1" size = {"large"}  type={"card"} tabBarGutter={32} >
+                  <Tabs.TabPane key="1" tab={"Posts"}>
+                      <ArticleList/>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane key="2" tab={"Followers"}> 
+                      Followers 
+                  </Tabs.TabPane>
+                  <Tabs.TabPane key="3" tab={"Following"}> 
+                    Following 
+                  </Tabs.TabPane>
+                </Tabs>
+              </StyledTabs> 
             </div>
           </div>
         </div>
