@@ -1,6 +1,6 @@
 import { Avatar, Input, Layout, Button, Badge } from 'antd';
 import { BellOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
-import Search from "../search/search";
+import Search from "../search/Search";
 import Link from 'next/link';
 import styled from "styled-components";
 import useSWR from "swr";
@@ -54,12 +54,12 @@ const Navbar = () => {
 
   const { data : user } = useSWR("user", storage);
 
-  const handleClick = e => {
+  /*const handleClick = e => {
     console.log('click ', e);
     this.setState({
       current: e.key,
     });
-  };
+  };*/
 
     return (
       <StyledHeader>

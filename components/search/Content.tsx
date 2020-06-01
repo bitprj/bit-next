@@ -1,5 +1,5 @@
 import React from "react";
-import Hit from "./hit";
+import Hit from "./Hit";
 import { Hits } from "react-instantsearch-dom";
 
 const Content = () => {

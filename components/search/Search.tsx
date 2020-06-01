@@ -1,6 +1,6 @@
 import React from "react";
 import { Input } from "antd";
-import algoliasearch from "algoliasearch/lite";
+import algoliasearch from "algoliasearch";
 import styled from "styled-components";
 import { InstantSearch, connectSearchBox } from "react-instantsearch-dom";
 
@@ -18,7 +18,7 @@ const client = algoliasearch("2XCFA4U7CZ", "2554992cc824ec1d9b69c2bd1e5483db");
 //algolia index in which to search
 const indexName = "BitProject";
 
-const SearchBox = ({ currentRefinement, refine }) => (
+const SearchBox = ({ currentRefinement }) => (
     <StyledSearch
       type="search"
       value={currentRefinement}
