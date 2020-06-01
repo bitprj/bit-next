@@ -76,6 +76,7 @@ const ArticleList = () => {
 
   const { articles, articlesCount } = !props.articles && !props.articlesCount ? data : props;
 
+  const { articles, articlesCount } = data;
   setPageCount(articlesCount);
 
   if (articles && articles.length === 0) {

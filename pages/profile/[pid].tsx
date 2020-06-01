@@ -3,6 +3,7 @@ import React from "react";
 import useSWR, { mutate, trigger } from "swr";
 import styled from 'styled-components';
 
+import ArticleList from "../../components/article/ArticleList";
 import CustomImage from "../../components/common/CustomImage";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import ArticleList from "../../components/article/ArticleList";
