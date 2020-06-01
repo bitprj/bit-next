@@ -4,6 +4,7 @@ import useSWR, { mutate, trigger } from "swr";
 import { Row, Col,Tabs } from 'antd';
 
 import ErrorMessage from "../../components/common/ErrorMessage";
+import ArticleList from "../../components/article/ArticleList";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
@@ -11,9 +12,23 @@ import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import Header from "../../components/global/Header"
 import styled from 'styled-components';
+import {Tabs} from 'antd';
 
 const StyledDiv = styled.div`
   padding-top: 3em;
+`
+
+const StyledTabs = styled.div`
+
+    .ant-tabs-nav::before {
+      display: none;
+    }
+
+    .ant-tabs-tab-active {
+      border-color: #000;
+      background: #fff;
+    }
+
 `
 
 const Profile = ({ initialProfile }) => {
@@ -72,6 +87,19 @@ const Profile = ({ initialProfile }) => {
                 follow={handleFollow}
                 unfollow={handleUnfollow}
               />
+              <StyledTabs>        
+                <Tabs defaultActiveKey="1" size = {"large"}  type={"card"} tabBarGutter={32} >
+                  <Tabs.TabPane key="1" tab={"Posts"}>
+                      <ArticleList/>
+                  </Tabs.TabPane>
+                  <Tabs.TabPane key="2" tab={"Followers"}> 
+                      Followers 
+                  </Tabs.TabPane>
+                  <Tabs.TabPane key="3" tab={"Following"}> 
+                    Following 
+                  </Tabs.TabPane>
+                </Tabs>
+              </StyledTabs> 
             </div>
           </div>
         </div>

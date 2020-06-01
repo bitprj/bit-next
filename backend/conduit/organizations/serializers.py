@@ -12,6 +12,7 @@ class OrganizationSchema(Schema):
     old_slug = fields.Str()
     description = fields.Str()
     createdAt = fields.DateTime()
+    username = fields.Str()
     moderators = fields.Nested(ProfileSchema, many=True)
     members = fields.Nested(ProfileSchema, many=True)
 
@@ -26,7 +27,29 @@ class OrganizationSchema(Schema):
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
+        
+        return {'organization': data }
 
+    class Meta:
+        strict = True
+
+
+class OrganizationMembersSchema(Schema):
+    moderators = fields.Nested(ProfileSchema, many=True)
+    members = fields.Nested(ProfileSchema, many=True)
+
+    organization = fields.Nested('self', exclude=('organization',), 
+                                default=True, load_only=True)
+    
+    @pre_load 
+    def make_organization(self, data, **kwargs):
+        return data['organization']
+
+    @post_dump 
+    def dump_organization(self, data, **kwargs):
+        data['moderators'] = data['moderators']
+        data['members'] = data['members']
+        
         return {'organization': data }
 
     class Meta:
@@ -48,4 +71,5 @@ class OrganizationsSchema(OrganizationSchema):
 
 
 organization_schema = OrganizationSchema()
+organization_members_schema = OrganizationMembersSchema()
 organizations_schema = OrganizationsSchema(many=True)

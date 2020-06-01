@@ -221,14 +221,8 @@ const ArticlePage = (initialArticle) => {
                       <ArticleCard key={article.slug} article = {article} />
                     ))}
           </Col>
-
-
           </Row>
       </BackGround>
-
-
-
-
     </div>
 
 
