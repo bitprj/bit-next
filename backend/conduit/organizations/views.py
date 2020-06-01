@@ -13,7 +13,8 @@ from conduit.exceptions import InvalidUsage
 from conduit.user.models import User
 from conduit.profile.models import UserProfile
 from .models import Organization
-from .serializers import (organization_schema, organizations_schema)
+from .serializers import (organization_schema, organizations_schema,
+                          organization_members_schema)
 from conduit.profile.serializers import (profile_schema, profile_schemas)
 
 blueprint = Blueprint('organizations', __name__)
@@ -106,7 +107,7 @@ def unfollow_organization(slug):
 
 @blueprint.route('/api/organizations/<slug>/members', methods=('GET',))
 @jwt_required
-@marshal_with(organization_schema)
+@marshal_with(organization_members_schema)
 def show_all_members_mods(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
