@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
+import { Row, Col,Tabs } from 'antd';
 
 import ErrorMessage from "../../components/common/ErrorMessage";
 import ArticleList from "../../components/article/ArticleList";
@@ -53,6 +54,7 @@ const Profile = ({ initialProfile }) => {
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
   const isUser = currentUser && username === currentUser?.username;
+  const {TabPane} = Tabs;
 
   const handleFollow = async () => {
     mutate(
