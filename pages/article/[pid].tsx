@@ -1,8 +1,8 @@
 import marked from "marked";
 import Router, { useRouter } from "next/router";
-import React, {CSSProperties} from "react";
+import React from "react";
 import useSWR from "swr";
-import {Tag, Row, Col, Space} from "antd";
+import {Tag, Row, Col} from "antd";
 import UserArticle from "../../components/global/UserInfoCard";
 import ArticleCard from "../../components/article/UserArticleCard";
 import styled from 'styled-components';
@@ -15,7 +15,6 @@ import ArticleAPI from "../../lib/api/article";
 import {Article} from "../../lib/types/articleType";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
-import User from "../../components/global/User";
 import axios from "axios";
 import storage from "../../lib/utils/storage";
 import checkLogin from "../../lib/utils/checkLogin";
@@ -26,10 +25,6 @@ const CenterWrapper = styled.div`
   flex:auto;
 `;
 
-const CardWrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
 
 const StyledEmoji = styled.div`  
   img{
@@ -66,8 +61,7 @@ const ArticlePage = (initialArticle) => {
   );
 
   let { articles } = fetchedArticles|| [];
-  // console.log('author', article.author);
-  // console.log('articles', articles);
+
   articles = articles ? articles.slice(0, Math.min(articles.length, 5)) : [];
 
   const [preview, setPreview] = React.useState({...article, bookmarked: false, bookmarkCount: null});
@@ -218,10 +212,10 @@ const ArticlePage = (initialArticle) => {
             </Col>
 
             <Col flex = '24%'>
-                  <UserArticle bio = {article.author.bio ? article.author.bio: 'I am a senior frontend developer, passionate about creative coding and building interactive prototypes mixing science, art & technology. I also spend time mentoring, contribution to OSS and speaking.'}
-                               location = {(article.author as any).location ? (article.author as any).location : 'Davis, CA'}
-                               occupation = {(article.author as any).occupation ? (article.author as any).occupation : 'Computer Engineering Student @ UC Davis'}
-                               joined = {(article.author as any).joined ? (article.author as any).joined : 'June 20th, 2020'}/>
+                  <UserArticle bio = {article.author.bio ? article.author.bio: ''}
+                               location = {(article.author as any).location ? (article.author as any).location : ''}
+                               occupation = {(article.author as any).occupation ? (article.author as any).occupation : ''}
+                               joined = {(article.author as any).joined ? (article.author as any).joined : ''}/>
 
                   {articles.map((article) => (
                       <ArticleCard key={article.slug} article = {article} />
