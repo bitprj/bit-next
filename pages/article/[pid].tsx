@@ -44,8 +44,8 @@ const ArticlePage = (initialArticle) => {
             <div dangerouslySetInnerHTML={markup} />
             <ul className="tag-list">
               {article.tagList.map((tag) => (
-                <li key={tag.slug} className="tag-default tag-pill tag-outline">
-                  {tag.tagname}
+                <li key={tag["slug"]} className="tag-default tag-pill tag-outline">
+                  {tag["tagname"]}
                 </li>
               ))}
             </ul>
