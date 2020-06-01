@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
-import { Row, Col,Tabs } from 'antd';
+import styled from 'styled-components';
 
 import ErrorMessage from "../../components/common/ErrorMessage";
 import ArticleList from "../../components/article/ArticleList";
@@ -11,8 +11,7 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import Header from "../../components/global/Header"
-import styled from 'styled-components';
-import {Tabs} from 'antd';
+import { Tabs } from 'antd';
 
 const StyledDiv = styled.div`
   padding-top: 3em;
