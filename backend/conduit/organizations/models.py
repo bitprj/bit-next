@@ -57,6 +57,29 @@ class Organization(Model, SurrogatePK):
     def remove_member(self, profile):
         if profile in self.members:
             self.members.remove(profile)
+            return True  
+        return False
+
+    def update_slug(self, slug):
+        if slug != self.slug:
+            self.slug = slug
+            return True
+        return False
+
+    def is_member(self, profile):
+        if profile in self.members:
+            return True
+        return False
+
+    def moderator(self, profile):
+        if profile in self.moderators:
+            return True
+        return False
+
+    def promote(self, user_profile):
+        if user_profile in self.members:
+            self.members.remove(user_profile)
+            self.moderators.append(user_profile)
             return True
         return False
 

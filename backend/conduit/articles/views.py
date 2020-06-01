@@ -27,7 +27,7 @@ blueprint = Blueprint('articles', __name__)
              'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int(), 'isPublished': fields.Str()})
 @marshal_with(articles_schema)
 def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
-    res = Article.query
+    res = Article.query.filter_by(needsReview=False)
     if isPublished is not None:
         if isPublished != 'all':
             res = Article.query.filter_by(isPublished=isPublished)
@@ -55,7 +55,14 @@ def make_article(body, title, description, isPublished, tagList=None):
             if not mtag:
                 mtag = Tags(tag)
                 mtag.save()
-            article.add_tag(mtag)
+            if mtag.modSetting == 3:
+                if current_user.isAdmin:
+                    article.add_tag(mtag)                    
+            elif mtag.modSetting == 2:
+                article.add_tag(mtag)
+                article.needsReview = True
+            else: # mtag.modSetting == 1:
+                article.add_tag(mtag)
     article.save()
     return article
 
