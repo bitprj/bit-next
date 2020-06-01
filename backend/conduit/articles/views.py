@@ -27,9 +27,14 @@ blueprint = Blueprint('articles', __name__)
 @marshal_with(articles_schema)
 def get_articles(tag=None, author=None, favorited=None, limit=20, offset=0):
     res = Article.query
+    if isPublished is None:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.tagname == tag))
     if author:
+        res = res.join(Article.author).join(User).filter(User.username == author)
+    if author and author == current_user.username:
+        res = Article.query
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
@@ -49,7 +54,14 @@ def make_article(body, title, description, tagList=None):
             if not mtag:
                 mtag = Tags(tag)
                 mtag.save()
-            article.add_tag(mtag)
+            if mtag.modSetting == 3:
+                if current_user.isAdmin:
+                    article.add_tag(mtag)                    
+            elif mtag.modSetting == 2:
+                article.add_tag(mtag)
+                article.needsReview = True
+            else: # mtag.modSetting == 1:
+                article.add_tag(mtag)
     article.save()
     return article
 

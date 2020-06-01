@@ -12,6 +12,7 @@ ARTICLE_NOT_FOUND = template(['Article not found'], code=404)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
 
 
+
 class InvalidUsage(Exception):
     status_code = 500
 

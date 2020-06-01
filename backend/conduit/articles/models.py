@@ -18,6 +18,17 @@ tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
 
+org_assoc = db.Table("org_assoc",
+                    db.Column("organization", db.Integer, 
+                        db.ForeignKey("organization.id")),
+                    db.Column("article", db.Integer, 
+                        db.ForeignKey("article.id"))
+                    )
+
+bookmarker_assoc = db.Table("bookmarker_assoc",
+                     db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
+                     db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
+
 
 class Comment(Model, SurrogatePK):
     __tablename__ = 'comment'
@@ -44,6 +55,9 @@ class Article(SurrogatePK, Model):
     body = Column(db.Text)
     createdAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
+    needsReview = Column(db.Boolean, nullable=False, default=False)
+    isPublished = Column(db.Boolean, nullable=False)
+
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('articles'))
     favoriters = relationship(
