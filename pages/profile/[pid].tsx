@@ -1,36 +1,24 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
-import styled from 'styled-components';
+import { Row, Col,Tabs } from 'antd';
 
 import ArticleList from "../../components/article/ArticleList";
 import CustomImage from "../../components/common/CustomImage";
 import ErrorMessage from "../../components/common/ErrorMessage";
-import ArticleList from "../../components/article/ArticleList";
+import Maybe from "../../components/common/Maybe";
+import EditProfileButton from "../../components/profile/EditProfileButton";
+import FollowUserButton from "../../components/profile/FollowUserButton";
+import ProfileTab from "../../components/profile/ProfileTab";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
-import Header from "../../components/global/Header"
-import { Tabs } from 'antd';
-
-const StyledDiv = styled.div`
-  padding-top: 3em;
-`
-
-const StyledTabs = styled.div`
-
-    .ant-tabs-nav::before {
-      display: none;
-    }
-
-    .ant-tabs-tab-active {
-      border-color: #000;
-      background: #fff;
-    }
-
-`
+import User from "../../components/global/User";
+import FollowerList from "../../components/global/FollowerList";
+import Tab_list from "../../components/profile/Tab_list";
+import AccountSettings from "../../components/profile/AccountSettings";
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -94,37 +82,127 @@ const Profile = ({ initialProfile }) => {
     trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
+  const Followers = () => {
+    const response = UserAPI.followers(pid)
+    setFollowersList(response)
+  }
+  const Followings=()=>{
+    const response = UserAPI.followings(pid)
+    setFollowingsList(response)
+  }
+  const TabChange = (key) =>{
+    if(key=="Posts"){
+      setTabList(["Most Viewed","Most Liked","Most Recent"])
+      setPostsPage(true)
+      setFollowersPage(false)
+      setFollowingsPage(false)
+      setTagPage(false)
+      setSettingsPage(false)
+    }
+    else if(key=="Followers"){
+      setTabList(["Old -> New","New -> Old"])
+      setPostsPage(false)
+      setFollowersPage(true)
+      setFollowingsPage(false)
+      setTagPage(false)
+      setSettingsPage(false)
+      Followers()
+    }
+    else if(key=="Following"){
+      setTabList(["Old -> New","New -> Old"])
+      setPostsPage(false)
+      setFollowersPage(false)
+      setFollowingsPage(true)
+      setTagPage(false)
+      setSettingsPage(false)
+      Followings()
+    }
+    else if(key=="Account Settings"){
+      setTabList(["Settings","Organization","API Keys"])
+      setPostsPage(false)
+      setFollowersPage(false)
+      setFollowingsPage(false)
+      setTagPage(false)
+      setSettingsPage(true)
+    }
+    else{
+      setTabList(["Most Viewed","Most Liked","Most Recent"])
+      setPostsPage(false)
+      setFollowersPage(false)
+      setFollowingsPage(false)
+      setTagPage(true)
+      setSettingsPage(false)
+    }
+  }
+  const TabView = (key)=>{
+  }
 
-  return (
-    <StyledDiv>
-      <div className="user-info">
-        <div className="container">
-          <div className="row">
-            <div className="col-xs-12 col-md-10 ">
-              <Header
-                user={profile}
-                follow={handleFollow}
-                unfollow={handleUnfollow}
-              />
-              <StyledTabs>        
-                <Tabs defaultActiveKey="1" size = {"large"}  type={"card"} tabBarGutter={32} >
-                  <Tabs.TabPane key="1" tab={"Posts"}>
-                      <ArticleList/>
-                  </Tabs.TabPane>
-                  <Tabs.TabPane key="2" tab={"Followers"}> 
-                      Followers 
-                  </Tabs.TabPane>
-                  <Tabs.TabPane key="3" tab={"Following"}> 
-                    Following 
-                  </Tabs.TabPane>
-                </Tabs>
-              </StyledTabs> 
-            </div>
-          </div>
-        </div>
-      </div>
-    </StyledDiv>
-  );
+  if(!isUser){
+    return(
+      <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
+        <Col span={2}></Col>
+        <Col className="gutter-row" span={4}>
+        <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <User name={username} img={image} hasButton={true} following={Following_Button} onClick={handleFollow} />
+          </Col>
+          <Col span={24}>
+            <Tabs tabPosition={"left"} size={'large'} animated={false} onTabClick={key=>TabChange(key)}>
+                <TabPane tab="Posts" key="Posts">
+                </TabPane>
+            </Tabs>
+          </Col>
+        </Row>
+        </Col>
+        <Col span={16}>
+          <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
+          </Col>
+          <Col span={16}>
+            <ArticleList/>
+          </Col>
+          </Row>
+        </Col>
+        <Col span={2}>
+        </Col>
+      </Row>
+    )
+  }
+  else{
+    return (
+      <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
+        <Col span={2}></Col>
+        <Col className="gutter-row" span={4}>
+        <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <User name={username} img={image} username={username}/>
+          </Col>
+          <Col span={24}>
+          <Tab_list tabs={list} onClick={key=>TabChange(key)} position={"left"}/>
+          </Col>
+        </Row>
+        </Col>
+        <Col span={12}>
+          <Row gutter={[16, 40]}>
+          <Col span={24}>
+            <Tab_list tabs={tab_select_list} onClick={key=>TabView(key)} position={"top"}/>
+          </Col>
+          <Col span={24} style={{paddingTop:"0"}}>
+            {isPosts?<ArticleList/>:null}
+            {isFollowers?<FollowerList followers={followersList}/>:null}
+            {isFollowings?<FollowerList followers={followingsList}/>:null}
+            {isTag?<ArticleList/>:null}
+            {isSettings?<AccountSettings/>:null}
+          </Col>
+          </Row>
+        </Col>
+        <Col span={3}>
+          {isSettings?<p style={{opacity:"0.7",marginTop:"16px",fontSize:"18px"}}>Live Website</p>:null}
+        </Col>
+      </Row>
+    );
+  }
 };
 
 Profile.getInitialProps = async ({ query: { pid } }) => {
