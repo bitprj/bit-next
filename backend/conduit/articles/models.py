@@ -26,7 +26,7 @@ org_assoc = db.Table("org_assoc",
                     db.Column("article", db.Integer, 
                         db.ForeignKey("article.id"))
                     )
-                    
+
 bookmarker_assoc = db.Table("bookmarker_assoc",
                      db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
                      db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
@@ -57,7 +57,9 @@ class Article(SurrogatePK, Model):
     body = Column(db.Text)
     createdAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
-    needsReview = Column(db.Boolean, default=False)
+    needsReview = Column(db.Boolean, nullable=False, default=False)
+    isPublished = Column(db.Boolean, nullable=False)
+
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('articles'))
     favoriters = relationship(
@@ -99,14 +101,17 @@ class Article(SurrogatePK, Model):
     def is_favourite(self, profile):
         return bool(self.query.filter(favoriter_assoc.c.favoriter == profile.id).count())
 
+    #Function to bookmark an article
     def bookmark(self, profile):
         if not self.is_bookmarked(profile):
             self.bookmarkers.append(profile)
             return True
         return False
 
+    #Function to check if a current bookmark already exists for a particular article and user
     def is_bookmarked(self, profile):
-        return bool(self.query.filter(bookmarker_assoc.c.bookmarker == profile.id).count())
+        return bool(self.query.filter(db.and_(bookmarker_assoc.c.bookmarker == profile.id,
+            bookmarker_assoc.c.bookmarked_article == self.id)).count())
 
     def add_tag(self, tag):
         if tag not in self.tagList:

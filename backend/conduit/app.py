@@ -41,8 +41,8 @@ def register_blueprints(app):
     cors.init_app(articles.views.blueprint, origins=origins)
     cors.init_app(organizations.views.blueprint, orgins=origins)
     cors.init_app(tags.views.blueprint, origins=origins)
-    
 
+    
     app.register_blueprint(user.views.blueprint)
     app.register_blueprint(profile.views.blueprint)
     app.register_blueprint(articles.views.blueprint)
