@@ -21,7 +21,7 @@ class User(SurrogatePK, Model):
     twitterLink = Column(db.String(100), nullable=True)
     linkedinLink = Column(db.String(100), nullable=True)
     website = Column(db.Text(), nullable = True)
-    isAdmin = Column(db.Boolean, nullable=True)
+    isAdmin = Column(db.Boolean, nullable=False, default=False)
     token: str = ''
 
     def __init__(self, username, email, password=None, **kwargs):
