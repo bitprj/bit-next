@@ -34,6 +34,9 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
         res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
         res = res.join(Article.author).join(User).filter(User.username == author)
+    if author and author == current_user.username:
+        res = Article.query
+        res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
 
