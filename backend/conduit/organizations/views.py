@@ -14,6 +14,7 @@ from conduit.user.models import User
 from conduit.profile.models import UserProfile
 from .models import Organization
 from .serializers import (organization_schema, organizations_schema)
+from conduit.profile.serializers import (profile_schema, profile_schemas)
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -30,8 +31,8 @@ blueprint = Blueprint('organizations', __name__)
 def make_organization(name, description, slug, **kwargs):
     try:
         organization = Organization(name=name, description=description, slug=slug)
-        user = current_user.profile
-        organization.add_moderator(user)
+        profile = current_user.profile
+        organization.add_moderator(profile)
         organization.save()
     except IntegrityError:
         db.session.rollback()
@@ -71,5 +72,74 @@ def update_organization(slug, old_slug, **kwargs):
 def delete_organization(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     organization.delete()
+
+    return '', 200
+
+
+@blueprint.route('/api/organizations/<slug>/follow', methods=('POST',))
+@jwt_required
+@marshal_with(organization_schema)
+def follow_organization(slug):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    organization.add_member(profile)
+    organization.save()
+
+    return organization
+
+
+@blueprint.route('/api/organizations/<slug>/follow', methods=('DELETE',))
+@jwt_required
+@marshal_with(organization_schema)
+def unfollow_organization(slug):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    organization.remove_member(profile)
+    organization.save()
+
+    return organization
+
+
+@blueprint.route('/api/organizations/<slug>/members', methods=('GET',))
+@jwt_required
+@marshal_with(organization_schema)
+def show_all_members_mods(slug):
+    organization = Organization.query.filter_by(slug=slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
     
+    return organization
+
+
+@blueprint.route('/api/organizations/<slug>/members', methods=('POST',))
+@jwt_required
+@use_kwargs(profile_schema)
+@marshal_with(profile_schema)
+def promote_member(slug, username, **kwargs):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    user = User.query.filter_by(username=username).first()
+    if organization.moderator(profile):
+        organization.promote(user.profile)
+    organization.save()
+
+    return user.profile
+
+
+@blueprint.route('/api/organizations/<slug>/members', methods=('DELETE',))
+@jwt_required
+@use_kwargs(profile_schema)
+@marshal_with(profile_schema)
+def remove_member(slug, username, **kwargs):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=slug).first()
+    user = User.query.filter_by(username=username).first()
+    if organization.moderator(profile):
+        organization.remove_member(user.profile)
+    organization.save()
+
     return '', 200
