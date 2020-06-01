@@ -18,7 +18,7 @@ const client = algoliasearch("2XCFA4U7CZ", "2554992cc824ec1d9b69c2bd1e5483db");
 //algolia index in which to search
 const indexName = "BitProject";
 
-const SearchBox = ({ currentRefinement }) => (
+const SearchBox = ( currentRefinement: object ) => (
     <StyledSearch
       type="search"
       value={currentRefinement}
