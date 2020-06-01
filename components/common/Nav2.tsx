@@ -1,4 +1,4 @@
-import { Avatar, Input, Layout, Button, Badge } from 'antd';
+import { Avatar, Input, Layout, Button, Badge, Popover } from 'antd';
 import { BellOutlined, MenuOutlined, UserOutlined } from '@ant-design/icons';
 import Search from "../search/Search";
 import Link from 'next/link';
@@ -49,6 +49,24 @@ const StyledMenuOutlined = styled(MenuOutlined)`
   margin: 0px 30px;
   font-size: 25px;
 `
+const InsidePopoverDiv = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`
+const PopoverText = styled.p`
+  font-family: Open Sans, sans-serif;
+  font-size: 25px;
+  font-weight: bold;
+`
+
+const content = (
+  <InsidePopoverDiv>
+    <PopoverText>
+      <Link href="/user/login">Sign In</Link> / <Link href="/user/register">Sign Up</Link>
+    </PopoverText>
+  </InsidePopoverDiv>
+);
 
 const Navbar = () => {
 
@@ -77,7 +95,14 @@ const Navbar = () => {
         }
         {
           !user &&
-          <StyledMenuOutlined />
+          <Popover
+          placement="bottomRight"
+          title="pls join..."
+          content={content}
+          trigger="click"
+          arrowPointAtCenter>
+            <StyledMenuOutlined />
+          </Popover>
         }
       </StyledHeader>
     );
