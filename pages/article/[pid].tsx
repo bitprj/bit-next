@@ -1,6 +1,6 @@
 import marked from "marked";
 import Router, { useRouter } from "next/router";
-import React from "react";
+import React, {CSSProperties} from "react";
 import useSWR from "swr";
 import {Tag, Row, Col, Space} from "antd";
 import UserArticle from "../../components/global/UserInfoCard";
@@ -70,8 +70,7 @@ const ArticlePage = (initialArticle) => {
   // console.log('articles', articles);
   articles = articles ? articles.slice(0, Math.min(articles.length, 5)) : [];
 
-  const [preview, setPreview] = React.useState(article);
-  const [hover, setHover] = React.useState(false);
+  const [preview, setPreview] = React.useState({...article, bookmarked: false, bookmarkCount: null});
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
 
@@ -188,13 +187,13 @@ const ArticlePage = (initialArticle) => {
             <Col flex = '64%' >
               <div>
                 <div>
-                  <img src = {article.image ? article.image : staticSrc} alt = 'image' style = {styles.imgContainer}/>
+                  <img src = {(article as any).image ? (article as any).image : staticSrc} alt = 'image' style = {{objectFit:'cover', objectPosition: '0 40%', width: '100%'}}/>
                 </div>
                 <ul className="tag-list">
                   {article.tagList.map((tag) => (
-                      <li key={tag.tagname}>
+                      <li key={(tag as any).tagname}>
                         <Tag style = {styles.customTag}>
-                          #{tag.tagname}
+                          #{(tag as any).tagname}
                         </Tag>
                       </li>
                   ))}
@@ -220,9 +219,9 @@ const ArticlePage = (initialArticle) => {
 
             <Col flex = '24%'>
                   <UserArticle bio = {article.author.bio ? article.author.bio: 'I am a senior frontend developer, passionate about creative coding and building interactive prototypes mixing science, art & technology. I also spend time mentoring, contribution to OSS and speaking.'}
-                               location = {article.author.location ? article.author.location : 'Davis, CA'}
-                               occupation = {article.author.occupation ? article.author.occupation : 'Computer Engineering Student @ UC Davis'}
-                               joined = {article.author.joined ? article.author.joined : 'June 20th, 2020'}/>
+                               location = {(article.author as any).location ? (article.author as any).location : 'Davis, CA'}
+                               occupation = {(article.author as any).occupation ? (article.author as any).occupation : 'Computer Engineering Student @ UC Davis'}
+                               joined = {(article.author as any).joined ? (article.author as any).joined : 'June 20th, 2020'}/>
 
                   {articles.map((article) => (
                       <ArticleCard key={article.slug} article = {article} />
@@ -253,12 +252,6 @@ const styles = {
     border: 0,
     marginTop: '2em',
     fontSize: '1.5em'
-  },
-  imgContainer:{
-    width: '100%',
-    // height: '30em', /* height of container */
-    objectFit: 'cover',
-    objectPosition: '0 40%'
   },
   rightSideBar: {
     marginLeft: '2em'
