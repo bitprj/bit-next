@@ -4097,7 +4097,12 @@ input[type=button].btn-block {
 }
 
 .navbar {
-	position: relative;
+	position: fixed;
+	top: 0px;
+    left: 0px;
+    right: 0px;
+	z-index: 101;
+	background:#fff;
 	padding: .5rem 1rem
 }
 
@@ -7191,6 +7196,12 @@ footer .attribution {
 	margin-bottom: .2rem
 }
 
+.article-page {
+    position: relative;
+    margin: 0 auto;
+    max-width: 1250px;
+    text-align: left;
+}
 .article-page .banner {
 	padding: 2rem 0
 }
