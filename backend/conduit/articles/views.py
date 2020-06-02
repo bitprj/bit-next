@@ -27,13 +27,15 @@ blueprint = Blueprint('articles', __name__)
              'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int(), 'isPublished': fields.Str()})
 @marshal_with(articles_schema)
 def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
-    res = Article.query.filter_by(needsReview=False)
-    if isPublished is not None:
-        if isPublished != 'all':
-            res = Article.query.filter_by(isPublished=isPublished)
+    res = Article.query
+    if isPublished is None:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
+        res = res.join(Article.author).join(User).filter(User.username == author)
+    if author and author == current_user.username:
+        res = Article.query
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)

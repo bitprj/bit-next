@@ -9,7 +9,7 @@ const StyledCard = styled(Card)`
   font-style: normal;
   font-weight: 600;
   background: #FFFFFF;
-  width: 257px;
+  width: 300px;
   border: 0.4em solid rgba(210, 210, 210, 0.2);
   border-radius: 0px 0px 0.5em 0.5em;
 `
