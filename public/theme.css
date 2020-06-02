@@ -7191,6 +7191,12 @@ footer .attribution {
 	margin-bottom: .2rem
 }
 
+.article-page {
+    position: relative;
+    margin: 0 auto;
+    max-width: 1250px;
+    text-align: left;
+}
 .article-page .banner {
 	padding: 2rem 0
 }
