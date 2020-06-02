@@ -1,12 +1,18 @@
 import marked from "marked";
-import { useRouter } from "next/router";
+import Router, { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
+import {Tag, Row, Col} from "antd";
+import UserArticle from "../../components/global/UserInfoCard";
+import ArticleCard from "../../components/article/UserArticleCard";
+import styled from 'styled-components';
+
+import Twemoji from 'react-twemoji';
 
 import ArticleMeta from "../../components/article/ArticleMeta";
 import CommentList from "../../components/comment/CommentList";
 import ArticleAPI from "../../lib/api/article";
-import { Article } from "../../lib/types/articleType";
+import {Article} from "../../lib/types/articleType";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import axios from "axios";
@@ -66,12 +72,114 @@ const ArticlePage = (initialArticle) => {
   const {
     data: fetchedArticle,
   } = useSWR(
-    `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}`,
-    fetcher,
-    { initialData: initialArticle }
+      `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}`,
+      fetcher,
+      { initialData: initialArticle }
   );
 
   const { article }: Article = fetchedArticle || initialArticle;
+
+  const { data: fetchedArticles } = useSWR(
+      `${SERVER_BASE_URL}/articles?author=${article.author.username}`,
+      fetcher
+  );
+
+  let { articles } = fetchedArticles|| [];
+
+  articles = articles ? articles.slice(0, Math.min(articles.length, 5)) : [];
+
+  const [preview, setPreview] = React.useState({...article, bookmarked: false, bookmarkCount: null});
+  const { data: currentUser } = useSWR("user", storage);
+  const isLoggedIn = checkLogin(currentUser);
+
+  const handleClickFavorite = async slug =>{
+    if (!isLoggedIn) {
+      Router.push(`/user/login`);
+      return;
+    }
+    setPreview({
+      ...preview,
+      favorited: !preview.favorited,
+      favoritesCount: preview.favorited
+          ? preview.favoritesCount - 1
+          : preview.favoritesCount + 1,
+    });
+    try {
+      if (preview.favorited) {
+        await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
+          headers: {
+            Authorization: `Token ${currentUser?.token}`,
+          },
+        });
+        alert('Removed from favorites')
+      } else {
+        await axios.post(
+            `${SERVER_BASE_URL}/articles/${slug}/favorite`,
+            {},
+            {
+              headers: {
+                Authorization: `Token ${currentUser?.token}`,
+              },
+            }
+        );
+        alert('Added to favorites');
+      }
+    } catch (error) {
+      setPreview({
+        ...preview,
+        favorited: !preview.favorited,
+        favoritesCount: preview.favorited
+            ? preview.favoritesCount - 1
+            : preview.favoritesCount + 1,
+      });
+    }
+  };
+
+  const handleClickBookmark = async slug =>{
+    if (!isLoggedIn) {
+      Router.push(`/user/login`);
+      return;
+    }
+    setPreview({
+      ...preview,
+      bookmarked: !preview.bookmarked,
+      bookmarkCount: preview.bookmarked
+          ? preview.bookmarkCount - 1
+          : preview.bookmarkCount + 1,
+    });
+    try {
+      if (preview.bookmarked) {
+        await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/bookmark`, {
+          headers: {
+            Authorization: `Token ${currentUser?.token}`,
+          },
+        });
+        alert('Removed from bookmark');
+      } else {
+        await axios.post(
+            `${SERVER_BASE_URL}/articles/${slug}/bookmark`,
+            {},
+            {
+              headers: {
+                Authorization: `Token ${currentUser?.token}`,
+              },
+            }
+        );
+        alert('Successfully bookmarked');
+      }
+    } catch (error) {
+      console.log(error);
+      setPreview({
+        ...preview,
+        bookmarked: !preview.bookmarked,
+        bookmarkCount: preview.bookmarked
+            ? preview.bookmarkCount - 1
+            : preview.bookmarkCount + 1,
+      });
+    }
+  };
+
+  const staticSrc = 'https://i.ytimg.com/vi/cNEsl9J69OQ/maxresdefault.jpg';
 
   const markup = {
     __html: marked(article.body, { sanitize: true }),
@@ -114,6 +222,8 @@ const ArticlePage = (initialArticle) => {
                     ))}
       </StickyRight>
     </div>
+
+
   );
 };
 
