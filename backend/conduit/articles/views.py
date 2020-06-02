@@ -160,11 +160,12 @@ def get_comments(slug):
 @jwt_required
 @use_kwargs(comment_schema)
 @marshal_with(comment_schema)
-def make_comment_on_article(slug, body, **kwargs):
+def make_comment_on_article(slug, body, comment_id = None, **kwargs):
     article = Article.query.filter_by(slug=slug).first()
     if not article:
         raise InvalidUsage.article_not_found()
-    comment = Comment(article, current_user.profile, body, **kwargs)
+
+    comment = Comment(article, current_user.profile, body, comment_id, **kwargs)
     comment.save()
     return comment
 
