@@ -35,9 +35,6 @@ const StyledEmoji = styled.div`
   }
 `;
 
-const BackGround = styled.div`
-  background-color: #F5F5F5;
-`;
 
 const ArticlePage = (initialArticle) => {
   const router = useRouter();
@@ -163,9 +160,8 @@ const ArticlePage = (initialArticle) => {
 
   return (
     <div className="article-page">
-      <BackGround>
           <Row>
-            <Col flex = '12%'>
+            {/* <Col flex = '12%'>
               <CenterWrapper>
                 <Twemoji options={{ className: 'twemoji' }}>
                   <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickFavorite(article.slug)}>
@@ -176,9 +172,9 @@ const ArticlePage = (initialArticle) => {
                   </StyledEmoji>
                 </Twemoji>
               </CenterWrapper>
-            </Col>
+            </Col> */}
 
-            <Col flex = '64%' >
+            <Col flex = '64%'>
               <div>
                 <div>
                   <img src = {(article as any).image ? (article as any).image : staticSrc} alt = 'image' style = {{objectFit:'cover', objectPosition: '0 40%', width: '100%'}}/>
@@ -197,11 +193,7 @@ const ArticlePage = (initialArticle) => {
               </div>
 
               <div className="container page">
-                <div className="article-content">
-                  <div className="col-xs-12">
                     <div dangerouslySetInnerHTML={markup} />
-                  </div>
-                </div>
                 <div className="article-actions" />
                 <div className="row">
                   <div className="col-xs-12 col-md-8 offset-md-2">
@@ -222,7 +214,6 @@ const ArticlePage = (initialArticle) => {
                     ))}
           </Col>
           </Row>
-      </BackGround>
     </div>
 
 
@@ -239,7 +230,7 @@ const styles = {
     backgroundColor: 'white',
     border: 0,
     marginTop: '2em',
-    fontSize: '1.5em'
+    fontSize: '1em'
   },
   rightSideBar: {
     marginLeft: '2em'
