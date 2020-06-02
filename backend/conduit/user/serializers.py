@@ -12,6 +12,11 @@ class UserSchema(Schema):
     token = fields.Str(dump_only=True)
     createdAt = fields.DateTime(attribute='created_at', dump_only=True)
     updatedAt = fields.DateTime(attribute='updated_at')
+    occupation = fields.Str()
+    githubLink = fields.Url()
+    twitterLink = fields.Url()
+    linkedinLink = fields.Url()
+    website = fields.Url()
     # ugly hack.
     user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
 
@@ -34,5 +39,25 @@ class UserSchema(Schema):
         strict = True
 
 
+class FollowSchema(Schema):
+    username = fields.Str()
+    email = fields.Email()
+    following = fields.Bool()
+    
+    user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
+
+    @pre_load
+    def make_user(self, data, **kwargs):
+        return data['user']
+
+    @post_dump
+    def dump_user(self, data, **kwargs):
+        return {'user': data}
+
+    class Meta:
+        strict = True
+
+
 user_schema = UserSchema()
 user_schemas = UserSchema(many=True)
+followers_schema = FollowSchema(many=True)
