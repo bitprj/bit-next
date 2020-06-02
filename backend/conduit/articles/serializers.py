@@ -17,7 +17,6 @@ class ArticleSchema(Schema):
     description = fields.Str()
     createdAt = fields.DateTime(format='%m-%d-%Y')
     body = fields.Str()
-    needsReview = fields.Boolean()
     updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
     needsReview = fields.Boolean()
     author = fields.Nested(ProfileSchema)
@@ -61,7 +60,8 @@ class CommentSchema(Schema):
     updatedAt = fields.DateTime(dump_only=True)
     author = fields.Nested(ProfileSchema)
     id = fields.Int()
-
+    comment_id = fields.Int()
+    parentComment = (fields.Nested('self', many=True))
     # for the envelope
     comment = fields.Nested('self', exclude=('comment',), default=True, load_only=True)
 
