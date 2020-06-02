@@ -9,7 +9,6 @@ from conduit.database import (Model, SurrogatePK, db, Column,
                               reference_col, relationship)
 from conduit.profile.models import UserProfile
 from conduit.tags.models import Tags
-from conduit.organizations.models import Organization
 
 
 favoriter_assoc = db.Table("favoritor_assoc",
@@ -24,8 +23,7 @@ org_assoc = db.Table("org_assoc",
                     db.Column("organization", db.Integer, 
                         db.ForeignKey("organization.id")),
                     db.Column("article", db.Integer, 
-                        db.ForeignKey("article.id"))
-                    )
+                        db.ForeignKey("article.id")))
 
 bookmarker_assoc = db.Table("bookmarker_assoc",
                      db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
@@ -77,7 +75,7 @@ class Article(SurrogatePK, Model):
 
     comments = relationship('Comment', backref=db.backref('article'), lazy='dynamic')
 
-    organizations = relationship('Organization', secondary=org_assoc,      
+    org_articles = relationship('Organization', secondary=org_assoc,      
                                  backref=db.backref('org_article'))
 
     def __init__(self, author, title, body, description, slug=None, **kwargs):
@@ -121,6 +119,11 @@ class Article(SurrogatePK, Model):
             return True
         return False
 
+    def publish_org(self, article):
+        self.needsReview = False
+        self.org_articles.append(article)
+        return True
+    
     @property
     def favoritesCount(self):
         return len(self.favoriters.all())

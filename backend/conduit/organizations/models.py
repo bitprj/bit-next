@@ -43,8 +43,8 @@ class Organization(Model, SurrogatePK):
     members = relationship('UserProfile', secondary=member_assoc, 
                            backref=db.backref('mem_organization'),
                            lazy='dynamic')
-    review_article = relationship('Article', secondary=article_assoc,
-                                backref=db.backref=('rev_organization'),
+    pending_articles = relationship('Article', secondary=article_assoc,
+                                backref=db.backref('article_organization'),
                                 lazy='dynamic')
 
 
@@ -90,5 +90,17 @@ class Organization(Model, SurrogatePK):
         if user_profile in self.members:
             self.members.remove(user_profile)
             self.moderators.append(user_profile)
+            return True
+        return False
+
+    def request_review(self, article):
+        if article not in self.pending_articles:
+            self.pending_articles.append(article)
+            return True
+        return False
+
+    def remove_review_status(self, article):
+        if article in self.pending_articles:
+            self.pending_articles.remove(article)
             return True
         return False

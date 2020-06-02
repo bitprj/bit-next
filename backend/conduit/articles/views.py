@@ -8,7 +8,7 @@ from flask_jwt_extended import current_user, jwt_required, jwt_optional
 from marshmallow import fields
 
 from conduit.exceptions import InvalidUsage
-from conduit.user.models import User
+from conduit.user.models import User        
 from .models import Article, Tags, Comment
 from .serializers import (article_schema, articles_schema, comment_schema,
                           comments_schema)

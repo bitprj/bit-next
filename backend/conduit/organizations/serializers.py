@@ -1,3 +1,4 @@
+  
 # coding: utf-8
 
 from marshmallow import Schema, fields, pre_load, post_dump
@@ -23,7 +24,29 @@ class OrganizationSchema(Schema):
     def make_organization(self, data, **kwargs):
         return data['organization']
 
-    @post_dump
+    @post_dump 
+    def dump_organization(self, data, **kwargs):
+        data['moderators'] = data['moderators']
+        data['members'] = data['members']
+        
+        return {'organization': data }
+
+    class Meta:
+        strict = True
+
+
+class OrganizationMembersSchema(Schema):
+    moderators = fields.Nested(ProfileSchema, many=True)
+    members = fields.Nested(ProfileSchema, many=True)
+
+    organization = fields.Nested('self', exclude=('organization',), 
+                                default=True, load_only=True)
+    
+    @pre_load 
+    def make_organization(self, data, **kwargs):
+        return data['organization']
+
+    @post_dump 
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
@@ -40,6 +63,7 @@ class OrganizationsSchema(OrganizationSchema):
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
         data['members'] = data['members']
+
         return data
     
     @post_dump(pass_many=True)
@@ -48,4 +72,5 @@ class OrganizationsSchema(OrganizationSchema):
 
 
 organization_schema = OrganizationSchema()
+organization_members_schema = OrganizationMembersSchema()
 organizations_schema = OrganizationsSchema(many=True)

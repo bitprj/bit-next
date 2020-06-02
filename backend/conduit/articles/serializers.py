@@ -38,6 +38,47 @@ class ArticleSchema(Schema):
         strict = True
 
 
+class OrgArticleSchema(Schema):
+    id = fields.Integer(dump_only=True)
+    org_slug = fields.Str()
+    title = fields.Str()
+    description = fields.Str()
+    createdAt = fields.DateTime()
+    body = fields.Str()
+    updatedAt = fields.DateTime(dump_only=True)
+    author = fields.Nested(ProfileSchema)
+    
+    # for the envelope
+    article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
+    tagList = fields.List(fields.Str())
+    favoritesCount = fields.Int(dump_only=True)
+    favorited = fields.Bool(dump_only=True)
+    needsReview = fields.Bool(truthy={True})
+
+    @pre_load
+    def make_article(self, data, **kwargs):
+        return data['article']
+
+    @post_dump
+    def dump_article(self, data, **kwargs):
+        return {'article': data}
+
+    class Meta:
+        strict = True
+
+
+class OrgArticlesSchema(OrgArticleSchema):
+
+    @post_dump
+    def dump_article(self, data, **kwargs):
+        data['author'] = data['author']['profile']
+        return data
+
+    @post_dump(pass_many=True)
+    def dump_articles(self, data, many, **kwargs):
+        return {'articles': data, 'articlesCount': len(data)}
+
+
 class ArticleSchemas(ArticleSchema):
 
     @post_dump
@@ -67,6 +108,7 @@ class CommentSchema(Schema):
     @post_dump
     def dump_comment(self, data, **kwargs):
         data['author'] = data['author']['profile']
+
         return {'comment': data}
 
     class Meta:
@@ -86,6 +128,8 @@ class CommentsSchema(CommentSchema):
 
 
 article_schema = ArticleSchema()
+org_article_schema = OrgArticleSchema()
+org_articles_schema = OrgArticlesSchema(many=True)
 articles_schema = ArticleSchemas(many=True)
 comment_schema = CommentSchema()
 comments_schema = CommentsSchema(many=True)
