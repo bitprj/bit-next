@@ -35,6 +35,33 @@ const StyledEmoji = styled.div`
   }
 `;
 
+const ArticleContain = styled.div`  
+  width: 880px;
+  max-width: 100%;
+  margin: 70px auto 20px;
+  text-align: left;
+  @media screen and (min-width: 1250px) {
+        margin-left:16px
+  }
+`;
+
+const StickyRight = styled.div`  
+   display: none;
+   @media screen and (min-width: 1250px) {
+        display:block;
+        position: fixed;
+        left: calc(50% + 298px);
+        top: 70px;
+        bottom: 20px;
+        padding: 0 2px;
+        display: flex;
+        flex-flow: column wrap;
+        overflow: hidden;
+        z-index: 100;
+        width: 300px;
+    }
+`;
+
 
 const ArticlePage = (initialArticle) => {
   const router = useRouter();
@@ -160,21 +187,7 @@ const ArticlePage = (initialArticle) => {
 
   return (
     <div className="article-page">
-          <Row>
-            {/* <Col flex = '12%'>
-              <CenterWrapper>
-                <Twemoji options={{ className: 'twemoji' }}>
-                  <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickFavorite(article.slug)}>
-                    {preview.favorited? '💟':"❤️"}
-                  </StyledEmoji>
-                  <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickBookmark(article.slug)}>
-                    {preview.bookmarked ? '🔖':"🏷"}
-                  </StyledEmoji>
-                </Twemoji>
-              </CenterWrapper>
-            </Col> */}
-
-            <Col flex = '64%'>
+      <ArticleContain>
               <div>
                 <div>
                   <img src = {(article as any).image ? (article as any).image : staticSrc} alt = 'image' style = {{objectFit:'cover', objectPosition: '0 40%', width: '100%'}}/>
@@ -193,17 +206,12 @@ const ArticlePage = (initialArticle) => {
               </div>
 
               <div className="container page">
-                    <div dangerouslySetInnerHTML={markup} />
+                <div dangerouslySetInnerHTML={markup} />
                 <div className="article-actions" />
-                <div className="row">
-                  <div className="col-xs-12 col-md-8 offset-md-2">
-                    <CommentList />
-                  </div>
-                </div>
+                <CommentList />
               </div>
-            </Col>
-
-            <Col flex = '24%'>
+      </ArticleContain>
+      <StickyRight>
                   <UserArticle bio = {article.author.bio ? article.author.bio: ''}
                                location = {(article.author as any).location ? (article.author as any).location : ''}
                                occupation = {(article.author as any).occupation ? (article.author as any).occupation : ''}
@@ -212,8 +220,7 @@ const ArticlePage = (initialArticle) => {
                   {articles.map((article) => (
                       <ArticleCard key={article.slug} article = {article} />
                     ))}
-          </Col>
-          </Row>
+      </StickyRight>
     </div>
 
 
