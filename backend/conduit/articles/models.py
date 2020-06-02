@@ -41,7 +41,7 @@ class Comment(Model, SurrogatePK):
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('comments'))
-    article_id = reference_col('article', nullable=False)
+    article_id = reference_col('article', nullable=True)
     comment_id = Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
     parentComment = relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
