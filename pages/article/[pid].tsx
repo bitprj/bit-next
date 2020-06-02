@@ -32,6 +32,7 @@ const StyledEmoji = styled.div`
     width: 2.5em;
     background-color: white;
     border-radius: 50%;
+    padding:0.5em;
   }
 `;
 
@@ -164,12 +165,12 @@ const ArticlePage = (initialArticle) => {
   return (
     <div className="article-page">
       <BackGround>
-          <Row>
+          <Row >
             <Col flex = '12%'>
-              <CenterWrapper>
+              <CenterWrapper >
                 <Twemoji options={{ className: 'twemoji' }}>
                   <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickFavorite(article.slug)}>
-                    {preview.favorited? '💟':"❤️"}
+                    {preview.favorited? <text>'💟'</text>:"❤️"}
                   </StyledEmoji>
                   <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickBookmark(article.slug)}>
                     {preview.bookmarked ? '🔖':"🏷"}
@@ -178,7 +179,7 @@ const ArticlePage = (initialArticle) => {
               </CenterWrapper>
             </Col>
 
-            <Col flex = '64%' >
+            <Col flex = '60%' style = {{backgroundColor:'white', padding: '2em', marginTop: '2em'}}>
               <div>
                 <div>
                   <img src = {(article as any).image ? (article as any).image : staticSrc} alt = 'image' style = {{objectFit:'cover', objectPosition: '0 40%', width: '100%'}}/>
@@ -196,7 +197,7 @@ const ArticlePage = (initialArticle) => {
                 <ArticleMeta article={article} />
               </div>
 
-              <div className="container page">
+              <div className="container page" >
                 <div className="article-content">
                   <div className="col-xs-12">
                     <div dangerouslySetInnerHTML={markup} />
@@ -211,7 +212,7 @@ const ArticlePage = (initialArticle) => {
               </div>
             </Col>
 
-            <Col flex = '24%'>
+            <Col flex = '24%' style = {{padding:'2em'}}>
                   <UserArticle bio = {article.author.bio ? article.author.bio: ''}
                                location = {(article.author as any).location ? (article.author as any).location : ''}
                                occupation = {(article.author as any).occupation ? (article.author as any).occupation : ''}
