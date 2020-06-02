@@ -38,7 +38,7 @@ const StyledEmoji = styled.div`
 const ArticleContain = styled.div`  
   width: 880px;
   max-width: 100%;
-  margin: 0 auto 20px;
+  margin: 70px auto 20px;
   text-align: left;
   @media screen and (min-width: 1250px) {
         margin-left:16px
@@ -59,7 +59,6 @@ const StickyRight = styled.div`
         overflow: hidden;
         z-index: 100;
         width: 300px;
-        background-color:black;
     }
 `;
 
@@ -213,14 +212,14 @@ const ArticlePage = (initialArticle) => {
               </div>
       </ArticleContain>
       <StickyRight>
-                  {/* <UserArticle bio = {article.author.bio ? article.author.bio: ''}
+                  <UserArticle bio = {article.author.bio ? article.author.bio: ''}
                                location = {(article.author as any).location ? (article.author as any).location : ''}
                                occupation = {(article.author as any).occupation ? (article.author as any).occupation : ''}
                                joined = {(article.author as any).joined ? (article.author as any).joined : ''}/>
 
                   {articles.map((article) => (
                       <ArticleCard key={article.slug} article = {article} />
-                    ))} */}
+                    ))}
       </StickyRight>
     </div>
 

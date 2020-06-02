@@ -4097,7 +4097,12 @@ input[type=button].btn-block {
 }
 
 .navbar {
-	position: relative;
+	position: fixed;
+	top: 0px;
+    left: 0px;
+    right: 0px;
+	z-index: 101;
+	background:#fff;
 	padding: .5rem 1rem
 }
 
