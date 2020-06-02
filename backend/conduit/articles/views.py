@@ -59,8 +59,9 @@ def make_article(body, title, description, isPublished, tagList=None):
                 mtag.save()
             if mtag.modSetting == 3:
                 if current_user.isAdmin:
-                    article.add_tag(mtag)                    
+                    article.add_tag(mtag)
             elif mtag.modSetting == 2:
+                article.add_needReviewTag(mtag)
                 article.add_tag(mtag)
                 article.needsReview = True
             else: # mtag.modSetting == 1:

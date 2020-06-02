@@ -125,6 +125,22 @@ class Article(SurrogatePK, Model):
             return True
         return False
 
+    def add_needReviewTag(self, tag):
+        self.needReviewTags.append(tag)
+        return True
+
+    def remove_needReviewTag(self, tag):
+        if tag in self.needReviewTags:
+            self.needReviewTags.remove(tag)
+            return True
+        return False
+    
+    def is_allTagReviewed(self):
+        return self.needReviewTags.count() == 0
+
+    def set_needsReview(self, val):
+        self.needsReview = val
+        return self.needsReview
     @property
     def favoritesCount(self):
         return len(self.favoriters.all())
