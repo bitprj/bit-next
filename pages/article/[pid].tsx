@@ -29,10 +29,9 @@ const CenterWrapper = styled.div`
 const StyledEmoji = styled.div`  
   img{
     margin-top: 2em;
-    width: 2.5em;
+    width: 2em;
     background-color: white;
     border-radius: 50%;
-    padding:0.5em;
   }
 `;
 
@@ -169,12 +168,24 @@ const ArticlePage = (initialArticle) => {
             <Col flex = '12%'>
               <CenterWrapper >
                 <Twemoji options={{ className: 'twemoji' }}>
-                  <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickFavorite(article.slug)}>
-                    {preview.favorited? <text>'💟'</text>:"❤️"}
-                  </StyledEmoji>
-                  <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickBookmark(article.slug)}>
-                    {preview.bookmarked ? '🔖':"🏷"}
-                  </StyledEmoji>
+                  {preview.favorited?
+                      <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickFavorite(article.slug)}>
+                        💟
+                      </StyledEmoji>
+                      :
+                      <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickFavorite(article.slug)}>
+                        ❤️
+                      </StyledEmoji>
+                  }
+                  {preview.bookmarked ?
+                      <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickBookmark(article.slug)}>
+                        🔖
+                      </StyledEmoji>
+                      :
+                      <StyledEmoji style = {{cursor: 'pointer'}} onClick={() => handleClickBookmark(article.slug)}>
+                        🏷
+                      </StyledEmoji>
+                  }
                 </Twemoji>
               </CenterWrapper>
             </Col>
