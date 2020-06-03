@@ -6,7 +6,48 @@ import { usePageDispatch } from "../../lib/context/PageContext";
 import useSWR from "swr";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
+import styled from 'styled-components';
 import ErrorMessage from "../common/ErrorMessage";
+import { List, Avatar } from 'antd';
+import Twemoji from 'react-twemoji';
+
+const StyledAvatar = styled(Avatar)`
+  background: #FFFFFF;
+
+  .twemoji {
+    width: 20px;
+    height: 20px;
+    margin-left: 6.1px;
+    margin-top: 5.2px;
+  }
+`
+
+const StyledList = styled(List)`
+  .ant-list-item {
+    padding: 0;
+  }
+  
+  .ant-list-item {
+    border: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+`
+
+const StyledListItem = styled(List.Item)`
+  padding: 5px 0;
+  color: black;
+`
+
+const StyledSpan = styled.span`
+  color: black;
+`
+
+const StyledTwemoji = styled(Twemoji)`
+  display: inline;
+  padding-right: 11px;
+`
 
 const Tags = () => {
   const setPage = usePageDispatch();
@@ -17,19 +58,27 @@ const Tags = () => {
   if (!data) return <LoadingSpinner />;
 
   const { tags } = data;
+
   return (
-    <div className="tag-list">
-      {tags?.map((tag) => (
-        <CustomLink
-          key={tag}
-          href={`/?tag=${tag}`}
-          as={`/?tag=${tag}`}
-          className="tag-default tag-pill"
-        >
-          <span onClick={handleClick}>{tag}</span>
-        </CustomLink>
-      ))}
-    </div>
+    <StyledList
+      itemLayout="horizontal"
+      dataSource={tags}
+      renderItem={tag => (
+        <StyledListItem>
+          <CustomLink
+            href={`/tag/[pid]`}
+            as={`/tag/${encodeURIComponent(tag[1])}`}
+          >
+            <span>
+              <StyledTwemoji options={{ className: 'twemoji' }}>
+                <StyledAvatar icon="🤩" />
+              </StyledTwemoji>
+              <StyledSpan>{tag[0]}</StyledSpan>
+            </span>
+          </CustomLink>
+        </StyledListItem>
+      )}
+    />
   );
 };
 

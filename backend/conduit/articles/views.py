@@ -20,29 +20,37 @@ blueprint = Blueprint('articles', __name__)
 # Articles
 ##########
 
+#Route to return an article
 @blueprint.route('/api/articles', methods=('GET',))
 @jwt_optional
 @use_kwargs({'tag': fields.Str(), 'author': fields.Str(),
-             'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int()})
+             'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int(), 'isPublished': fields.Str()})
 @marshal_with(articles_schema)
-def get_articles(tag=None, author=None, favorited=None, limit=20, offset=0):
+def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
     res = Article.query
+    if isPublished is None:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
-        res = res.filter(Article.tagList.any(Tags.tagname == tag))
+        res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
+        res = res.join(Article.author).join(User).filter(User.username == author)
+    if author and author == current_user.username:
+        res = Article.query
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
+
     return res.offset(offset).limit(limit).all()
 
 
+#Route to create an article
 @blueprint.route('/api/articles', methods=('POST',))
 @jwt_required
 @use_kwargs(article_schema)
 @marshal_with(article_schema)
-def make_article(body, title, description, tagList=None):
+def make_article(body, title, description, isPublished, tagList=None):
     article = Article(title=title, description=description, body=body,
-                      author=current_user.profile)
+                      author=current_user.profile, isPublished=isPublished)
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()
@@ -128,13 +136,27 @@ def articles_feed(limit=20, offset=0):
         order_by(Article.createdAt.desc()).offset(offset).limit(limit).all()
 
 
+#Route to bookmark a particular article
+@blueprint.route('/api/articles/<slug>/bookmark', methods=('POST',))
+@jwt_required
+@marshal_with(article_schema)
+def bookmark_an_article(slug):
+    profile = current_user.profile
+    article = Article.query.filter_by(slug=slug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    article.bookmark(profile)
+    article.save()
+    return article
+
+
 ######
 # Tags
 ######
 
 @blueprint.route('/api/tags', methods=('GET',))
 def get_tags():
-    return jsonify({'tags': [tag.tagname for tag in Tags.query.all()]})
+    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
 
 
 ##########

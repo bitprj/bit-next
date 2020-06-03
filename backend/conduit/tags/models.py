@@ -25,6 +25,10 @@ class Tags(Model):
 
     id = db.Column(db.Integer, primary_key=True)
     tagname = db.Column(db.String(100))
+    description = db.Column(db.Text)
+    slug = db.Column(db.String(100))
+    icon = db.Column(db.String(50))
+    modSetting = db.Column(db.Integer, nullable=False, default=1)
 
     tagFollowers = db.relationship('UserProfile', secondary=tag_follower_assoc, lazy='subquery',
         backref=db.backref('followed_tags', lazy='dynamic'))

@@ -16,6 +16,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_AUTH_USERNAME_KEY = 'email'
     JWT_AUTH_HEADER_PREFIX = 'Token'
+    PROPAGATE_EXCEPTIONS = True
     CORS_ORIGIN_WHITELIST = [
         'http://0.0.0.0:4100',
         'http://localhost:4100',
@@ -25,6 +26,9 @@ class Config(object):
         'http://localhost:4200',
         'http://0.0.0.0:4000',
         'http://localhost:4000',
+        'http://localhost:3000',
+        'https://bit-next-ixppal0sd.now.sh',
+        'https://bit-next-git-staging.bitproject.now.sh'
     ]
     JWT_HEADER_TYPE = 'Token'
 
@@ -46,7 +50,7 @@ class DevConfig(Config):
     DB_NAME = 'dev.db'
     # Put the db file in project root
     DB_PATH = os.path.join(Config.PROJECT_ROOT, DB_NAME)
-    SQLALCHEMY_DATABASE_URI = 'sqlite:///{0}'.format(DB_PATH)
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL')
     CACHE_TYPE = 'simple'  # Can be "memcached", "redis", etc.
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(10 ** 6)
 

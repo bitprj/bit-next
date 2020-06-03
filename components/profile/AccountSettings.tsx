@@ -2,8 +2,8 @@ import axios from "axios";
 import Router from "next/router";
 import React from "react";
 import useSWR, { mutate } from "swr";
-import { Avatar,Row,Col,Input } from 'antd';
-import styled from 'styled-components';
+import { Avatar,Row,Col,Typography,Input } from 'antd';
+
 import ListErrors from "../common/ListErrors";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
@@ -23,13 +23,16 @@ const SettingsForm = () => {
     website:"",
     linkedIn:"",
   });
-  const Styledlabel = styled.label`
-  &:hover {
-    color:black;
-    cursor:pointer;
-  }
-  `;
-  const { TextArea } = Input;
+  const { Text } = Typography;
+  const textStyle={
+    background:"black",
+    color:"white",
+    padding:"2%",
+    borderBottomRightRadius:"10px",
+    borderTopRightRadius:"10px",
+    border:"none"
+  };
+
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
 
@@ -118,34 +121,34 @@ const SettingsForm = () => {
                 <Avatar src= {userInfo.image} size = {50}/>
                 <br/>
                 <br/>
-                <Styledlabel>Reupload Image<input style={{display:"none"}} type="file" onChange={Reupload}/></Styledlabel>
+                <label style={{color:"black"}}>Reupload Image<input style={{display:"none"}} type="file" onChange={Reupload}/></label>
               </Col>
               <br/>
               <Col span={24}>
               <h6>Github</h6>
-              <Input type="text" style={{background:"white",width:"50%",border:"white"}} onChange={updateState("github")} defaultValue={userInfo.github} placeholder={"www.github.com"}/>
+              <Text style={{background:"white",padding:"2%"}}>{userInfo.github || "www.github.com"}</Text><Text style={textStyle}>verified</Text>
               </Col>
               <br/>
               <Col span={24}>
               <h6>Twitter</h6>
-              <Input type="text" style={{background:"white",width:"50%",border:"white"}} onChange={updateState("twitter")} defaultValue={userInfo.twitter} placeholder={"www.twitter.com"}/>
+              <Text style={{background:"white",padding:"2%"}}>{userInfo.twitter || "www.twitter.com"}</Text><Text style={textStyle}>verified</Text>
               </Col>
               <br/>
               <Col span={24}>
               <h6>LinkedIn</h6>
-              <Input type="text" style={{background:"white",width:"50%",border:"white"}} onChange={updateState("linkedIn")} defaultValue={userInfo.linkedIn} placeholder={"www.linkedin.com"}/>
+              <Text style={{background:"white",padding:"2%"}}>{userInfo.linkedIn || "www.linkedin.com"}</Text><Text style={textStyle}>verified</Text>
               </Col>
               <br/>
               <Col span={24}>
               <h6>Personal Website</h6>
-              <Input type="text" style={{background:"white",width:"50%",border:"white"}} onChange={updateState("website")} defaultValue={userInfo.website} placeholder={"www.example.com"}/>
+              <Input type="text" style={{background:"white",padding:"2%",width:"50%"}} onChange={updateState("website")} defaultValue={userInfo.website} placeholder={"www.example.com"}/><button style={textStyle} onClick={submitForm}>edit</button>
               </Col>
           </Col>
           <Col span={12}>
           <Col span={24}>
           <h6>Your Bio</h6>
-            <TextArea
-              style={{border:"white"}}
+            <textarea
+              className="form-control form-control-lg"
               rows={8}
               placeholder="Short bio about you"
               value={userInfo.bio}
