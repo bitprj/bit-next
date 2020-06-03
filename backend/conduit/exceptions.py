@@ -9,6 +9,7 @@ USER_NOT_FOUND = template(['User not found'], code=404)
 USER_ALREADY_REGISTERED = template(['User already registered'], code=422)
 UNKNOWN_ERROR = template([], code=500)
 ARTICLE_NOT_FOUND = template(['Article not found'], code=404)
+ARTICLE_ALREADY_EXISTS = template(['This article already exists'], code=400)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
 ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
 SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
@@ -43,6 +44,10 @@ class InvalidUsage(Exception):
     @classmethod
     def article_not_found(cls):
         return cls(**ARTICLE_NOT_FOUND)
+
+    @classmethod
+    def article_already_exists(cls):
+        return cls(**ARTICLE_ALREADY_EXISTS)
 
     @classmethod
     def comment_not_owned(cls):
