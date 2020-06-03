@@ -19,13 +19,14 @@ favoriter_assoc = db.Table("favoritor_assoc",
 tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
-                     
+
 org_assoc = db.Table("org_assoc",
                     db.Column("organization", db.Integer, 
                         db.ForeignKey("organization.id")),
                     db.Column("article", db.Integer, 
                         db.ForeignKey("article.id"))
                     )
+
 bookmarker_assoc = db.Table("bookmarker_assoc",
                      db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
                      db.Column("bookmarked_article", db.Integer, db.ForeignKey("article.id")))
@@ -40,10 +41,12 @@ class Comment(Model, SurrogatePK):
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('comments'))
-    article_id = reference_col('article', nullable=False)
+    article_id = reference_col('article', nullable=True)
+    comment_id = Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
+    parentComment = relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
-    def __init__(self, article, author, body, **kwargs):
-        db.Model.__init__(self, author=author, body=body, article=article, **kwargs)
+    def __init__(self, article, author, body, comment_id=None, **kwargs):
+        db.Model.__init__(self, author=author, body=body, article=article, comment_id=comment_id, **kwargs)
 
 
 class Article(SurrogatePK, Model):
@@ -59,7 +62,7 @@ class Article(SurrogatePK, Model):
     needsReview = Column(db.Boolean, nullable=False, default=False)
     isPublished = Column(db.Boolean, nullable=False)
     author_id = reference_col('userprofile', nullable=False)
-    author = relationship('UserProfile', backref=db.backref('articles'))
+    author = relationship('UserProfile', backref=db.backref('3'))
     favoriters = relationship(
         'UserProfile',
         secondary=favoriter_assoc,

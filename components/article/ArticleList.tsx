@@ -15,6 +15,7 @@ import useViewport from "../../lib/hooks/useViewport";
 import { SERVER_BASE_URL, DEFAULT_LIMIT } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import ArticleCard from "../../components/global/ArticleCard";
+import CustomLink from "../common/CustomLink";
 
 const ArticleList = (props) => {
   const page = usePageState();
@@ -71,7 +72,7 @@ const ArticleList = (props) => {
   }
 
   if (!data) return <LoadingSpinner />;
-  
+
   const { articles, articlesCount } = !props.articles && !props.articlesCount ? data : props;
 
   setPageCount(articlesCount);
@@ -83,7 +84,13 @@ const ArticleList = (props) => {
   return (
     <>
       {articles?.map((article) => (
-        <ArticleCard key={article.slug} article={article} />
+        <CustomLink
+          href="/article/[pid]"
+          as={`/article/${article.slug}`}
+          className="preview-link"
+        >
+          <ArticleCard key={article.slug} article={article} />
+        </CustomLink>
       ))}
 
       <Maybe test={articlesCount && articlesCount > 20}>

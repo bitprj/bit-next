@@ -29,13 +29,15 @@ blueprint = Blueprint('articles', __name__)
              'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int(), 'isPublished': fields.Str()})
 @marshal_with(articles_schema)
 def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
-    res = Article.query.filter_by(needsReview=False)
-    if isPublished is not None:
-        if isPublished != 'all':
-            res = Article.query.filter_by(isPublished=isPublished)
+    res = Article.query
+    if isPublished is None:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
+        res = res.join(Article.author).join(User).filter(User.username == author)
+    if author and author == current_user.username:
+        res = Article.query
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
@@ -51,7 +53,6 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
 def make_article(body, title, description, isPublished, tagList=None):
     article = Article(title=title, description=description, body=body,
                       author=current_user.profile, isPublished=isPublished)
-    needReviewTags = []                      
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()
@@ -181,11 +182,14 @@ def get_comments(slug):
 @jwt_required
 @use_kwargs(comment_schema)
 @marshal_with(comment_schema)
-def make_comment_on_article(slug, body, **kwargs):
+def make_comment_on_article(slug, body, comment_id=None, **kwargs):
     article = Article.query.filter_by(slug=slug).first()
-    if not article:
+    if not article and not comment_id:
         raise InvalidUsage.article_not_found()
-    comment = Comment(article, current_user.profile, body, **kwargs)
+    if comment_id:
+        comment = Comment(None, current_user.profile, body, comment_id, **kwargs)
+    else:
+        comment = Comment(article, current_user.profile, body, comment_id, **kwargs)
     comment.save()
     return comment
 
