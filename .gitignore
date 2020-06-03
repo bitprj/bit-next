@@ -20,22 +20,8 @@
 # misc
 .DS_Store
 .env*
-venv
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-backend/migrations/versions/f539a7ad15a4_.py
-backend/migrations/alembic.ini
-backend/migrations/env.py
-backend/migrations/script.py.mako
-backend/migrations/versions/22cd0f8da398_.py
-.gitignore
-backend/migrations/versions/bb10324d2013_.py
-backend/.bashrc
-backend/migrations/versions/f539a7ad15a4_.py
-backend/.vscode/settings.json
-.vscode/settings.json
-backend/migrations/versions/f539a7ad15a4_.py
-.gitignore

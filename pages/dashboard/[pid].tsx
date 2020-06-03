@@ -4,12 +4,7 @@ import useSWR, { mutate, trigger } from "swr";
 import { Row, Col,Tabs } from 'antd';
 
 import ArticleList from "../../components/article/ArticleList";
-import CustomImage from "../../components/common/CustomImage";
 import ErrorMessage from "../../components/common/ErrorMessage";
-import Maybe from "../../components/common/Maybe";
-import EditProfileButton from "../../components/profile/EditProfileButton";
-import FollowUserButton from "../../components/profile/FollowUserButton";
-import ProfileTab from "../../components/profile/ProfileTab";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
@@ -130,8 +125,8 @@ const Profile = ({ initialProfile }) => {
           </Col>
           <Col span={24} style={{paddingTop:"0"}}>
             {isPosts?<ArticleList/>:null}
-            {isFollowers?<FollowerList followers={followersList}/>:null}
-            {isFollowings?<FollowerList followers={followingsList}/>:null}
+            {isFollowers && followersList?<FollowerList followers={followersList}/>:null}
+            {isFollowings && followingsList?<FollowerList followers={followingsList}/>:null}
             {isTag?<ArticleList/>:null}
             {isSettings?<AccountSettings/>:null}
           </Col>

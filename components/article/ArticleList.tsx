@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 
+import ArticlePreview from "./ArticlePreview";
 import ErrorMessage from "../common/ErrorMessage";
 import LoadingSpinner from "../common/LoadingSpinner";
 import Maybe from "../common/Maybe";
@@ -14,10 +15,8 @@ import {
 import useViewport from "../../lib/hooks/useViewport";
 import { SERVER_BASE_URL, DEFAULT_LIMIT } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
-import ArticleCard from "../../components/global/ArticleCard";
-import CustomLink from "../common/CustomLink";
 
-const ArticleList = (props) => {
+const ArticleList = () => {
   const page = usePageState();
   const pageCount = usePageCountState();
   const setPageCount = usePageCountDispatch();
@@ -37,7 +36,7 @@ const ArticleList = (props) => {
     case !!tag:
       fetchURL = `${SERVER_BASE_URL}/articles${asPath}&offset=${
         page * DEFAULT_LIMIT
-        }`;
+      }`;
       break;
     case isProfilePage && !!favorite:
       fetchURL = `${SERVER_BASE_URL}/articles?favorited=${encodeURIComponent(
@@ -52,7 +51,7 @@ const ArticleList = (props) => {
     case !isProfilePage && !!follow:
       fetchURL = `${SERVER_BASE_URL}/articles/feed?offset=${
         page * DEFAULT_LIMIT
-        }`;
+      }`;
       break;
     default:
       break;
@@ -73,8 +72,7 @@ const ArticleList = (props) => {
 
   if (!data) return <LoadingSpinner />;
 
-  const { articles, articlesCount } = !props.articles && !props.articlesCount ? data : props;
-
+  const { articles, articlesCount } = data;
   setPageCount(articlesCount);
 
   if (articles && articles.length === 0) {
@@ -84,13 +82,7 @@ const ArticleList = (props) => {
   return (
     <>
       {articles?.map((article) => (
-        <CustomLink
-          href="/article/[pid]"
-          as={`/article/${article.slug}`}
-          className="preview-link"
-        >
-          <ArticleCard key={article.slug} article={article} />
-        </CustomLink>
+        <ArticlePreview key={article.slug} article={article} />
       ))}
 
       <Maybe test={articlesCount && articlesCount > 20}>
