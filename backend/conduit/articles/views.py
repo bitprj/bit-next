@@ -14,6 +14,7 @@ from .serializers import (article_schema, articles_schema, comment_schema,
                           comments_schema, org_articles_schema)
 from conduit.organizations.models import Organization
 
+
 blueprint = Blueprint('articles', __name__)
 
 
@@ -21,19 +22,26 @@ blueprint = Blueprint('articles', __name__)
 # Articles
 ##########
 
+#Route to return an article
 @blueprint.route('/api/articles', methods=('GET',))
 @jwt_optional
 @use_kwargs({'tag': fields.Str(), 'author': fields.Str(),
-             'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int()})
+             'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int(), 'isPublished': fields.Str()})
 @marshal_with(articles_schema)
-def get_articles(tag=None, author=None, favorited=None, limit=20, offset=0):
+def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
     res = Article.query
+    if isPublished is None:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
-        res = res.filter(Article.tagList.any(Tags.tagname == tag))
+        res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
+        res = res.join(Article.author).join(User).filter(User.username == author)
+    if author and author == current_user.username:
+        res = Article.query
         res = res.join(Article.author).join(User).filter(User.username == author)
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
+
     return res.offset(offset).limit(limit).all()
 
 
@@ -48,20 +56,29 @@ def get_org_articles(org_slug):
     return org_articles
 
 
+#Route to create an article
 @blueprint.route('/api/articles', methods=('POST',))
 @jwt_required
-@use_kwargs(article_schema)
-@marshal_with(article_schema)
-def make_article(body, title, description, tagList=None):
+@use_kwargs(article_form_schema)
+@marshal_with(article_form_schema)
+def make_article(body, title, description, isPublished, coverImage, tagList=None):
     article = Article(title=title, description=description, body=body,
-                      author=current_user.profile)
+                      author=current_user.profile, isPublished=isPublished, coverImage=coverImage)
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()
             if not mtag:
                 mtag = Tags(tag)
                 mtag.save()
-            article.add_tag(mtag)
+            if mtag.modSetting == 3:
+                if current_user.isAdmin:
+                    article.add_tag(mtag)
+            elif mtag.modSetting == 2:
+                article.add_needReviewTag(mtag)
+                article.add_tag(mtag)
+                article.needsReview = True
+            else: # mtag.modSetting == 1:
+                article.add_tag(mtag)
     article.save()
     return article
 
@@ -132,6 +149,7 @@ def articles_feed(limit=20, offset=0):
         order_by(Article.createdAt.desc()).offset(offset).limit(limit).all()
 
 
+#Route to bookmark a particular article
 @blueprint.route('/api/articles/<slug>/bookmark', methods=('POST',))
 @jwt_required
 @marshal_with(article_schema)
@@ -151,7 +169,7 @@ def bookmark_an_article(slug):
 
 @blueprint.route('/api/tags', methods=('GET',))
 def get_tags():
-    return jsonify({'tags': [tag.tagname for tag in Tags.query.all()]})
+    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
 
 
 ##########
@@ -172,11 +190,14 @@ def get_comments(slug):
 @jwt_required
 @use_kwargs(comment_schema)
 @marshal_with(comment_schema)
-def make_comment_on_article(slug, body, **kwargs):
+def make_comment_on_article(slug, body, comment_id=None, **kwargs):
     article = Article.query.filter_by(slug=slug).first()
-    if not article:
+    if not article and not comment_id:
         raise InvalidUsage.article_not_found()
-    comment = Comment(article, current_user.profile, body, **kwargs)
+    if comment_id:
+        comment = Comment(None, current_user.profile, body, comment_id, **kwargs)
+    else:
+        comment = Comment(article, current_user.profile, body, comment_id, **kwargs)
     comment.save()
     return comment
 
