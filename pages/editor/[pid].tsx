@@ -7,7 +7,8 @@ import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import storage from "../../lib/utils/storage";
-import { Alert } from 'antd';
+import { Alert, Upload, message, Button } from 'antd';
+import { InboxOutlined } from '@ant-design/icons';
 
 const UpdateArticleEditor = ({ article: initialArticle }) => {
   const initialState = {
@@ -15,6 +16,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     description: initialArticle.description,
     body: initialArticle.body,
     tagList: initialArticle.tagList,
+    coverImage: initialArticle.coverImage,
     isPublished: false
   };
   const Title = React.createRef<HTMLInputElement>();
@@ -32,6 +34,12 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
   const [Title_required, setTitle_required] = useState(false)
 
   const [tags, setTags] = useState(initialState.tagList)
+
+  const [coverImg,setCoverImg] = useState(initialState.coverImage)
+
+  const [coverImgList,setCoverImgList] = useState([])
+
+  const { Dragger } = Upload;
 
   const [isLoading, setLoading] = React.useState(false);
   const { data: currentUser } = useSWR("user", storage);
@@ -65,6 +73,27 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     }
   }
 
+  const uploadCover = async (file) =>{
+    const cover = new FormData();
+    cover.append("file", file);
+    cover.append("upload_preset", 'upload')
+    const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
+      method: 'POST',
+      body: cover
+     });
+    const response = await res.json();
+    setCoverImg(response.secure_url);
+  }
+
+  const uploadCoverChange = (info) =>{
+    let fileList = [...info.fileList];
+    fileList = fileList.slice(-1);
+    if(fileList.length==0){
+      setCoverImg(null)
+    }
+    setCoverImgList(fileList)
+  }
+
   const Save = () => {
     setValue(value_dummy)
     handleSubmit()
@@ -82,6 +111,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     initialState.description = description ? description : "This article has no description"
     initialState.body = value_dummy
     initialState.tagList = tags
+    initialState.coverImage = coverImg
     const { data, status } = await axios.put(
       `${SERVER_BASE_URL}/articles/${pid}`,
       JSON.stringify({ article: initialState }),
@@ -99,6 +129,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     initialState.description = description ? description : "This article has no description"
     initialState.body = value_dummy
     initialState.tagList = tags
+    initialState.coverImage = coverImg
     initialState.isPublished = true
     if (title != "") {
       setLoading(true);
@@ -150,6 +181,16 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         addTag={addTag}
         removeTag={removeTag}
       />
+      <Dragger
+        beforeUpload={uploadCover}
+        onChange={uploadCoverChange}
+        fileList={coverImgList}>
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
+      </Dragger>
+      <br/>
       <Editor
         id="new_article"
         value={values}

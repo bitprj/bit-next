@@ -4,12 +4,7 @@ import useSWR, { mutate, trigger } from "swr";
 import { Row, Col,Tabs } from 'antd';
 
 import ArticleList from "../../components/article/ArticleList";
-import CustomImage from "../../components/common/CustomImage";
 import ErrorMessage from "../../components/common/ErrorMessage";
-import Maybe from "../../components/common/Maybe";
-import EditProfileButton from "../../components/profile/EditProfileButton";
-import FollowUserButton from "../../components/profile/FollowUserButton";
-import ProfileTab from "../../components/profile/ProfileTab";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
@@ -54,13 +49,13 @@ const Profile = ({ initialProfile }) => {
   const isUser = currentUser && username === currentUser?.username;
   const {TabPane} = Tabs;
 
-  const Followers = () => {
-    const response = UserAPI.followers(pid)
-    setFollowersList(response)
+  const Followers = async () => {
+    const response = await UserAPI.followers(pid)
+    setFollowersList(response.data)
   }
-  const Followings=()=>{
-    const response = UserAPI.followings(pid)
-    setFollowingsList(response)
+  const Followings= async ()=>{
+    const response = await UserAPI.followings(pid)
+    setFollowingsList(response.data)
   }
   const TabChange = (key) =>{
     if(key=="Posts"){
@@ -111,7 +106,7 @@ const Profile = ({ initialProfile }) => {
 
   if(isUser){
     return (
-      <Row gutter={16} style={{marginTop:"7%",marginLeft:"0",marginRight:"0"}}>
+      <Row gutter={16} style={{marginTop:"3%",marginLeft:"0",marginRight:"0"}}>
         <Col span={2}></Col>
         <Col className="gutter-row" span={4}>
         <Row gutter={[16, 40]}>
@@ -130,8 +125,8 @@ const Profile = ({ initialProfile }) => {
           </Col>
           <Col span={24} style={{paddingTop:"0"}}>
             {isPosts?<ArticleList/>:null}
-            {isFollowers?<FollowerList followers={followersList}/>:null}
-            {isFollowings?<FollowerList followers={followingsList}/>:null}
+            {isFollowers && followersList?<FollowerList followers={followersList}/>:null}
+            {isFollowings && followingsList?<FollowerList followers={followingsList}/>:null}
             {isTag?<ArticleList/>:null}
             {isSettings?<AccountSettings/>:null}
           </Col>
