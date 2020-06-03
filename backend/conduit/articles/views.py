@@ -154,7 +154,7 @@ def get_comments(slug):
     if not article:
         raise InvalidUsage.article_not_found()
     return article.comments
-
+    
 
 @blueprint.route('/api/articles/<slug>/comments', methods=('POST',))
 @jwt_required

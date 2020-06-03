@@ -39,6 +39,7 @@ class ArticleSchema(Schema):
 
 class OrgArticleSchema(Schema):
     org_slug = fields.Str()
+    slug = fields.Str(dump_only=True)
     title = fields.Str()
     description = fields.Str()
     createdAt = fields.DateTime()
@@ -51,7 +52,7 @@ class OrgArticleSchema(Schema):
     tagList = fields.List(fields.Str())
     favoritesCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
-    needsReview = fields.Bool(truthy={True})
+    needsReview = fields.Bool()
 
 
     @pre_load
@@ -61,6 +62,7 @@ class OrgArticleSchema(Schema):
 
     @post_dump
     def dump_article(self, data, **kwargs):
+        data['author'] = data['author']['profile']
         return {'article': data}
 
     class Meta:
@@ -68,17 +70,18 @@ class OrgArticleSchema(Schema):
 
 
 class PublishOrgArticle(Schema):
-    title = fields.Str()
+    slug = fields.Str()
+    org_slug = fields.Str()
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
-
+ 
     @pre_load
     def make_article(self, data, **kwargs):
+        print(data)
         return data['article']
 
     @post_dump
     def dump_article(self, data, **kwargs):
-        print(data)
-   
+        data['slug'] = data['slug']
         return {'article': data}
 
 

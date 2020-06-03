@@ -48,7 +48,7 @@ class Comment(Model, SurrogatePK):
 
 class Article(SurrogatePK, Model):
     __tablename__ = 'article'
-
+    
     id = db.Column(db.Integer, primary_key=True)
     slug = Column(db.Text, unique=True)
     title = Column(db.String(100), nullable=False)
@@ -111,7 +111,7 @@ class Article(SurrogatePK, Model):
         if tag not in self.tagList:
             self.tagList.append(tag)
             return True
-        return False
+        return False    
 
     def remove_tag(self, tag):
         if tag in self.tagList:
@@ -119,9 +119,9 @@ class Article(SurrogatePK, Model):
             return True
         return False
 
-    def publish_org(self, article):
+    def add_organization(self, articles):
         self.needsReview = False
-        self.org_articles.append(article)
+        self.org_articles.append(articles)
         return True
     
     @property

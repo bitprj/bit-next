@@ -156,43 +156,44 @@ def remove_member(slug, username, **kwargs):
 def submit_article_for_review(body, title, description, 
                             org_slug, tagList=None):
     profile = current_user.profile
-    organization = Organization.query.filter_by(slug=org_slug).first()
-    article = Article(title=title, description=description, body=body, 
-                      author=current_user.profile)
+    try:
+        organization = Organization.query.filter_by(slug=org_slug).first()
+        article = Article(title=title, description=description, body=body, 
+                          author=current_user.profile)
+                          
+        if tagList is not None:
+            for tag in tagList:
+                mtag = Tags.query.filter_by(tagname=tag).first()
+                if not mtag:
+                    mtag = Tags(tag)
+                    mtag.save()
+                article.add_tag(mtag)
+        
+        article.needsReview = True
+        article.save()
+        organization.request_review(article)
+        organization.save()
 
-    if tagList is not None:
-        for tag in tagList:
-            mtag = Tags.query.filter_by(tagname=tag).first()
-            if not mtag:
-                mtag = Tags(tag)
-                mtag.save()
-            article.add_tag(mtag)
-    
-    article.needsReview = True
-    article.save()
-    organization.request_review(article)
-    organization.save()
-
-    print(article)
+    except IntegrityError:
+        db.session.rollback()
+        raise InvalidUsage.article_already_exists()
     
     return article
+    
 
-
-@blueprint.route('/api/organization/<org_slug>/articles', methods=('DELETE',))
+@blueprint.route('/api/organization/<org_slug>/articles/<slug>', 
+                methods=('DELETE',))
 @jwt_required
-@use_kwargs(org_article_schema)
-@marshal_with(org_article_schema)
-def publish_article(title, org_slug):
+def reviewed_article(slug, org_slug, **kwargs):
     organization = Organization.query.filter_by(slug=org_slug).first()
-    article = Article.query.filter_by(title=title).first()
+    article = Article.query.filter_by(slug=slug).first()
+
+    if article not in organization.pending_articles:
+        raise InvalidUsage.article_not_found()
 
     organization.pending_articles.remove(article)
-    article.org_articles.append(article)
-
-    print(article)
     organization.save()
+    article.add_organization(organization)    
     article.save()
 
     return '', 200
-
-
