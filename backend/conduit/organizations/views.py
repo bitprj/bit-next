@@ -18,7 +18,7 @@ from conduit.tags.models import Tags
 
 from .serializers import (organization_schema, organizations_schema)
 from conduit.profile.serializers import (profile_schema, profile_schemas)
-from conduit.articles.serializers import (org_article_schema, publish_org_article, org_articles_schema)
+from conduit.articles.serializers import (org_article_schema, org_articles_schema)
 
 blueprint = Blueprint('organizations', __name__)
 

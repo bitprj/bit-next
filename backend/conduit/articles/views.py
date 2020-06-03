@@ -11,7 +11,8 @@ from conduit.exceptions import InvalidUsage
 from conduit.user.models import User        
 from .models import Article, Tags, Comment
 from .serializers import (article_schema, articles_schema, comment_schema,
-                          comments_schema)
+                          comments_schema, org_articles_schema)
+from conduit.organizations.models import Organization
 
 blueprint = Blueprint('articles', __name__)
 
@@ -34,6 +35,17 @@ def get_articles(tag=None, author=None, favorited=None, limit=20, offset=0):
     if favorited:
         res = res.join(Article.favoriters).filter(User.username == favorited)
     return res.offset(offset).limit(limit).all()
+
+
+@blueprint.route('/api/articles/organization/<org_slug>', methods=('GET',))
+@jwt_optional
+@use_kwargs({'org_slug':fields.Str()})
+@marshal_with(org_articles_schema)
+def get_org_articles(org_slug):
+    articles = Article.query
+    org_articles = articles.join(Article.org_articles).filter(Organization.slug == org_slug).all()
+    
+    return org_articles
 
 
 @blueprint.route('/api/articles', methods=('POST',))
