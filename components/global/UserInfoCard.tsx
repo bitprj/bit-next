@@ -30,8 +30,9 @@ const UserMeta = styled.div`
 const UserArticle = (props) => {
     // console.log(initialProfile.author.username)
     return (
+        
         <div className="site-card-border-less-wrapper">
-            <Card bordered={false} style={{ width: 300 }}>
+            <Card bordered={false}>
                 <User {...props} />
                 <StyledBio>{props.bio}</StyledBio>
                 <MiniTitle>Location</MiniTitle>
