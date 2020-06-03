@@ -77,5 +77,5 @@ class Tags(Model):
     @property
     def following(self):
         if current_user:
-            return current_user.profile.is_following(self)
+            return self.is_follow(current_user.profile)
         return False

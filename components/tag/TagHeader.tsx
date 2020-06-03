@@ -1,4 +1,6 @@
 import React from "react";
+import useSWR, { mutate, trigger } from "swr";
+import storage from "../../lib/utils/storage";
 
 import styled from 'styled-components';
 import Twemoji from 'react-twemoji';
@@ -30,23 +32,36 @@ const StyledSpan = styled.span`
     color: #000000;
 `
 
-const TagHeader = (props) => {
-    const emoji = <Twemoji options={{ className: 'twemoji' }}>
-        <StyledEmoji>{props.tag.icon ? props.tag.icon : '\ud83c\udde8\ud83c\uddf3'}</StyledEmoji>
-    </Twemoji>
+const TagHeader = ({ tagData, follow, unfollow }) => {
+    // console.log(tagData)
+    // const { data: currentUser } = useSWR("user", storage);
 
-    const title = <span>
-        <StyledSpan>{props.tag.tagname}</StyledSpan>
-        <Button type="primary" size={"small"}>+ Follow</Button>
-    </span>
-
-    const description = <StyledInfo>{props.tag.description ? props.tag.description : "No description"}</StyledInfo>
+    const handleClick = (e) => {
+        e.preventDefault();
+        tagData.following ? unfollow(tagData.slug) : follow(tagData.slug);
+        tagData.following = tagData.following === true ? false : true;
+    };
 
     return (
         <StyledItem
-            avatar={emoji}
-            title={title}
-            description={description}
+            avatar={
+                <Twemoji options={{ className: 'twemoji' }}>
+                    <StyledEmoji>{tagData.icon ? tagData.icon : '\ud83c\udde8\ud83c\uddf3'}</StyledEmoji>
+                </Twemoji>
+            }
+            title={
+                <span>
+                    <StyledSpan>{tagData.tagname}</StyledSpan>
+                    <Button
+                        type="primary"
+                        size={"small"}
+                        onClick={handleClick}
+                    >+ Follow</Button>
+                </span >
+            }
+            description={
+                < StyledInfo > {tagData.description ? tagData.description : "No description"}</StyledInfo >
+            }
         />
     )
 };

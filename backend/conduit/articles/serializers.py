@@ -10,7 +10,6 @@ class TagSchema(Schema):
     tagname = fields.Str()
     slug = fields.Str()
 
-
 class ArticleSchema(Schema):
     slug = fields.Str()
     title = fields.Str()

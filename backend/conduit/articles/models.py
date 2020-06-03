@@ -45,7 +45,7 @@ class Comment(Model, SurrogatePK):
     comment_id = Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
     parentComment = relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
-    def __init__(self, article, author, body, **kwargs):
+    def __init__(self, article, author, body, comment_id=None, **kwargs):
         db.Model.__init__(self, author=author, body=body, article=article, **kwargs)
 
 
