@@ -57,7 +57,6 @@ class OrgArticleSchema(Schema):
 
     @pre_load
     def make_article(self, data, **kwargs):
-        print(data)
         return data['article']
 
     @post_dump
@@ -67,22 +66,6 @@ class OrgArticleSchema(Schema):
 
     class Meta:
         strict = True
-
-
-class PublishOrgArticle(Schema):
-    slug = fields.Str()
-    org_slug = fields.Str()
-    article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
- 
-    @pre_load
-    def make_article(self, data, **kwargs):
-        print(data)
-        return data['article']
-
-    @post_dump
-    def dump_article(self, data, **kwargs):
-        data['slug'] = data['slug']
-        return {'article': data}
 
 
 class OrgArticlesSchema(OrgArticleSchema):
@@ -147,7 +130,6 @@ class CommentsSchema(CommentSchema):
 
 article_schema = ArticleSchema()
 org_article_schema = OrgArticleSchema()
-publish_org_article = PublishOrgArticle()
 org_articles_schema = OrgArticlesSchema(many=True)
 articles_schema = ArticleSchemas(many=True)
 comment_schema = CommentSchema()
