@@ -13,7 +13,13 @@ ARTICLE_ALREADY_EXISTS = template(['This article already exists'], code=400)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
 ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
 SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
-NOT_ADMIN = template(['You do not have Administrator access'], code=403)
+TAG_NOT_FOUND = template(['Tag not found'], code=404)
+COMMENT_NOT_OWNED = template(['Not your article'], code=422)
+ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
+SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
+NOT_ADMIN = template(['Not Admin'], code=403)
+NOT_MODERATOR = template(['Not Moderator'], code=403)
+NOT_ADMIN_OR_MODERATOR = template(['Not Admin or Moderator'], code=403)
 
 
 class InvalidUsage(Exception):
@@ -51,6 +57,22 @@ class InvalidUsage(Exception):
         return cls(**ARTICLE_ALREADY_EXISTS)
 
     @classmethod
+    def tag_not_found(cls):
+        return cls(**TAG_NOT_FOUND)
+    
+    @classmethod
+    def not_admin(cls):
+        return cls(**NOT_ADMIN)
+
+    @classmethod
+    def not_moderator(cls):
+        return cls(**NOT_MODERATOR)
+
+    @classmethod
+    def not_admin_or_moderator(cls):
+        return cls(**NOT_ADMIN)
+
+    @classmethod
     def comment_not_owned(cls):
         return cls(**COMMENT_NOT_OWNED)
 
@@ -66,5 +88,3 @@ class InvalidUsage(Exception):
     def not_admin(cls):
         return cls(**NOT_ADMIN)
     
-
-

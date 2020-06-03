@@ -15,8 +15,9 @@ from conduit.user.models import User
 from conduit.profile.models import UserProfile
 from conduit.articles.models import Article
 from conduit.tags.models import Tags
-
-from .serializers import (organization_schema, organizations_schema)
+from .models import Organization
+from .serializers import (organization_schema, organizations_schema,
+                          organization_members_schema)
 from conduit.profile.serializers import (profile_schema, profile_schemas)
 from conduit.articles.serializers import (org_article_schema,   
                                           org_articles_schema)
@@ -111,7 +112,7 @@ def unfollow_organization(slug):
 
 @blueprint.route('/api/organizations/<slug>/members', methods=('GET',))
 @jwt_required
-@marshal_with(organization_schema)
+@marshal_with(organization_members_schema)
 def show_all_members_mods(slug):
     organization = Organization.query.filter_by(slug=slug).first()
     if not organization:
@@ -149,7 +150,7 @@ def remove_member(slug, username, **kwargs):
 
     return '', 200
 
-
+  
 @blueprint.route('/api/organization/<org_slug>/articles', methods=('POST',))
 @jwt_required
 @use_kwargs(org_article_schema)
