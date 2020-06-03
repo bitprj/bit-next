@@ -57,6 +57,7 @@ class Article(SurrogatePK, Model):
     title = Column(db.String(100), nullable=False)
     description = Column(db.Text, nullable=False)
     body = Column(db.Text)
+    coverImage = Column(db.Text)
     createdAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     needsReview = Column(db.Boolean, nullable=False, default=False)
@@ -83,9 +84,9 @@ class Article(SurrogatePK, Model):
     organizations = relationship('Organization', secondary=org_assoc,      
                                  backref=db.backref('org_article'))
 
-    def __init__(self, author, title, body, description, slug=None, **kwargs):
+    def __init__(self, author, title, body, description, coverImage, slug=None, **kwargs):
         db.Model.__init__(self, author=author, title=title,    
-                          description=description, body=body,
+                          description=description, body=body, coverImage=coverImage,
                           slug=slug or slugify(title), **kwargs)
 
     def favourite(self, profile):
