@@ -18,7 +18,7 @@ from conduit.tags.models import Tags
 
 from .serializers import (organization_schema, organizations_schema)
 from conduit.profile.serializers import (profile_schema, profile_schemas)
-from conduit.articles.serializers import (org_article_schema, org_articles_schema)
+from conduit.articles.serializers import (org_article_schema, publish_org_article, org_articles_schema)
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -172,6 +172,8 @@ def submit_article_for_review(body, title, description,
     article.save()
     organization.request_review(article)
     organization.save()
+
+    print(article)
     
     return article
 
@@ -180,28 +182,17 @@ def submit_article_for_review(body, title, description,
 @jwt_required
 @use_kwargs(org_article_schema)
 @marshal_with(org_article_schema)
-def publish_article(title, org_slug, **kwargs):
+def publish_article(title, org_slug):
     organization = Organization.query.filter_by(slug=org_slug).first()
     article = Article.query.filter_by(title=title).first()
 
-    if article in organization.pending_articles:
-        article.needsReview = False
-        article.org_articles.append(article)
-        organization.remove_review_status(article)
-        
-        article.save()
-        organization.save()
+    organization.pending_articles.remove(article)
+    article.org_articles.append(article)
 
-    return article
+    print(article)
+    organization.save()
+    article.save()
 
-@blueprint.route('/api/organization/<org_slug>/articles', methods=('GET',))
-@jwt_required
-@use_kwargs(org_articles_schema)
-@marshal_with(org_articles_schema)
-def get_org(title, org_slug, **kwargs):
-    organization = Organization.query.filter_by(slug=org_slug).first()
-    article = Article.query.filter_by(title=title).first()
+    return '', 200
 
 
-
-    return organization
