@@ -76,6 +76,7 @@ const Profile = ({ initialProfile }) => {
   };
 
   return (
+    <div className="container page">
     <StyledDiv>
       <div className="user-info">
         <div className="container">
@@ -104,6 +105,7 @@ const Profile = ({ initialProfile }) => {
         </div>
       </div>
     </StyledDiv>
+    </div>
   );
 };
 
