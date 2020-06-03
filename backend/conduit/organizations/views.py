@@ -18,7 +18,8 @@ from conduit.tags.models import Tags
 
 from .serializers import (organization_schema, organizations_schema)
 from conduit.profile.serializers import (profile_schema, profile_schemas)
-from conduit.articles.serializers import (org_article_schema, publish_org_article, org_articles_schema)
+from conduit.articles.serializers import (org_article_schema,   
+                                          org_articles_schema)
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -185,8 +186,12 @@ def submit_article_for_review(body, title, description,
                 methods=('DELETE',))
 @jwt_required
 def reviewed_article(slug, org_slug, **kwargs):
+    profile = current_user.profile
     organization = Organization.query.filter_by(slug=org_slug).first()
     article = Article.query.filter_by(slug=slug).first()
+
+    if not organization.moderator(profile):
+        raise InvalidUsage.not_admin()
 
     if article not in organization.pending_articles:
         raise InvalidUsage.article_not_found()
