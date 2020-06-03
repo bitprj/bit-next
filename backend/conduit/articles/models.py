@@ -46,7 +46,7 @@ class Comment(Model, SurrogatePK):
     parentComment = relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
     def __init__(self, article, author, body, comment_id=None, **kwargs):
-        db.Model.__init__(self, author=author, body=body, article=article, comment_id=comment_id, **kwargs)
+        db.Model.__init__(self, author=author, body=body, article=article, **kwargs)
 
 
 class Article(SurrogatePK, Model):
@@ -63,7 +63,7 @@ class Article(SurrogatePK, Model):
     isPublished = Column(db.Boolean, nullable=False)
 
     author_id = reference_col('userprofile', nullable=False)
-    author = relationship('UserProfile', backref=db.backref('3'))
+    author = relationship('UserProfile', backref=db.backref('articles'))
     favoriters = relationship(
         'UserProfile',
         secondary=favoriter_assoc,

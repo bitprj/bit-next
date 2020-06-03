@@ -2,7 +2,7 @@ import Head from "next/head";
 import React, { useState } from "react";
 
 import MainView from "../components/home/MainView";
-import Tags from "../components/home/Tags";
+import Tags from "../components/tag/Tags";
 import styled from 'styled-components';
 import Twemoji from 'react-twemoji';
 import { Affix } from 'antd';
