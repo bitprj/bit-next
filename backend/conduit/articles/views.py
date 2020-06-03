@@ -12,6 +12,8 @@ from conduit.user.models import User
 from .models import Article, Tags, Comment
 from .serializers import (article_schema, articles_schema, comment_schema,
                           comments_schema)
+from conduit.algolia import articleIndex
+
 
 blueprint = Blueprint('articles', __name__)
 
@@ -66,6 +68,9 @@ def make_article(body, title, description, isPublished, tagList=None):
             else: # mtag.modSetting == 1:
                 article.add_tag(mtag)
     article.save()
+    # articleObject = article_schema.dump(article)
+    # articleObject.objectID = article.id
+    # articleIndex.save_object(articleObject)
     return article
 
 
