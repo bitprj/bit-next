@@ -13,6 +13,7 @@ ARTICLE_ALREADY_EXISTS = template(['This article already exists'], code=400)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
 ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
 SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
+NOT_ADMIN = template(['You do not have Administrator access'], code=403)
 
 
 class InvalidUsage(Exception):
@@ -60,5 +61,10 @@ class InvalidUsage(Exception):
     @classmethod
     def slug_already_exists(cls):
         return cls(**SLUG_ALREADY_EXISTS)
+
+    @classmethod
+    def not_admin(cls):
+        return cls(**NOT_ADMIN)
+    
 
 
