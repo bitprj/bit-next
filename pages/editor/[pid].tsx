@@ -155,7 +155,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
   };
 
   return (
-    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
+    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
       <br />
       {Title_required ? <Alert message="Title required" type="warning" /> : null}
       <br />
