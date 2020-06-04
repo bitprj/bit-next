@@ -100,6 +100,40 @@ const UserAPI = {
       return error.response;
     }
   },
+  followers: async (username) => {
+    const user: any = JSON.parse(window.localStorage.getItem("user"));
+    const token = user?.token;
+    try {
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/profiles/${username}/followers`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  followings: async (username) => {
+    const user: any = JSON.parse(window.localStorage.getItem("user"));
+    const token = user?.token;
+    try {
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/profiles/${username}/followings`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
   get: async (username) => axios.get(`${SERVER_BASE_URL}/profiles/${username}`),
 };
 

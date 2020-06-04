@@ -10,6 +10,7 @@ class TagSchema(Schema):
     slug = fields.Str()
     icon = fields.Str()
     modSetting = fields.Int()
+    following = fields.Boolean()
     tag = fields.Nested('self', exclude=('tag',), default=True, load_only=True)
     tagFollowers = fields.List(fields.Nested("ProfileSchema"))
     moderators = fields.List(fields.Nested("ProfileSchema"))

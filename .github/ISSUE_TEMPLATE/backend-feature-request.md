@@ -7,11 +7,28 @@ assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+<ins>**Is your feature request related to a problem? Please describe.**</ins>
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+<ins>**Describe the solution you'd like:**</ins>
+
+**Models**
+> Model Name
+- [ ] Task
+
+
+**Schemas**
+- [ ] Task that deals with schemas
+
+**API Routes**
+> CRUD Routes
+- [ ] Task
+
+Endpoints | HTTP Method | Description | Tested
+:--: | :--: | :--: | :--:
+
+
+**Create/Edit Functions**
+> Functions to edit
+- Detailed explanation on what to do
 
 **Additional context**
-Add any other context or screenshots about the feature request here.

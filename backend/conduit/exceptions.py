@@ -17,6 +17,7 @@ NOT_ADMIN = template(['Not Admin'], code=403)
 NOT_MODERATOR = template(['Not Moderator'], code=403)
 NOT_ADMIN_OR_MODERATOR = template(['Not Admin or Moderator'], code=403)
 
+
 class InvalidUsage(Exception):
     status_code = 500
 

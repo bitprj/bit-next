@@ -73,3 +73,9 @@ class Tags(Model):
             self.moderators.append(profile)
             return True
         return False
+
+    @property
+    def following(self):
+        if current_user:
+            return self.is_follow(current_user.profile)
+        return False

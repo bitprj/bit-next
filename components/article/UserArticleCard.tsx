@@ -9,7 +9,7 @@ const StyledCard = styled(Card)`
   font-style: normal;
   font-weight: 600;
   background: #FFFFFF;
-  width: 257px;
+  width: 300px;
   border: 0.4em solid rgba(210, 210, 210, 0.2);
   border-radius: 0px 0px 0.5em 0.5em;
 `
@@ -38,7 +38,7 @@ const StyledTag = styled.span`
 `
 
 const ArticleCard = (props) => {
-
+  console.log(props.article.tagList)
   return (
     <StyledCard>
       <Row>
@@ -54,7 +54,7 @@ const ArticleCard = (props) => {
       </Row>
       <BottomDiv>
         <TagCol>
-          <div>{props.article.tagList.map((tag, i) => (<StyledTag key={i}>{"#" + tag}</StyledTag>))}</div>
+          <div>{props.article.tagList.map((tag, i) => (<StyledTag key={i}>{"#" + tag.slug}</StyledTag>))}</div>
         </ TagCol>
         <Col>
           <Avatar src={props.article.author.image} size={50} />

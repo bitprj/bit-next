@@ -10,13 +10,13 @@ class TagSchema(Schema):
     tagname = fields.Str()
     slug = fields.Str()
 
-
 class ArticleSchema(Schema):
     slug = fields.Str()
     title = fields.Str()
     description = fields.Str()
     createdAt = fields.DateTime(format='%m-%d-%Y')
     body = fields.Str()
+    coverImage = fields.Str()
     updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
     needsReview = fields.Boolean()
     author = fields.Nested(ProfileSchema)
@@ -24,6 +24,38 @@ class ArticleSchema(Schema):
     # for the envelope
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
     tagList = fields.Nested(TagSchema, many=True)
+    favoritesCount = fields.Int(dump_only=True)
+    commentsCount = fields.Int(dump_only=True)
+    favorited = fields.Bool(dump_only=True)
+    isPublished = fields.Bool()
+
+    @pre_load
+    def make_article(self, data, **kwargs):
+        return data['article']
+
+    @post_dump
+    def dump_article(self, data, **kwargs):
+        data['author'] = data['author']['profile']
+        return {'article': data}
+
+    class Meta:
+        strict = True
+
+
+class ArticleFormSchema(Schema):
+    slug = fields.Str()
+    title = fields.Str()
+    description = fields.Str()
+    createdAt = fields.DateTime(format='%m-%d-%Y')
+    body = fields.Str()
+    coverImage = fields.Str()
+    updatedAt = fields.DateTime(dump_only=True, format='%m-%d-%Y')
+    needsReview = fields.Boolean()
+    author = fields.Nested(ProfileSchema)
+
+    # for the envelope
+    article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
+    tagList = fields.List(fields.Str())
     favoritesCount = fields.Int(dump_only=True)
     commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
@@ -90,6 +122,7 @@ class CommentsSchema(CommentSchema):
 
 
 article_schema = ArticleSchema()
+article_form_schema = ArticleFormSchema()
 articles_schema = ArticleSchemas(many=True)
 comment_schema = CommentSchema()
 comments_schema = CommentsSchema(many=True)

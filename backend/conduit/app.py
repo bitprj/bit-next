@@ -2,7 +2,6 @@
 """The app module, containing the app factory function."""
 from flask import Flask
 from conduit.extensions import bcrypt, cache, db, migrate, jwt, cors
-
 from conduit import commands, user, profile, articles, organizations, tags
 from conduit.settings import ProdConfig
 from conduit.exceptions import InvalidUsage
@@ -42,7 +41,6 @@ def register_blueprints(app):
     cors.init_app(articles.views.blueprint, origins=origins)
     cors.init_app(organizations.views.blueprint, orgins=origins)
     cors.init_app(tags.views.blueprint, origins=origins)
-
     
     app.register_blueprint(user.views.blueprint)
     app.register_blueprint(profile.views.blueprint)

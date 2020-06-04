@@ -9,7 +9,7 @@ class UserSchema(Schema):
     password = fields.Str(load_only=True)
     bio = fields.Str()
     image = fields.Url()
-    token = fields.Str(dump_only=True)
+    token = fields.Str()
     createdAt = fields.DateTime(attribute='created_at', dump_only=True)
     updatedAt = fields.DateTime(attribute='updated_at')
     occupation = fields.Str()
@@ -39,5 +39,26 @@ class UserSchema(Schema):
         strict = True
 
 
+class FollowSchema(Schema):
+    username = fields.Str()
+    email = fields.Email()
+    image = fields.Str()
+    following = fields.Bool()
+    
+    user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
+
+    @pre_load
+    def make_user(self, data, **kwargs):
+        return data['user']
+
+    @post_dump
+    def dump_user(self, data, **kwargs):
+        return {'user': data}
+
+    class Meta:
+        strict = True
+
+
 user_schema = UserSchema()
 user_schemas = UserSchema(many=True)
+followers_schema = FollowSchema(many=True)
