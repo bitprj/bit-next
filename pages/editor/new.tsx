@@ -1,13 +1,12 @@
 import Router from "next/router";
 import useSWR from "swr";
+import axios from "axios";
 import React, { useState, createRef } from 'react';
 import Editor from 'rich-markdown-editor';
-import ListErrors from "../../components/common/ListErrors";
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import storage from "../../lib/utils/storage";
 import { Alert } from 'antd';
-import axios from "axios";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 
 const PublishArticleEditor = () => {

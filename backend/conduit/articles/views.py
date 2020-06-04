@@ -10,7 +10,7 @@ from marshmallow import fields
 from conduit.exceptions import InvalidUsage
 from conduit.user.models import User
 from .models import Article, Tags, Comment
-from .serializers import (article_schema, articles_schema, comment_schema,
+from .serializers import (article_schema, article_form_schema, articles_schema, comment_schema,
                           comments_schema)
 
 blueprint = Blueprint('articles', __name__)
@@ -46,11 +46,11 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
 #Route to create an article
 @blueprint.route('/api/articles', methods=('POST',))
 @jwt_required
-@use_kwargs(article_schema)
-@marshal_with(article_schema)
-def make_article(body, title, description, isPublished, tagList=None):
+@use_kwargs(article_form_schema)
+@marshal_with(article_form_schema)
+def make_article(body, title, description, isPublished, coverImage, tagList=None):
     article = Article(title=title, description=description, body=body,
-                      author=current_user.profile, isPublished=isPublished)
+                      author=current_user.profile, isPublished=isPublished, coverImage=coverImage)
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()

@@ -42,8 +42,8 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
               <NavLink
-                href={`/profile/${currentUser?.username}`}
-                as={`/profile/${currentUser?.username}`}
+                href={`/dashboard/${currentUser?.username}`}
+                as={`/dashboard/${currentUser?.username}`}
               >
                 <span onClick={handleClick}>{currentUser?.username}</span>
               </NavLink>
