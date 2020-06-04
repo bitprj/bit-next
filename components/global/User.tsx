@@ -38,7 +38,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
 const User = (props) =>(
   <StyledListItemMeta
     avatar={ <Avatar src= {props.image} size = { props.avatarSize || 50}/>}
-    title={props.name}
+    title={props.username}
     description={props.username ||
       (props.hasButton &&
         <Button 

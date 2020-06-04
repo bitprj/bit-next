@@ -5,6 +5,7 @@ import styled from 'styled-components';
 
 import ErrorMessage from "../../components/common/ErrorMessage";
 import ArticleList from "../../components/article/ArticleList";
+import FollowList from "../../components/global/FollowList";
 import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
@@ -50,10 +51,9 @@ const Profile = ({ initialProfile }) => {
   const { profile } = fetchedProfile || initialProfile;
   const { username, email } = profile;
 
-  const { data: currentUser } = useSWR("user", storage);
-  const isLoggedIn = checkLogin(currentUser);
-  const isUser = currentUser && username === currentUser?.username;
-  const {TabPane} = Tabs;
+  // const { data: currentUser } = useSWR("user", storage);
+  // const isLoggedIn = checkLogin(currentUser);
+  // const isUser = currentUser && username === currentUser?.username;
 
   const handleFollow = async () => {
     mutate(
@@ -90,13 +90,13 @@ const Profile = ({ initialProfile }) => {
               <StyledTabs>        
                 <Tabs defaultActiveKey="1" size = {"large"}  type={"card"} tabBarGutter={32} >
                   <Tabs.TabPane key="1" tab={"Posts"}>
-                      <ArticleList/>
+                    <ArticleList/>
                   </Tabs.TabPane>
                   <Tabs.TabPane key="2" tab={"Followers"}> 
-                      Followers 
+                    <FollowList followings={false}/>
                   </Tabs.TabPane>
                   <Tabs.TabPane key="3" tab={"Following"}> 
-                    Following 
+                    <FollowList followings={true}/> 
                   </Tabs.TabPane>
                 </Tabs>
               </StyledTabs> 
