@@ -7,7 +7,6 @@ import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import storage from "../../lib/utils/storage";
 import { Alert, Upload, message, Button } from 'antd';
-import axios from "axios";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import { InboxOutlined } from '@ant-design/icons';
 
@@ -17,7 +16,7 @@ const PublishArticleEditor = () => {
     description: "",
     body: "",
     tagList: [],
-    coverImage:"",
+    coverImage: "",
     isPublished: true
   };
   const Title = createRef<HTMLInputElement>()
@@ -42,9 +41,9 @@ const PublishArticleEditor = () => {
 
   const [id, setId] = useState(null)
 
-  const [coverImg,setCoverImg] = useState(null)
+  const [coverImg, setCoverImg] = useState(null)
 
-  const [coverImgList,setCoverImgList] = useState([])
+  const [coverImgList, setCoverImgList] = useState([])
 
   const { Dragger } = Upload;
 
@@ -87,22 +86,22 @@ const PublishArticleEditor = () => {
     }
   });
 
-  const uploadCover = async (file) =>{
+  const uploadCover = async (file) => {
     const cover = new FormData();
     cover.append("file", file);
     cover.append("upload_preset", 'upload')
     const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
       method: 'POST',
       body: cover
-     });
+    });
     const response = await res.json();
     setCoverImg(response.secure_url);
   }
 
-  const uploadCoverChange = (info) =>{
+  const uploadCoverChange = (info) => {
     let fileList = [...info.fileList];
     fileList = fileList.slice(-1);
-    if(fileList.length==0){
+    if (fileList.length == 0) {
       setCoverImg(null)
     }
     setCoverImgList(fileList)
@@ -205,7 +204,7 @@ const PublishArticleEditor = () => {
   };
 
   return (
-    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
+    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
       <br />
       {Title_required ? <Alert message="Title required" type="warning" /> : null}
       {Save_Alert ? <Alert message="Your Article is Saved" type="success" /> : null}
@@ -241,7 +240,7 @@ const PublishArticleEditor = () => {
         </p>
         <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
       </Dragger>
-      <br/>
+      <br />
       <Editor
         id="new_article"
         value={values}

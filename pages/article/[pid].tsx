@@ -28,6 +28,20 @@ const ArticleContain = styled.div`
   }
 `;
 
+const CoverImage = styled.img`
+  object-fit: cover;
+  object-position: 0 40%;
+  width: 100%;
+  margin: auto;
+  max-width: 1024px;
+  z-index: 2;
+  height: 42vw;
+
+  @media screen and (min-width: 880px) {
+    height: 397px;
+  }
+`;
+
 const StickyRight = styled.div`  
   display: none;
   @media screen and (min-width: 1250px) {
@@ -169,8 +183,6 @@ const ArticlePage = (initialArticle) => {
     }
   };
 
-  const staticSrc = 'https://i.ytimg.com/vi/cNEsl9J69OQ/maxresdefault.jpg';
-
   const markup = {
     __html: marked(article.body, { sanitize: true }),
   };
@@ -178,7 +190,7 @@ const ArticlePage = (initialArticle) => {
   return (
     <div className="article-page">
       <ArticleContain>
-        <img src={(article as any).image ? (article as any).image : staticSrc} alt='image' style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
+        {article.coverImage ? <CoverImage src={article.coverImage} alt='image' /> : null}
         <ArticleBody>
           <ArticleTags article={article} />
           <h1>{article.title}</h1>
