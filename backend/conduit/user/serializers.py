@@ -42,6 +42,7 @@ class UserSchema(Schema):
 class FollowSchema(Schema):
     username = fields.Str()
     email = fields.Email()
+    image = fields.Str()
     following = fields.Bool()
     
     user = fields.Nested('self', exclude=('user',), default=True, load_only=True)

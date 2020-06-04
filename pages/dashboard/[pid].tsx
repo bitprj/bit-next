@@ -10,7 +10,7 @@ import checkLogin from "../../lib/utils/checkLogin";
 import ArticleList from "../../components/article/ArticleList";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import User from "../../components/global/User";
-import FollowerList from "../../components/global/FollowerList";
+import FollowList from "../../components/global/FollowList";
 import Tab_list from "../../components/profile/Tab_list";
 import AccountSettings from "../../components/profile/AccountSettings";
 import { Row, Col, Tabs } from 'antd';
@@ -41,22 +41,12 @@ const Profile = ({ initialProfile }) => {
 	const [isFollowings, setFollowingsPage] = React.useState(false)
 	const [isTag, setTagPage] = React.useState(false)
 	const [isSettings, setSettingsPage] = React.useState(false)
-	const [followersList, setFollowersList] = React.useState(null)
-	const [followingsList, setFollowingsList] = React.useState(null)
 
 	const { data: currentUser } = useSWR("user", storage);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 	const { TabPane } = Tabs;
 
-	const Followers = () => {
-		const response = UserAPI.followers(pid)
-		setFollowersList(response)
-	}
-	const Followings = () => {
-		const response = UserAPI.followings(pid)
-		setFollowingsList(response)
-	}
 	const TabChange = (key) => {
 		if (key == "Posts") {
 			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
@@ -73,7 +63,6 @@ const Profile = ({ initialProfile }) => {
 			setFollowingsPage(false)
 			setTagPage(false)
 			setSettingsPage(false)
-			Followers()
 		}
 		else if (key == "Following") {
 			setTabList(["Old -> New", "New -> Old"])
@@ -82,7 +71,6 @@ const Profile = ({ initialProfile }) => {
 			setFollowingsPage(true)
 			setTagPage(false)
 			setSettingsPage(false)
-			Followings()
 		}
 		else if (key == "Account Settings") {
 			setTabList(["Settings", "Organization", "API Keys"])
@@ -101,8 +89,7 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 	}
-	const TabView = (key) => {
-	}
+	const TabView = (key) => { }
 
 	if (isUser) {
 		return (
@@ -111,7 +98,7 @@ const Profile = ({ initialProfile }) => {
 				<Col className="gutter-row" span={4}>
 					<Row gutter={[16, 40]}>
 						<Col span={24}>
-							<User name={username} img={image} username={username} />
+							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
 							<Tab_list tabs={list} onClick={key => TabChange(key)} position={"left"} />
@@ -125,8 +112,8 @@ const Profile = ({ initialProfile }) => {
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
 							{isPosts ? <ArticleList /> : null}
-							{isFollowers ? <FollowerList followers={followersList} /> : null}
-							{isFollowings ? <FollowerList followers={followingsList} /> : null}
+							{isFollowers ? <FollowList followings={false} /> : null}
+							{isFollowings ? <FollowList followings={true} /> : null}
 							{isTag ? <ArticleList /> : null}
 							{isSettings ? <AccountSettings /> : null}
 						</Col>
