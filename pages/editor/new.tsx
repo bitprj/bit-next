@@ -1,8 +1,8 @@
 import Router from "next/router";
 import useSWR from "swr";
+import axios from "axios";
 import React, { useState, createRef } from 'react';
 import Editor from 'rich-markdown-editor';
-import ListErrors from "../../components/common/ListErrors";
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import storage from "../../lib/utils/storage";
