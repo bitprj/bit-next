@@ -24,11 +24,11 @@ const StyledButton = styled.button`
 const SettingsForm = () => {
   const [errors, setErrors] = React.useState([]);
   const [userInfo, setUserInfo] = React.useState({
-    image: "",
+    email: "",
     username: "",
     bio: "",
-    email: "",
     password: "",
+    image: "",
     githubLink: "",
     twitterLink: "",
     website: "",
@@ -100,7 +100,7 @@ const SettingsForm = () => {
 
     const { data, status } = await axios.put(
       `${SERVER_BASE_URL}/user`,
-      JSON.stringify({ user }),
+      JSON.stringify({ user:{user} }),
       {
         headers: {
           "Content-Type": "application/json",
