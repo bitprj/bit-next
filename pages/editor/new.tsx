@@ -41,7 +41,7 @@ const PublishArticleEditor = () => {
 
   const [id, setId] = useState(null)
 
-  const [coverImg, setCoverImg] = useState(null)
+  const [coverImg, setCoverImg] = useState("")
 
   const [coverImgList, setCoverImgList] = useState([])
 
@@ -102,7 +102,7 @@ const PublishArticleEditor = () => {
     let fileList = [...info.fileList];
     fileList = fileList.slice(-1);
     if (fileList.length == 0) {
-      setCoverImg(null)
+      setCoverImg("")
     }
     setCoverImgList(fileList)
   }

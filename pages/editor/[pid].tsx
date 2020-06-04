@@ -89,7 +89,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     let fileList = [...info.fileList];
     fileList = fileList.slice(-1);
     if(fileList.length==0){
-      setCoverImg(null)
+      setCoverImg("")
     }
     setCoverImgList(fileList)
   }
