@@ -101,10 +101,22 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 	}
-	const TabView = (key) => {
-	}
-
+	const TabView = (key) => { }
+	const {
+		data: fetchedFollowers
+	} = useSWR(
+		`${SERVER_BASE_URL}/profiles/${encodeURIComponent(String(pid))}/followers`,
+		fetcher
+	);
+	const {
+		data: fetchedFollowings
+	} = useSWR(
+		`${SERVER_BASE_URL}/profiles/${encodeURIComponent(String(pid))}/followings`,
+		fetcher
+	);
 	if (isUser) {
+		// console.log(fetchedFollowers)
+		// console.log(fetchedFollowings)
 		return (
 			<Row gutter={16} style={{ marginTop: "10%", marginLeft: "0", marginRight: "0" }}>
 				<Col span={2}></Col>
@@ -125,8 +137,8 @@ const Profile = ({ initialProfile }) => {
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
 							{isPosts ? <ArticleList /> : null}
-							{isFollowers ? <FollowerList followers={followersList} /> : null}
-							{isFollowings ? <FollowerList followers={followingsList} /> : null}
+							{isFollowers ? <FollowerList followers={fetchedFollowers} /> : null}
+							{isFollowings ? <FollowerList followers={fetchedFollowings} /> : null}
 							{isTag ? <ArticleList /> : null}
 							{isSettings ? <AccountSettings /> : null}
 						</Col>
