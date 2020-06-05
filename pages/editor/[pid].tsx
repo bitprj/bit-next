@@ -49,7 +49,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
   } = router;
 
   const addTag = (tag) => {
-    setTags([...tags, tag])
+    setTags([...tags, {slug:tag,tagname:tag}])
   }
 
   const removeTag = (tag) => {

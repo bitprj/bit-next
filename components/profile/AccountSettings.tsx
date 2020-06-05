@@ -61,7 +61,7 @@ const SettingsForm = () => {
 
     const { data, status } = await axios.put(
       `${SERVER_BASE_URL}/user`,
-      JSON.stringify({ user: user }),
+      JSON.stringify({ user: {user} }),
       {
         headers: {
           "Content-Type": "application/json",

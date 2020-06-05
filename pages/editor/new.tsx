@@ -50,7 +50,7 @@ const PublishArticleEditor = () => {
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
-    setTags([...tags, tag])
+    setTags([...tags, {slug:tag,tagname:tag}])
   }
 
   const removeTag = (tag) => {
@@ -155,7 +155,11 @@ const PublishArticleEditor = () => {
     }
     else {
       if (title != "") {
+        setSaveAlert(true)
         AutoSave()
+        setTimeout(() => {
+          setSaveAlert(false)
+        }, 1000);
       }
       else {
         if (Title.current) {
