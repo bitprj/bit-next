@@ -118,7 +118,7 @@ const Profile = ({ initialProfile }) => {
 							{isSettings ? <AccountSettings /> : null}
 						</Col>
 					</Row>
-				</Col>¬
+				</Col>
 				<Col span={3}>
 					{isSettings ? <p style={{ opacity: "0.7", marginTop: "16px", fontSize: "18px" }}>Live Website</p> : null}
 				</Col>

@@ -159,6 +159,16 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
       <br />
       {Title_required ? <Alert message="Title required" type="warning" /> : null}
       <br />
+      <Dragger
+        beforeUpload={uploadCover}
+        onChange={uploadCoverChange}
+        fileList={coverImgList}>
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
+      </Dragger>
+      <br/>
       <input
         className="form-control form-control-lg"
         type="text"
@@ -181,16 +191,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         addTag={addTag}
         removeTag={removeTag}
       />
-      <Dragger
-        beforeUpload={uploadCover}
-        onChange={uploadCoverChange}
-        fileList={coverImgList}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
-      </Dragger>
-      <br/>
       <Editor
         id="new_article"
         value={values}

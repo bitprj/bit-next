@@ -50,7 +50,12 @@ const PublishArticleEditor = () => {
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
-    setTags([...tags, {slug:tag,tagname:tag}])
+    if(id==null){
+      setTags([...tags, tag])
+    }
+    else{
+      setTags([...tags, {slug:tag,tagname:tag}])
+    }
   }
 
   const removeTag = (tag) => {
@@ -142,6 +147,11 @@ const PublishArticleEditor = () => {
           currentUser?.token
         );
         setId(data.article.slug)
+        var update_tags=[]
+        for (var i = 0; i < initialState.tagList.length; i++) {
+          update_tags.push({slug:initialState.tagList[i],tagname:initialState.tagList[i]})
+        }
+        setTags(update_tags)
         setTimeout(() => {
           setSaveAlert(false)
         }, 1000);
@@ -213,6 +223,16 @@ const PublishArticleEditor = () => {
       {Title_required ? <Alert message="Title required" type="warning" /> : null}
       {Save_Alert ? <Alert message="Your Article is Saved" type="success" /> : null}
       <br />
+      <Dragger
+        beforeUpload={uploadCover}
+        onChange={uploadCoverChange}
+        fileList={coverImgList}>
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
+      </Dragger>
+      <br />
       <input
         className="form-control form-control-lg"
         type="text"
@@ -235,16 +255,6 @@ const PublishArticleEditor = () => {
         addTag={addTag}
         removeTag={removeTag}
       />
-      <Dragger
-        beforeUpload={uploadCover}
-        onChange={uploadCoverChange}
-        fileList={coverImgList}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
-      </Dragger>
-      <br />
       <Editor
         id="new_article"
         value={values}

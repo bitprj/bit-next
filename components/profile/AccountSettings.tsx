@@ -8,6 +8,8 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 
 import { Avatar, Row, Col, Input } from 'antd';
 
+const { TextArea } = Input;
+
 const StyledInput = styled(Input)`
   width: 12em;
   border: none;
@@ -134,31 +136,46 @@ const SettingsForm = () => {
           <br />
           <Col span={24}>
             <h6>Github</h6>
-            <StyledInput placeholder={userInfo.githubLink || "www.github.com"} onChange={updateState("githubLink")} />
+            <StyledInput value={userInfo.githubLink} placeholder={"www.github.com"} onChange={updateState("githubLink")} />
           </Col>
           <br />
           <Col span={24}>
             <h6>Twitter</h6>
-            <StyledInput placeholder={userInfo.twitterLink || "www.twitter.com"} onChange={updateState("twitterLink")} />
+            <StyledInput value={userInfo.twitterLink} placeholder={"www.twitter.com"} onChange={updateState("twitterLink")} />
           </Col>
           <br />
           <Col span={24}>
             <h6>LinkedIn</h6>
-            <StyledInput placeholder={userInfo.linkedinLink || "www.linkedin.com"} onChange={updateState("linkedinLink")} />
+            <StyledInput value={userInfo.linkedinLink} placeholder={"www.linkedin.com"} onChange={updateState("linkedinLink")} />
           </Col>
           <br />
           <Col span={24}>
             <h6>Personal Website</h6>
-            <StyledInput placeholder={userInfo.website || "www.example.com"} onChange={updateState("website")} />
+            <StyledInput value={userInfo.website} placeholder={"www.example.com"} onChange={updateState("website")} />
             <StyledButton onClick={submitForm}>edit</StyledButton>
           </Col>
         </Col>
         <Col span={12}>
           <Col span={24}>
+            <h6>Username</h6>
+            <StyledInput value={userInfo.username} placeholder={"username"} onChange={updateState("username")} />
+          </Col>
+          <br />
+          <Col span={24}>
+            <h6>Email</h6>
+            <StyledInput value={userInfo.email} placeholder={"email"} onChange={updateState("email")} />
+          </Col>
+          <br />
+          <Col span={24}>
+            <h6>Password</h6>
+            <StyledInput placeholder={"New Password"} onChange={updateState("password")} />
+          </Col>
+          <br />
+          <Col span={24}>
             <h6>Your Bio</h6>
-            <textarea
+            <TextArea
               className="form-control form-control-lg"
-              rows={8}
+              rows={6}
               placeholder="Short bio about you"
               value={userInfo.bio}
               onChange={updateState("bio")}
