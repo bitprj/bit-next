@@ -14,7 +14,6 @@ from .serializers import (article_schema, articles_schema, comment_schema,
                           comments_schema)
 from conduit.algolia import articleIndex
 
-
 blueprint = Blueprint('articles', __name__)
 
 
@@ -66,12 +65,12 @@ def make_article(body, title, description, isPublished, tagList=None):
                 article.add_needReviewTag(mtag)
                 article.add_tag(mtag)
                 article.needsReview = True
-            else: # mtag.modSetting == 1:
+            else:  # mtag.modSetting == 1:
                 article.add_tag(mtag)
     article.save()
-    # articleObject = article_schema.dump(article)
-    # articleObject.objectID = article.id
-    # articleIndex.save_object(articleObject)
+    articleObject = article_schema.dump(article)
+    articleObject['objectID'] = article.id
+    articleIndex.save_object(articleObject)
     return article
 
 
@@ -85,6 +84,9 @@ def update_article(slug, **kwargs):
         raise InvalidUsage.article_not_found()
     article.update(updatedAt=dt.datetime.utcnow(), **kwargs)
     article.save()
+    articleObject = article_schema.dump(article)
+    articleObject['objectID'] = article.id
+    articleIndex.save_object(articleObject)
     return article
 
 
@@ -92,7 +94,9 @@ def update_article(slug, **kwargs):
 @jwt_required
 def delete_article(slug):
     article = Article.query.filter_by(slug=slug, author_id=current_user.profile.id).first()
+    article_id = article.id
     article.delete()
+    articleIndex.delete_object(str(article_id))
     return '', 200
 
 
