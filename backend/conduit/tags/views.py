@@ -1,16 +1,17 @@
-from flask import Blueprint
-from flask_apispec import marshal_with, use_kwargs
-from flask_jwt_extended import current_user, jwt_required
-
-from conduit.decorators import isAdmin
 from .models import Tags
 from .serializers import tag_schema, tag_mebership_schema
+
+from conduit.decorators import isAdmin
 from conduit.exceptions import InvalidUsage
 from conduit.profile.models import UserProfile
 from conduit.profile.serializers import profile_schema, profile_schemas
 from conduit.articles.serializers import article_schema
 from conduit.articles.models import Article
 from conduit.user.models import User
+
+from flask import Blueprint
+from flask_apispec import marshal_with, use_kwargs
+from flask_jwt_extended import current_user, jwt_optional, jwt_required
 
 blueprint = Blueprint('tags', __name__)
 
@@ -21,7 +22,7 @@ blueprint = Blueprint('tags', __name__)
 
 
 @blueprint.route('/api/tags/<slug>', methods=('GET',))
-@jwt_required
+@jwt_optional
 @marshal_with(tag_schema)
 def get_tag(slug, **kwargs):
     tag = Tags.query.filter_by(slug=slug).first()

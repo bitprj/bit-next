@@ -46,7 +46,7 @@ class Comment(Model, SurrogatePK):
     parentComment = relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
     def __init__(self, article, author, body, comment_id=None, **kwargs):
-        db.Model.__init__(self, author=author, body=body, article=article, comment_id=comment_id, **kwargs)
+        db.Model.__init__(self, author=author, body=body, article=article, **kwargs)
 
 
 class Article(SurrogatePK, Model):
@@ -57,12 +57,14 @@ class Article(SurrogatePK, Model):
     title = Column(db.String(100), nullable=False)
     description = Column(db.Text, nullable=False)
     body = Column(db.Text)
+    coverImage = Column(db.Text)
     createdAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     needsReview = Column(db.Boolean, nullable=False, default=False)
     isPublished = Column(db.Boolean, nullable=False)
+
     author_id = reference_col('userprofile', nullable=False)
-    author = relationship('UserProfile', backref=db.backref('3'))
+    author = relationship('UserProfile', backref=db.backref('articles'))
     favoriters = relationship(
         'UserProfile',
         secondary=favoriter_assoc,
@@ -82,9 +84,9 @@ class Article(SurrogatePK, Model):
     organizations = relationship('Organization', secondary=org_assoc,      
                                  backref=db.backref('org_article'))
 
-    def __init__(self, author, title, body, description, slug=None, **kwargs):
+    def __init__(self, author, title, body, description, coverImage, slug=None, **kwargs):
         db.Model.__init__(self, author=author, title=title,    
-                          description=description, body=body,
+                          description=description, body=body, coverImage=coverImage,
                           slug=slug or slugify(title), **kwargs)
 
     def favourite(self, profile):

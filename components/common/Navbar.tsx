@@ -16,7 +16,7 @@ const Navbar = () => {
   const handleClick = React.useCallback(() => setPage(0), []);
 
   return (
-    <nav className="navbar navbar-light">
+    <nav className="navbar navbar-light" style={{background:"white"}}>
       <div className="container">
         <CustomLink className="navbar-brand" href="/" as="/">
           <span onClick={handleClick}>Bit Project</span>
@@ -42,8 +42,8 @@ const Navbar = () => {
             </li>
             <li className="nav-item">
               <NavLink
-                href={`/profile/${currentUser?.username}`}
-                as={`/profile/${currentUser?.username}`}
+                href={`/dashboard/${currentUser?.username}`}
+                as={`/dashboard/${currentUser?.username}`}
               >
                 <span onClick={handleClick}>{currentUser?.username}</span>
               </NavLink>
