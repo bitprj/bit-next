@@ -53,7 +53,6 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
 def make_article(body, title, description, isPublished, coverImage, tagList=None):
     article = Article(title=title, description=description, body=body,
                       author=current_user.profile, isPublished=isPublished, coverImage=coverImage)
-    needReviewTags = []                      
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()
