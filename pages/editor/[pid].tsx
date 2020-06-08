@@ -33,13 +33,16 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const [Title_required, setTitle_required] = useState(false)
 
-  const [tags, setTags] = useState(initialState.tagList)
+  const [tags, setTags] = useState([])
+
+  const [tags_display, setTagsDisplay] = useState(initialState.tagList)
 
   const [coverImg,setCoverImg] = useState(initialState.coverImage)
 
   const [coverImgList,setCoverImgList] = useState([])
 
   const { Dragger } = Upload;
+
 
   const [isLoading, setLoading] = React.useState(false);
   const { data: currentUser } = useSWR("user", storage);
@@ -48,12 +51,24 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     query: { pid },
   } = router;
 
+  if(tags_display.length!=0 && tags.length==0){
+    var tag_list = []
+    for (var i = 0; i < tags_display.length; i++) {
+      tag_list.push(tags_display[i].slug)
+    }
+    setTags(tag_list)
+  }
+  
   const addTag = (tag) => {
-    setTags([...tags, {slug:tag,tagname:tag}])
+    if(!tags.includes(tag)){
+      setTags([...tags, tag])
+      setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
+    }
   }
 
   const removeTag = (tag) => {
-    setTags(tags.filter(item => item != tag))
+    setTags(tags.filter(item => item != tag.slug))
+    setTagsDisplay(tags_display.filter(item => item != tag))
   }
 
   const handleTitle = e => {
@@ -187,7 +202,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         style={{ marginBottom: "2%", border: "none", padding: "0" }}
       />
       <TagInput
-        tagList={tags}
+        tagList={tags_display}
         addTag={addTag}
         removeTag={removeTag}
       />

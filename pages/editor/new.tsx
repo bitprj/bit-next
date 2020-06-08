@@ -39,6 +39,8 @@ const PublishArticleEditor = () => {
 
   const [tags, setTags] = useState([])
 
+  const [tags_display, setTagsDisplay] = useState([])
+
   const [id, setId] = useState(null)
 
   const [coverImg, setCoverImg] = useState("")
@@ -50,16 +52,15 @@ const PublishArticleEditor = () => {
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
-    if(id==null){
+    if(!tags.includes(tag)){
       setTags([...tags, tag])
-    }
-    else{
-      setTags([...tags, {slug:tag,tagname:tag}])
+      setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
     }
   }
 
   const removeTag = (tag) => {
-    setTags(tags.filter(item => item != tag))
+    setTags(tags.filter(item => item != tag.slug))
+    setTagsDisplay(tags_display.filter(item => item != tag))
   }
 
   const handleTitle = e => {
@@ -147,11 +148,6 @@ const PublishArticleEditor = () => {
           currentUser?.token
         );
         setId(data.article.slug)
-        var update_tags=[]
-        for (var i = 0; i < initialState.tagList.length; i++) {
-          update_tags.push({slug:initialState.tagList[i],tagname:initialState.tagList[i]})
-        }
-        setTags(update_tags)
         setTimeout(() => {
           setSaveAlert(false)
         }, 1000);
@@ -251,7 +247,7 @@ const PublishArticleEditor = () => {
         style={{ marginBottom: "2%", border: "none", padding: "0" }}
       />
       <TagInput
-        tagList={tags}
+        tagList={tags_display}
         addTag={addTag}
         removeTag={removeTag}
       />
