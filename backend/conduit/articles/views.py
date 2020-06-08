@@ -52,7 +52,6 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
 def make_article(body, title, description, isPublished, coverImage, tagList=None):
     article = Article(title=title, description=description, body=body,
                       author=current_user.profile, isPublished=isPublished, coverImage=coverImage)
-    needReviewTags = []                      
     if tagList is not None:
         for tag in tagList:
             mtag = Tags.query.filter_by(tagname=tag).first()
@@ -74,8 +73,8 @@ def make_article(body, title, description, isPublished, coverImage, tagList=None
 
 @blueprint.route('/api/articles/<slug>', methods=('PUT',))
 @jwt_required
-@use_kwargs(article_schema)
-@marshal_with(article_schema)
+@use_kwargs(article_form_schema)
+@marshal_with(article_form_schema)
 def update_article(slug, **kwargs):
     article = Article.query.filter_by(slug=slug, author_id=current_user.profile.id).first()
     if not article:
