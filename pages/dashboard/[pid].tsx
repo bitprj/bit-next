@@ -12,6 +12,7 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 import User from "../../components/global/User";
 import FollowList from "../../components/global/FollowList";
 import Tab_list from "../../components/profile/Tab_list";
+import Menu_list from "../../components/profile/Menu_list";
 import AccountSettings from "../../components/profile/AccountSettings";
 import { Row, Col, Tabs } from 'antd';
 
@@ -101,7 +102,7 @@ const Profile = ({ initialProfile }) => {
 							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
-							<Tab_list tabs={list} onClick={key => TabChange(key)} position={"left"} />
+							<Menu_list onClick={key => TabChange(key)} />
 						</Col>
 					</Row>
 				</Col>
