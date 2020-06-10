@@ -144,6 +144,7 @@ class Article(SurrogatePK, Model):
     def set_needsReview(self, val):
         self.needsReview = val
         return self.needsReview
+
     @property
     def favoritesCount(self):
         return len(self.favoriters.all())

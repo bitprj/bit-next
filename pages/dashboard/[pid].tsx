@@ -58,7 +58,7 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 		else if (key == "Followers") {
-			setTabList(["Old -> New", "New -> Old"])
+			setTabList(["Old -> New"])
 			setPostsPage(false)
 			setFollowersPage(true)
 			setFollowingsPage(false)
@@ -66,7 +66,7 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 		else if (key == "Following") {
-			setTabList(["Old -> New", "New -> Old"])
+			setTabList(["Old -> New"])
 			setPostsPage(false)
 			setFollowersPage(false)
 			setFollowingsPage(true)
@@ -94,7 +94,7 @@ const Profile = ({ initialProfile }) => {
 
 	if (isUser) {
 		return (
-			<Row gutter={16} style={{ marginTop: "10%", marginLeft: "0", marginRight: "0" }}>
+			<Row gutter={16} style={{ marginTop: "8em", marginLeft: "0", marginRight: "0" }}>
 				<Col span={2}></Col>
 				<Col className="gutter-row" span={4}>
 					<Row gutter={[16, 40]}>
