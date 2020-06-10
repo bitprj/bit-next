@@ -1,3 +1,6 @@
+body{
+  background-color:#FFFFFF !important;
+}
 .logo-font {
   font-family: titillium web, sans-serif;
 }
@@ -29,23 +32,4 @@ img.lazyload:not([src]) {
   .nav {
     font-size: 15px;
   }
-}
-
-.ant-tabs-ink-bar {
-  visibility: hidden;
-}
-.ant-tabs-nav .ant-tabs-tab-active {
-    color: #000000 !important;
-    font-weight: 1000;
-    background:#FFFFFF;
-    border-radius: 40px;
-}
-.ant-tabs-nav .ant-tabs-tab:hover{
-  color:black !important;
-}
-.ant-tabs-bar{
-  border:none !important;
-}
-.ant-tabs .ant-tabs-large-bar .ant-tabs-tab{
-      padding: 16px 40px !important;
 }

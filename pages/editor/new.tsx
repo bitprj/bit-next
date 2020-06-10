@@ -6,8 +6,9 @@ import Editor from 'rich-markdown-editor';
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import storage from "../../lib/utils/storage";
-import { Alert } from 'antd';
+import { Alert, Upload, message, Button } from 'antd';
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
+import { InboxOutlined } from '@ant-design/icons';
 
 const PublishArticleEditor = () => {
   var initialState = {
@@ -15,6 +16,7 @@ const PublishArticleEditor = () => {
     description: "",
     body: "",
     tagList: [],
+    coverImage: "",
     isPublished: true
   };
   const Title = createRef<HTMLInputElement>()
@@ -37,16 +39,28 @@ const PublishArticleEditor = () => {
 
   const [tags, setTags] = useState([])
 
+  const [tags_display, setTagsDisplay] = useState([])
+
   const [id, setId] = useState(null)
+
+  const [coverImg, setCoverImg] = useState("")
+
+  const [coverImgList, setCoverImgList] = useState([])
+
+  const { Dragger } = Upload;
 
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
-    setTags([...tags, tag])
+    if(!tags.includes(tag)){
+      setTags([...tags, tag])
+      setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
+    }
   }
 
   const removeTag = (tag) => {
-    setTags(tags.filter(item => item != tag))
+    setTags(tags.filter(item => item != tag.slug))
+    setTagsDisplay(tags_display.filter(item => item != tag))
   }
 
   const handleTitle = e => {
@@ -78,12 +92,34 @@ const PublishArticleEditor = () => {
     }
   });
 
+  const uploadCover = async (file) => {
+    const cover = new FormData();
+    cover.append("file", file);
+    cover.append("upload_preset", 'upload')
+    const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
+      method: 'POST',
+      body: cover
+    });
+    const response = await res.json();
+    setCoverImg(response.secure_url);
+  }
+
+  const uploadCoverChange = (info) => {
+    let fileList = [...info.fileList];
+    fileList = fileList.slice(-1);
+    if (fileList.length == 0) {
+      setCoverImg("")
+    }
+    setCoverImgList(fileList)
+  }
+
   const AutoSave = async () => {
     if (title != "") {
       initialState.title = title
       initialState.description = description ? description : "This article has no description"
       initialState.body = value_dummy
       initialState.tagList = tags
+      initialState.coverImage = coverImg
       const { data, status } = await axios.put(
         `${SERVER_BASE_URL}/articles/${id}`,
         JSON.stringify({ article: initialState }),
@@ -105,6 +141,7 @@ const PublishArticleEditor = () => {
         initialState.description = description ? description : "This article has no description"
         initialState.body = value_dummy
         initialState.tagList = tags
+        initialState.coverImage = coverImg
         initialState.isPublished = false
         const { data, status } = await ArticleAPI.create(
           initialState,
@@ -124,7 +161,11 @@ const PublishArticleEditor = () => {
     }
     else {
       if (title != "") {
+        setSaveAlert(true)
         AutoSave()
+        setTimeout(() => {
+          setSaveAlert(false)
+        }, 1000);
       }
       else {
         if (Title.current) {
@@ -140,6 +181,7 @@ const PublishArticleEditor = () => {
     initialState.description = description ? description : "This article has no description"
     initialState.body = value_dummy
     initialState.tagList = tags
+    initialState.coverImage = coverImg
     if (title != "") {
       setLoading(true);
       if (id == null) {
@@ -172,10 +214,20 @@ const PublishArticleEditor = () => {
   };
 
   return (
-    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto' }}>
+    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
       <br />
       {Title_required ? <Alert message="Title required" type="warning" /> : null}
       {Save_Alert ? <Alert message="Your Article is Saved" type="success" /> : null}
+      <br />
+      <Dragger
+        beforeUpload={uploadCover}
+        onChange={uploadCoverChange}
+        fileList={coverImgList}>
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
+      </Dragger>
       <br />
       <input
         className="form-control form-control-lg"
@@ -195,7 +247,7 @@ const PublishArticleEditor = () => {
         style={{ marginBottom: "2%", border: "none", padding: "0" }}
       />
       <TagInput
-        tagList={tags}
+        tagList={tags_display}
         addTag={addTag}
         removeTag={removeTag}
       />

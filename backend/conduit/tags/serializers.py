@@ -27,7 +27,6 @@ class TagsSchema(TagSchema):
 
     @post_dump
     def dump_Tag(self, data, **kwargs):
-        print(data)
         return data
 
     @post_dump(pass_many=True)

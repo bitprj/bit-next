@@ -27,9 +27,10 @@ blueprint = Blueprint('articles', __name__)
              'favorited': fields.Str(), 'limit': fields.Int(), 'offset': fields.Int(), 'isPublished': fields.Str()})
 @marshal_with(articles_schema)
 def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=20, offset=0):
-    res = Article.query
-    if isPublished is None:
-        res = Article.query.filter_by(isPublished=True, needsReview=False)
+    res = Article.query.filter_by(needsReview=False)
+    if isPublished is not None:
+        if isPublished != 'all':
+          res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
@@ -72,8 +73,8 @@ def make_article(body, title, description, isPublished, coverImage, tagList=None
 
 @blueprint.route('/api/articles/<slug>', methods=('PUT',))
 @jwt_required
-@use_kwargs(article_schema)
-@marshal_with(article_schema)
+@use_kwargs(article_form_schema)
+@marshal_with(article_form_schema)
 def update_article(slug, **kwargs):
     article = Article.query.filter_by(slug=slug, author_id=current_user.profile.id).first()
     if not article:

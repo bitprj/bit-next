@@ -8,7 +8,7 @@ import User from './User';
 const { Meta } = Card;
 
 const MiniTitle = styled.div`
-    font-size: 8px;
+    font-size: 12px;
     line-height: 10px;
     color: rgba(0, 0, 0, 0.5);
     padding: 2em 0 0.5em 0;
