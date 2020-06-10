@@ -52,7 +52,7 @@ const PublishArticleEditor = () => {
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
-    if(!tags.includes(tag)){
+    if(!tags.includes(tag) && tags.length<=4){
       setTags([...tags, tag])
       setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
     }
