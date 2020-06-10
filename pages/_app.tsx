@@ -5,6 +5,8 @@ import ContextProvider from "../lib/context";
 import "../styles.css";
 import 'antd/dist/antd.css';
 
+import { Provider } from "next-auth/client";
+
 if (typeof window !== "undefined") {
   require("lazysizes/plugins/attrchange/ls.attrchange.js");
   require("lazysizes/plugins/respimg/ls.respimg.js");
@@ -13,10 +15,10 @@ if (typeof window !== "undefined") {
 
 export default ({ Component, pageProps }) => {
   return (
-    <ContextProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </ContextProvider>
+      <ContextProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ContextProvider>
   );
 };

@@ -13,7 +13,17 @@ import User from "../../components/global/User";
 import FollowList from "../../components/global/FollowList";
 import Tab_list from "../../components/profile/Tab_list";
 import AccountSettings from "../../components/profile/AccountSettings";
-import { Row, Col, Tabs } from 'antd';
+import { Row, Col, Tabs, Menu } from 'antd';
+
+import styled from "styled-components";
+
+import { useSession, getSession } from 'next-auth/client';
+//import { useSession } from "../api/auth/[...nextauth]";
+
+const StyledMenu = styled(Menu)`
+	font-size: 15px;
+	font-weight: bold;
+`
 
 const Profile = ({ initialProfile }) => {
 	const router = useRouter();
@@ -32,21 +42,30 @@ const Profile = ({ initialProfile }) => {
 
 	if (profileError) return <ErrorMessage message="Can't load profile" />;
 
+	//we're getting something from the api, but it doesn't seem like it's returning
+	//everything it should return
 	const { profile } = fetchedProfile || initialProfile;
 	const { username, bio, image, following } = profile;
+	//this is usestate, so it stores the state in the first variable (state as given)
+	//and then the second variable is what you're gonna call when you want to change
+	//the state
 	const [list, setList] = React.useState(["Posts", "Followers", "Following", "Account Settings"])
 	const [tab_select_list, setTabList] = React.useState(["Most Viewed", "Most Liked", "Most Recent"])
+	//this is being set to true because it's the first thing to show
 	const [isPosts, setPostsPage] = React.useState(true)
+	//the rest don't show immediately so they're set to false
 	const [isFollowers, setFollowersPage] = React.useState(false)
 	const [isFollowings, setFollowingsPage] = React.useState(false)
 	const [isTag, setTagPage] = React.useState(false)
 	const [isSettings, setSettingsPage] = React.useState(false)
 
+	//k, this is that one that stays in lokalstorage
 	const { data: currentUser } = useSWR("user", storage);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 	const { TabPane } = Tabs;
 
+	//this tells it which list its gonna show
 	const TabChange = (key) => {
 		if (key == "Posts") {
 			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
@@ -80,6 +99,7 @@ const Profile = ({ initialProfile }) => {
 			setTagPage(false)
 			setSettingsPage(true)
 		}
+		//seems like this will never call tags
 		else {
 			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
 			setPostsPage(false)
@@ -91,7 +111,8 @@ const Profile = ({ initialProfile }) => {
 	}
 	const TabView = (key) => { }
 
-	if (isUser) {
+	if (true) {
+		//and here are the goods
 		return (
 			<Row gutter={16} style={{ marginTop: "10%", marginLeft: "0", marginRight: "0" }}>
 				<Col span={2}></Col>
@@ -101,7 +122,9 @@ const Profile = ({ initialProfile }) => {
 							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
-							<Tab_list tabs={list} onClick={key => TabChange(key)} position={"left"} />
+							<StyledMenu>
+								{list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
+							</StyledMenu>
 						</Col>
 					</Row>
 				</Col>
@@ -111,6 +134,12 @@ const Profile = ({ initialProfile }) => {
 							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
+						{/*so what we really want is for in here to render these ...
+						according to the criteria.
+						so what we really really want is.
+						sort the articles by
+						so bryan's going to get the thing going in the api that shows the article
+						views and shit.*/}
 							{isPosts ? <ArticleList /> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
 							{isFollowings ? <FollowList followings={true} /> : null}
