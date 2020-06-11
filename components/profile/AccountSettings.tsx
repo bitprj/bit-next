@@ -126,7 +126,6 @@ const SettingsForm = () => {
           <Col span={24}>
             <Form
               layout="horizontal"
-              size={"medium"}
               onFinish={submitForm}
               initialValues={{Username:currentUser.username,Email:currentUser.email}}
               form={form}
