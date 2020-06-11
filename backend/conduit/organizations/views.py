@@ -11,12 +11,13 @@ from sqlalchemy.exc import IntegrityError
 from conduit.database import db
 from conduit.exceptions import InvalidUsage
 from conduit.user.models import User
+from conduit.organizations.serializers import organization_schema, organization_members_schema
 from conduit.profile.models import UserProfile
 from conduit.articles.models import Article
 from conduit.tags.models import Tags
-from .models import Organization
 from conduit.profile.serializers import (profile_schema, profile_schemas)
 from conduit.articles.serializers import article_schema
+from .models import Organization
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -151,7 +152,6 @@ def remove_member(slug, username, **kwargs):
 @jwt_required
 @marshal_with(article_schema)
 def submit_article_for_review(org_slug, slug):
-    print(slug)
     organization = Organization.query.filter_by(slug=org_slug).first()
     if not organization:
         raise InvalidUsage.organization_not_found()
@@ -160,7 +160,8 @@ def submit_article_for_review(org_slug, slug):
         raise InvalidUsage.article_not_found()
     article.needsReview = True
     article.save()
-    organization.request_review(article)
+    organization.pending_articles.append(article)
+    # organization.request_review(article)
     organization.save()
     
     return article

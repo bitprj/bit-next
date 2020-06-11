@@ -56,7 +56,7 @@ class InvalidUsage(Exception):
     def article_already_exists(cls):
         return cls(**ARTICLE_ALREADY_EXISTS)
 
-      @classmethod
+    @classmethod
     def tag_not_found(cls):
         return cls(**TAG_NOT_FOUND)
     
