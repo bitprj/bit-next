@@ -25,30 +25,38 @@ const StyledTagTitle = styled.div`
   padding-bottom: 1.5em;
 `
 
+const StickyLeft = styled(Affix)`  
+  display: none;
+  @media screen and (min-width: 850px) {
+      display:block;
+      padding: 0 2px;
+      display: flex;
+      flex-flow: column wrap;
+      overflow: hidden;
+      z-index: 100;
+  }
+`;
+
 const Home = () => {
   const [top] = useState(10);
 
   return (
     <>
       <Head>
-        <title>HOME | NEXT REALWORLD</title>
-        <meta
-          name="description"
-          content="Next.js + SWR codebase containing realworld examples (CRUD, auth, advanced patterns, etc) that adheres to the realworld spec and API"
-        />
+        <title>Bit Project</title>
       </Head>
       <div className="home-page">
         <div className="container page">
           <div className="row">
             <div className="col-md-3">
-              <Affix offsetTop={top}>
+              <StickyLeft offsetTop={top}>
                 <StyledTagTitle>
                   <Twemoji options={{ className: 'twemoji' }}>
                     <StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
                   </Twemoji>
                 </StyledTagTitle>
                 <Tags />
-              </Affix>
+              </StickyLeft>
             </div>
             <MainView />
           </div>
