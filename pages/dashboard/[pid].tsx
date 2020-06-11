@@ -18,7 +18,6 @@ import { Row, Col, Tabs, Menu } from 'antd';
 import styled from "styled-components";
 
 import { useSession, getSession } from 'next-auth/client';
-//import { useSession } from "../api/auth/[...nextauth]";
 
 const StyledMenu = styled(Menu)`
 	font-size: 15px;
@@ -50,7 +49,7 @@ const Profile = ({ initialProfile }) => {
 	//and then the second variable is what you're gonna call when you want to change
 	//the state
 	const [list, setList] = React.useState(["Posts", "Followers", "Following", "Account Settings"])
-	const [tab_select_list, setTabList] = React.useState(["Most Viewed", "Most Liked", "Most Recent"])
+	const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
 	//this is being set to true because it's the first thing to show
 	const [isPosts, setPostsPage] = React.useState(true)
 	//the rest don't show immediately so they're set to false
@@ -68,7 +67,7 @@ const Profile = ({ initialProfile }) => {
 	//this tells it which list its gonna show
 	const TabChange = (key) => {
 		if (key == "Posts") {
-			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
+			setTabList(["All Posts", "Published", "Drafts"])
 			setPostsPage(true)
 			setFollowersPage(false)
 			setFollowingsPage(false)
@@ -134,12 +133,11 @@ const Profile = ({ initialProfile }) => {
 							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
-						{/*so what we really want is for in here to render these ...
-						according to the criteria.
-						so what we really really want is.
-						sort the articles by
-						so bryan's going to get the thing going in the api that shows the article
-						views and shit.*/}
+						{/*can either modify all the lists here by passing in the tab parameter
+							as props. cause the end goal is to sort the articles, but right
+							now it just imports the entire article list. actually, what props get passed
+							to article list?
+							article card is the one that has all the props*/}
 							{isPosts ? <ArticleList /> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
 							{isFollowings ? <FollowList followings={true} /> : null}
