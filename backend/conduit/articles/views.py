@@ -10,8 +10,10 @@ from marshmallow import fields
 from conduit.exceptions import InvalidUsage
 from conduit.user.models import User        
 from .models import Article, Tags, Comment
-from .serializers import (article_schema, article_form_schema, articles_schema, comment_schema,
+from .serializers import (article_schema, articles_schema, article_form_schema, comment_schema,
                           comments_schema)
+from conduit.organizations.models import Organization
+
 
 blueprint = Blueprint('articles', __name__)
 
@@ -42,6 +44,17 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
         res = res.join(Article.favoriters).filter(User.username == favorited)
 
     return res.offset(offset).limit(limit).all()
+
+
+@blueprint.route('/api/organizations/<org_slug>/articles', methods=('GET',))
+@jwt_optional
+@use_kwargs({'org_slug':fields.Str()})
+@marshal_with(articles_schema)
+def get_org_articles(org_slug):
+    articles = Article.query
+    org_articles = articles.join(Article.org_articles).filter(Organization.slug == org_slug).all()
+    
+    return org_articles
 
 
 #Route to create an article
