@@ -104,9 +104,3 @@ class Organization(Model, SurrogatePK):
             self.pending_articles.remove(article)
             return True
         return False
-
-    def update_slug(self, slug):
-        if slug != self.slug:
-            self.slug = slug
-            return True
-        return False

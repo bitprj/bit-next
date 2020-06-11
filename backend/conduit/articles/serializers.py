@@ -104,18 +104,6 @@ class OrgArticleSchema(Schema):
         strict = True
 
 
-class OrgArticlesSchema(OrgArticleSchema):
-    
-    @post_dump
-    def dump_article(self, data, **kwargs):
-        data['author'] = data['author']['profile']
-        return data
-
-    @post_dump(pass_many=True)
-    def dump_articles(self, data, many, **kwargs):
-        return {'articles': data, 'articlesCount': len(data)}
-
-
 class ArticleSchemas(ArticleSchema):
 
     @post_dump
@@ -165,8 +153,6 @@ class CommentsSchema(CommentSchema):
 
 
 article_schema = ArticleSchema()
-org_article_schema = OrgArticleSchema()
-org_articles_schema = OrgArticlesSchema(many=True)
 article_form_schema = ArticleFormSchema()
 articles_schema = ArticleSchemas(many=True)
 comment_schema = CommentSchema()

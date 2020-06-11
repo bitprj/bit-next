@@ -55,8 +55,8 @@ class InvalidUsage(Exception):
     @classmethod
     def article_already_exists(cls):
         return cls(**ARTICLE_ALREADY_EXISTS)
-    
-    @classmethod
+
+      @classmethod
     def tag_not_found(cls):
         return cls(**TAG_NOT_FOUND)
     
@@ -88,5 +88,3 @@ class InvalidUsage(Exception):
     def not_admin(cls):
         return cls(**NOT_ADMIN)
     
-
-

@@ -10,15 +10,13 @@ from sqlalchemy.exc import IntegrityError
 
 from conduit.database import db
 from conduit.exceptions import InvalidUsage
-from .models import Organization
 from conduit.user.models import User
 from conduit.profile.models import UserProfile
 from conduit.articles.models import Article
 from conduit.tags.models import Tags
-from .serializers import (organization_schema, organizations_schema,
-                          organization_members_schema)
+from .models import Organization
 from conduit.profile.serializers import (profile_schema, profile_schemas)
-from conduit.articles.serializers import (org_article_schema, org_articles_schema)
+from conduit.articles.serializers import article_schema
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -148,45 +146,36 @@ def remove_member(slug, username, **kwargs):
 
     return '', 200
 
-
-@blueprint.route('/api/organization/<org_slug>/articles', methods=('POST',))
+  
+@blueprint.route('/api/organizations/<org_slug>/articles/<slug>', methods=('POST',))
 @jwt_required
-@use_kwargs(org_article_schema)
-@marshal_with(org_article_schema)
-def submit_article_for_review(body, title, description, 
-                            org_slug, tagList=None):
-    profile = current_user.profile
-    try:
-        organization = Organization.query.filter_by(slug=org_slug).first()
-        article = Article(title=title, description=description, body=body, 
-                          author=current_user.profile)
-                          
-        if tagList is not None:
-            for tag in tagList:
-                mtag = Tags.query.filter_by(tagname=tag).first()
-                if not mtag:
-                    mtag = Tags(tag)
-                    mtag.save()
-                article.add_tag(mtag)
-        
-        article.needsReview = True
-        article.save()
-        organization.request_review(article)
-        organization.save()
-
-    except IntegrityError:
-        db.session.rollback()
-        raise InvalidUsage.article_already_exists()
+@marshal_with(article_schema)
+def submit_article_for_review(org_slug, slug):
+    print(slug)
+    organization = Organization.query.filter_by(slug=org_slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    article = Article.query.filter_by(slug=slug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    article.needsReview = True
+    article.save()
+    organization.request_review(article)
+    organization.save()
     
     return article
     
 
-@blueprint.route('/api/organization/<org_slug>/articles/<slug>', 
+@blueprint.route('/api/organizations/<org_slug>/articles/<slug>', 
                 methods=('DELETE',))
 @jwt_required
 def reviewed_article(slug, org_slug, **kwargs):
+    profile = current_user.profile
     organization = Organization.query.filter_by(slug=org_slug).first()
     article = Article.query.filter_by(slug=slug).first()
+
+    if not organization.moderator(profile):
+        raise InvalidUsage.not_admin()
 
     if article not in organization.pending_articles:
         raise InvalidUsage.article_not_found()

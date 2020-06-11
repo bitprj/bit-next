@@ -39,9 +39,11 @@ const PublishArticleEditor = () => {
 
   const [tags, setTags] = useState([])
 
+  const [tags_display, setTagsDisplay] = useState([])
+
   const [id, setId] = useState(null)
 
-  const [coverImg, setCoverImg] = useState(null)
+  const [coverImg, setCoverImg] = useState("")
 
   const [coverImgList, setCoverImgList] = useState([])
 
@@ -50,11 +52,15 @@ const PublishArticleEditor = () => {
   const { data: currentUser } = useSWR("user", storage);
 
   const addTag = (tag) => {
-    setTags([...tags, tag])
+    if(!tags.includes(tag)){
+      setTags([...tags, tag])
+      setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
+    }
   }
 
   const removeTag = (tag) => {
-    setTags(tags.filter(item => item != tag))
+    setTags(tags.filter(item => item != tag.slug))
+    setTagsDisplay(tags_display.filter(item => item != tag))
   }
 
   const handleTitle = e => {
@@ -102,7 +108,7 @@ const PublishArticleEditor = () => {
     let fileList = [...info.fileList];
     fileList = fileList.slice(-1);
     if (fileList.length == 0) {
-      setCoverImg(null)
+      setCoverImg("")
     }
     setCoverImgList(fileList)
   }
@@ -155,7 +161,11 @@ const PublishArticleEditor = () => {
     }
     else {
       if (title != "") {
+        setSaveAlert(true)
         AutoSave()
+        setTimeout(() => {
+          setSaveAlert(false)
+        }, 1000);
       }
       else {
         if (Title.current) {
@@ -209,6 +219,16 @@ const PublishArticleEditor = () => {
       {Title_required ? <Alert message="Title required" type="warning" /> : null}
       {Save_Alert ? <Alert message="Your Article is Saved" type="success" /> : null}
       <br />
+      <Dragger
+        beforeUpload={uploadCover}
+        onChange={uploadCoverChange}
+        fileList={coverImgList}>
+        <p className="ant-upload-drag-icon">
+          <InboxOutlined />
+        </p>
+        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
+      </Dragger>
+      <br />
       <input
         className="form-control form-control-lg"
         type="text"
@@ -227,20 +247,10 @@ const PublishArticleEditor = () => {
         style={{ marginBottom: "2%", border: "none", padding: "0" }}
       />
       <TagInput
-        tagList={tags}
+        tagList={tags_display}
         addTag={addTag}
         removeTag={removeTag}
       />
-      <Dragger
-        beforeUpload={uploadCover}
-        onChange={uploadCoverChange}
-        fileList={coverImgList}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
-      </Dragger>
-      <br />
       <Editor
         id="new_article"
         value={values}
