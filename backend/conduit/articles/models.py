@@ -9,7 +9,6 @@ from conduit.database import (Model, SurrogatePK, db, Column,
                               reference_col, relationship)
 from conduit.profile.models import UserProfile
 from conduit.tags.models import Tags
-from conduit.organizations.models import Organization
 
 
 favoriter_assoc = db.Table("favoritor_assoc",
@@ -24,8 +23,7 @@ org_assoc = db.Table("org_assoc",
                     db.Column("organization", db.Integer, 
                         db.ForeignKey("organization.id")),
                     db.Column("article", db.Integer, 
-                        db.ForeignKey("article.id"))
-                    )
+                        db.ForeignKey("article.id")))
 
 bookmarker_assoc = db.Table("bookmarker_assoc",
                      db.Column("bookmarker", db.Integer, db.ForeignKey("userprofile.id")),
@@ -51,7 +49,7 @@ class Comment(Model, SurrogatePK):
 
 class Article(SurrogatePK, Model):
     __tablename__ = 'article'
-
+    
     id = db.Column(db.Integer, primary_key=True)
     slug = Column(db.Text, unique=True)
     title = Column(db.String(100), nullable=False)
@@ -81,7 +79,7 @@ class Article(SurrogatePK, Model):
 
     comments = relationship('Comment', backref=db.backref('article'), lazy='dynamic')
 
-    organizations = relationship('Organization', secondary=org_assoc,      
+    org_articles = relationship('Organization', secondary=org_assoc,      
                                  backref=db.backref('org_article'))
 
     def __init__(self, author, title, body, description, coverImage, slug=None, **kwargs):
@@ -120,13 +118,18 @@ class Article(SurrogatePK, Model):
         if tag not in self.tagList:
             self.tagList.append(tag)
             return True
-        return False
+        return False    
 
     def remove_tag(self, tag):
         if tag in self.tagList:
             self.tagList.remove(tag)
             return True
         return False
+
+    def add_organization(self, articles):
+        self.needsReview = False
+        self.org_articles.append(articles)
+        return True
 
     def add_needReviewTag(self, tag):
         self.needReviewTags.append(tag)
