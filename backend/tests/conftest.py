@@ -10,7 +10,7 @@ from conduit.settings import TestConfig
 from conduit.profile.models import UserProfile
 
 
-from .factories import UserFactory
+from .factories import UserFactory, AdminFactory
 
 
 @pytest.yield_fixture(scope='function')
@@ -55,6 +55,17 @@ def user(db):
     class User():
         def get(self):
             muser = UserFactory(password='myprecious')
+            UserProfile(muser).save()
+            db.session.commit()
+            return muser
+    return User()
+
+@pytest.fixture
+def admin(db):
+    """A admin for the tests."""
+    class User():
+        def get(self):
+            muser = AdminFactory(password='thunder')
             UserProfile(muser).save()
             db.session.commit()
             return muser

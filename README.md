@@ -14,23 +14,13 @@ Next to run the local server, run:
 npm run dev
 ```
 
-If you want to run a production version of app, first run:
-```
-npm run build
-```
-
-Then run: 
-```
-npm run start
-```
-
 # Backend
 
 ## Running the Backend
 
 In the backend folder, install all the dependacies with:
 ```
-pip install -r requirement.txt
+pip install -r requirements/dev.txt
 ```
 
 Run the application with:

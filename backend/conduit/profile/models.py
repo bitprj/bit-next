@@ -23,7 +23,8 @@ class UserProfile(Model, SurrogatePK):
                            secondaryjoin=id == followers_assoc.c.followed_by,
                            backref='followed_by',
                            lazy='dynamic')
-
+    
+    
     def __init__(self, user, **kwargs):
         db.Model.__init__(self, user=user, **kwargs)
 
@@ -63,3 +64,16 @@ class UserProfile(Model, SurrogatePK):
     @property
     def email(self):
         return self.user.email
+
+    @property
+    def location(self):
+        return self.user.location
+
+    @property
+    def occupation(self):
+        return self.user.occupation
+
+    @property
+    def joined(self):
+        return self.user.created_at
+    

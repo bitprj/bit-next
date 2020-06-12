@@ -65,13 +65,13 @@ const UserAPI = {
       return error.response;
     }
   },
-  follow: async (username) => {
+  follow: async (username, email) => {
     const user: any = JSON.parse(window.localStorage.getItem("user"));
     const token = user?.token;
     try {
       const response = await axios.post(
         `${SERVER_BASE_URL}/profiles/${username}/follow`,
-        {},
+        JSON.stringify({ user: {email}}),
         {
           headers: {
             Authorization: `Token ${encodeURIComponent(token)}`,
@@ -89,6 +89,40 @@ const UserAPI = {
     try {
       const response = await axios.delete(
         `${SERVER_BASE_URL}/profiles/${username}/follow`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  followers: async (username) => {
+    const user: any = JSON.parse(window.localStorage.getItem("user"));
+    const token = user?.token;
+    try {
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/profiles/${username}/followers`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  followings: async (username) => {
+    const user: any = JSON.parse(window.localStorage.getItem("user"));
+    const token = user?.token;
+    try {
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/profiles/${username}/followings`,
         {
           headers: {
             Authorization: `Token ${encodeURIComponent(token)}`,

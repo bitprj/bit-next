@@ -43,6 +43,7 @@ docs/_build
 .webassets-cache
 
 # Virtualenvs
+venv/
 env/
 dev.db
 .cache/v/cache
@@ -53,6 +54,10 @@ dev.db
 
 # Pytest cache
 .pytest_cache/**
+__pycache__/
 
 # Vagrant machines
 .vagrant/**
+
+# Migrations
+migrations
