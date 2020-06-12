@@ -160,8 +160,7 @@ def submit_article_for_review(org_slug, slug):
         raise InvalidUsage.article_not_found()
     article.needsReview = True
     article.save()
-    organization.pending_articles.append(article)
-    # organization.request_review(article)
+    organization.request_review(article)
     organization.save()
     
     return article
