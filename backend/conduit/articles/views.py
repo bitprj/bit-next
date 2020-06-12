@@ -49,20 +49,20 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
 #Route to return articles authored by current user
 @blueprint.route('/api/profile/articles', methods=('GET',))
 @jwt_required
-@use_kwargs({'dummy': fields.Str()})
+@use_kwargs({'type': fields.Str()})
 @marshal_with(articles_schema)
-def get_user_articles(dummy=None):
+def get_user_articles(type=None):
     res = Article.query
-    if dummy != "all":
-        if dummy == "drafts":
+    if type != "all":
+        if type == "drafts":
             res = res.filter_by(isPublished=False)
-        elif dummy == "published":
+        elif type == "published":
             res = res.filter_by(isPublished=True)
         else:
             raise InvalidUsage.article_not_found()
     res = res.join(Article.author).join(User).filter(User.username == current_user.profile.user.username)
     return res.all()
-    
+
 
 @blueprint.route('/api/organizations/<org_slug>/articles', methods=('GET',))
 @jwt_optional
