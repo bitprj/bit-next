@@ -76,4 +76,8 @@ class UserProfile(Model, SurrogatePK):
     @property
     def joined(self):
         return self.user.created_at
+
+    @property
+    def isAdmin(self):
+        return self.user.isAdmin
     
