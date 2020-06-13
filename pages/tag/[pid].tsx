@@ -17,18 +17,30 @@ const StyledEmoji = styled(Twemoji)`
     width: 20px;
     height: 20px;
   }
-`
+`;
 
 const StyledSpan = styled.span`
   font-size: 15px;
   font-weight: bold;
   line-height: 20px;
   color: #000000;
-`
+`;
 
 const StyledTagTitle = styled.div`
   padding-bottom: 1.5em;
-`
+`;
+
+const StickyLeft = styled(Affix)`  
+  display: none;
+  @media screen and (min-width: 850px) {
+      display:block;
+      padding: 0 2px;
+      display: flex;
+      flex-flow: column wrap;
+      overflow: hidden;
+      z-index: 100;
+  }
+`;
 
 const TagPage = (initialTag) => {
 	const router = useRouter();
@@ -50,24 +62,20 @@ const TagPage = (initialTag) => {
 	return (
 		<>
 			<Head>
-				{/* <title>{tag.tagname}</title> */}
-				<meta
-					name="description"
-					content="Next.js + SWR codebase containing realworld examples (CRUD, auth, advanced patterns, etc) that adheres to the realworld spec and API"
-				/>
+				<title>{tag.tag.tagname}</title>
 			</Head>
 			<div className="home-page">
 				<div className="container page">
 					<div className="row">
 						<div className="col-md-3">
-							<Affix offsetTop={top}>
+							<StickyLeft offsetTop={top}>
 								<StyledTagTitle>
 									<Twemoji options={{ className: 'twemoji' }}>
 										<StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
 									</Twemoji>
 								</StyledTagTitle>
 								<Tags />
-							</Affix>
+							</StickyLeft>
 						</div>
 						<TagView {...fetchedArticles} {...tag} />
 					</div>

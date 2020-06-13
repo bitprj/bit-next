@@ -12,6 +12,7 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 import User from "../../components/global/User";
 import FollowList from "../../components/global/FollowList";
 import Tab_list from "../../components/profile/Tab_list";
+import Menu_list from "../../components/profile/Menu_list";
 import AccountSettings from "../../components/profile/AccountSettings";
 import { Row, Col, Tabs } from 'antd';
 
@@ -30,6 +31,7 @@ const Profile = ({ initialProfile }) => {
 		{ initialData: initialProfile }
 	);
 
+
 	if (profileError) return <ErrorMessage message="Can't load profile" />;
 
 	const { profile } = fetchedProfile || initialProfile;
@@ -43,6 +45,7 @@ const Profile = ({ initialProfile }) => {
 	const [isSettings, setSettingsPage] = React.useState(false)
 
 	const { data: currentUser } = useSWR("user", storage);
+	const { data: fetchedArticles } = useSWR(`${SERVER_BASE_URL}/articles?author=${initialProfile.profile.username}`, fetcher);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 	const { TabPane } = Tabs;
@@ -57,7 +60,7 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 		else if (key == "Followers") {
-			setTabList(["Old -> New", "New -> Old"])
+			setTabList(["Old -> New"])
 			setPostsPage(false)
 			setFollowersPage(true)
 			setFollowingsPage(false)
@@ -65,7 +68,7 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 		else if (key == "Following") {
-			setTabList(["Old -> New", "New -> Old"])
+			setTabList(["Old -> New"])
 			setPostsPage(false)
 			setFollowersPage(false)
 			setFollowingsPage(true)
@@ -93,7 +96,7 @@ const Profile = ({ initialProfile }) => {
 
 	if (isUser) {
 		return (
-			<Row gutter={16} style={{ marginTop: "10%", marginLeft: "0", marginRight: "0" }}>
+			<Row gutter={16} style={{ marginTop: "8em", marginLeft: "0", marginRight: "0" }}>
 				<Col span={2}></Col>
 				<Col className="gutter-row" span={4}>
 					<Row gutter={[16, 40]}>
@@ -101,7 +104,7 @@ const Profile = ({ initialProfile }) => {
 							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
-							<Tab_list tabs={list} onClick={key => TabChange(key)} position={"left"} />
+							<Menu_list onClick={key => TabChange(key)} />
 						</Col>
 					</Row>
 				</Col>
@@ -111,14 +114,14 @@ const Profile = ({ initialProfile }) => {
 							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
-							{isPosts ? <ArticleList /> : null}
+							{isPosts ? <ArticleList {...fetchedArticles} /> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
 							{isFollowings ? <FollowList followings={true} /> : null}
 							{isTag ? <ArticleList /> : null}
 							{isSettings ? <AccountSettings /> : null}
 						</Col>
 					</Row>
-				</Col>¬
+				</Col>
 				<Col span={3}>
 					{isSettings ? <p style={{ opacity: "0.7", marginTop: "16px", fontSize: "18px" }}>Live Website</p> : null}
 				</Col>
