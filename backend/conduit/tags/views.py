@@ -141,12 +141,13 @@ def review_article(slug, articleSlug):
 
 #Route to return an article filtered by tag names
 @blueprint.route('/api/user/tags/articles', methods=('GET',))
-@jwt_optional
+@jwt_required
 @marshal_with(articles_schema)
 def get_articles_tags(isPublished=None, tag=None, author=None, favorited=None, limit=5, offset=0):
     tagLists = current_user.profile.followed_tags
     ans = []
-    if tagLists is not None:
-        for tag in tagLists:
-            ans.append(Article.query.filter(Article.tagList.any(Tags.slug == tag.slug)).order_by(Article.id.desc()).limit(5).all())
+    if tagLists.count() == 0:
+        tagLists = Tags.query.limit(5)
+    for tag in tagLists:
+        ans.append(Article.query.filter(Article.tagList.any(Tags.slug == tag.slug)).order_by(Article.id.desc()).limit(5).all())
     return [article for list in ans for article in list]
