@@ -16,6 +16,8 @@ import Tab_list from "../../components/profile/Tab_list";
 import AccountSettings from "../../components/profile/AccountSettings";
 import { Row, Col, Tabs, Menu } from 'antd';
 
+import { getSession } from 'next-auth/client';
+
 import styled from "styled-components";
 
 const StyledMenu = styled(Menu)`
@@ -171,9 +173,22 @@ const Profile = ({ initialProfile }) => {
 	}
 };
 
+{/*export async function getServerSideProps(context) {
+	const { data: daContext } = await getSession(context);
+  return {
+		daContext
+  }
+}*/}
+
 Profile.getInitialProps = async ({ query: { pid } }) => {
 	const { data: initialProfile } = await UserAPI.get(pid);
 	return { initialProfile };
 };
+
+{/*Profile.getInitialProps = async (context) => {
+  return {
+    session: await getSession(context)
+  }
+};*/}
 
 export default Profile;

@@ -1,5 +1,5 @@
 import NextAuth from 'next-auth'
-import Providers from 'next-auth/providers'
+import Providers from 'next-auth/providers';
 
 const options = {
   site: process.env.SITE,
@@ -23,7 +23,7 @@ const options = {
   // Notes:
   // * You need to install an appropriate node_module for your database!
   // * The email sign in provider requires a database but OAuth providers do not
-  database: process.env.DATABASE_URL,
+  //database: process.env.DATABASE_URL,
 
   session: {
     // Use JSON Web Tokens for session instead of database sessions.
