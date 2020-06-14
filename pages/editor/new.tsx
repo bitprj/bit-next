@@ -252,7 +252,7 @@ const PublishArticleEditor = () => {
         placeholder="Title..."
         value={title}
         onChange={handleTitle}
-        style={{ marginBottom: "2%", border: "none", padding: "0",fontSize:"4em",width:"100%",color:"black",fontWeight:"50"}}
+        style={{ marginBottom: "2%", border: "none", padding: "0",fontSize:"4em",width:"100%",color:"black",fontWeight:"lighter"}}
         ref={Title}
       />
       <input
@@ -260,7 +260,7 @@ const PublishArticleEditor = () => {
         placeholder="Set a description"
         value={description}
         onChange={handleDesc}
-        style={{ marginBottom: "2%", border: "none", padding: "0",width:"100%",color:"black",fontWeight:"400",fontSize:"1.5em"}}
+        style={{ marginBottom: "2%", border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
       />
       <Divider style={{marginBottom:"0"}}></Divider>
       <Tab_list tabs={["Write","Preview"]} onClick={key => TabView(key)} position={"top"} />
