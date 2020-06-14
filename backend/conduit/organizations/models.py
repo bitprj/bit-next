@@ -22,6 +22,13 @@ member_assoc = db.Table("member_assoc",
                         db.ForeignKey('organization.id'))
                     )   
 
+article_assoc = db.Table("article_assoc",
+                    db.Column("article", db.Integer,
+                        db.ForeignKey('article.id')),
+                    db.Column("organization", db.Integer,
+                        db.ForeignKey('organization.id'))
+                    )
+
 
 class Organization(Model, SurrogatePK):
     __tablename__ = 'organization'
@@ -36,6 +43,9 @@ class Organization(Model, SurrogatePK):
     members = relationship('UserProfile', secondary=member_assoc, 
                            backref=db.backref('mem_organization'),
                            lazy='dynamic')
+    pending_articles = relationship('Article', secondary=article_assoc,
+                                backref=db.backref('article_organization'),
+                                lazy='dynamic')
 
 
     def __init__(self, name, description, slug, **kwargs):
@@ -83,8 +93,14 @@ class Organization(Model, SurrogatePK):
             return True
         return False
 
-    def update_slug(self, slug):
-        if slug != self.slug:
-            self.slug = slug
+    def request_review(self, article):
+        if article not in self.pending_articles:
+            self.pending_articles.append(article)
+            return True
+        return False
+
+    def remove_review_status(self, article):
+        if article in self.pending_articles:
+            self.pending_articles.remove(article)
             return True
         return False
