@@ -149,4 +149,8 @@ def get_articles_tags(isPublished=None, tag=None, author=None, favorited=None, l
     if tagLists is not None:
         for tag in tagLists:
             ans.append(Article.query.filter(Article.tagList.any(Tags.slug == tag.slug)).order_by(Article.id.desc()).limit(5).all())
+    if tagLists.count() == 0:
+        tagLists = Tags.query.limit(5)
+    for tag in tagLists:
+        ans.append(Article.query.filter(Article.tagList.any(Tags.slug == tag.slug)).order_by(Article.id.desc()).limit(5).all())
     return [article for list in ans for article in list]
