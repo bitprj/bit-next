@@ -4,6 +4,7 @@ import { mutate } from "swr";
 
 import ListErrors from "../common/ListErrors";
 import UserAPI from "../../lib/api/user";
+import Authenticate from "./Authenticate";
 
 const LoginForm = () => {
   const [isLoading, setLoading] = React.useState(false);
@@ -77,6 +78,7 @@ const LoginForm = () => {
           </button>
         </fieldset>
       </form>
+     <Authenticate />
     </>
   );
 };
