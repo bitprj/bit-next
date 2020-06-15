@@ -16,8 +16,6 @@ import Tab_list from "../../components/profile/Tab_list";
 import AccountSettings from "../../components/profile/AccountSettings";
 import { Row, Col, Tabs, Menu } from 'antd';
 
-import { getSession } from 'next-auth/client';
-
 import styled from "styled-components";
 
 const StyledMenu = styled(Menu)`
@@ -45,7 +43,8 @@ const Profile = ({ initialProfile }) => {
 	const { profile } = fetchedProfile || initialProfile;
 	const { username, bio, image, following } = profile;
 	const [list, setList] = React.useState(["Posts", "Followers", "Following", "Account Settings"])
-	const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
+	{/*const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])*/}
+	const [tab_select_list, setTabList] = React.useState(["All Posts"])
 	const [isPosts, setPostsPage] = React.useState(true)
 	const [isFollowers, setFollowersPage] = React.useState(false)
 	const [isFollowings, setFollowingsPage] = React.useState(false)
@@ -57,6 +56,16 @@ const Profile = ({ initialProfile }) => {
 	const { data: currentUser } = useSWR("user", storage);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
+
+	const {
+		data: articleData,
+		error: articleError,
+	} = useSWR(
+		`${SERVER_BASE_URL}/profile/articles?type=all`,
+		fetcher
+	);
+
+	if (!articleData)	return <ErrorMessage message="Articles Loading" />;
 
 	const { TabPane } = Tabs;
 
@@ -152,7 +161,7 @@ const Profile = ({ initialProfile }) => {
 							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
-							{isPosts && isAllArticles ? <ArticleList /> : null}
+							{isPosts && isAllArticles ? <ArticleList articles={articleData.articles} /> : null}
 							{isPosts && isPublished ? <div>published stuff</div> : null}
 							{isPosts && isDrafts ? <div>Drafts here</div> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
@@ -173,22 +182,9 @@ const Profile = ({ initialProfile }) => {
 	}
 };
 
-{/*export async function getServerSideProps(context) {
-	const { data: daContext } = await getSession(context);
-  return {
-		daContext
-  }
-}*/}
-
 Profile.getInitialProps = async ({ query: { pid } }) => {
 	const { data: initialProfile } = await UserAPI.get(pid);
 	return { initialProfile };
 };
-
-{/*Profile.getInitialProps = async (context) => {
-  return {
-    session: await getSession(context)
-  }
-};*/}
 
 export default Profile;
