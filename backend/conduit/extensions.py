@@ -20,7 +20,16 @@ class CRUDMixin(Model):
     def update(self, commit=True, **kwargs):
         """Update specific fields of a record."""
         for attr, value in kwargs.items():
-            setattr(self, attr, value)
+            from .tags.models import Tags
+
+            if attr == "tagList":
+                tags = []
+                for tag in value:
+                    tag = Tags.query.filter_by(slug=tag).first()
+                    tags.append(tag)
+                self.tagList = tags
+            else:
+                setattr(self, attr, value)
         return commit and self.save() or self
 
     def save(self, commit=True):

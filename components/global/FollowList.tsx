@@ -19,7 +19,7 @@ const StyledListItem = styled(List.Item)`
 `
 
 const FollowList = ({followings}) =>{
-  
+
   const followStr = followings ? "followings" : "followers";
   const router = useRouter();
   const { query: { pid }} = router;
@@ -76,18 +76,18 @@ const FollowList = ({followings}) =>{
         }
         return(
           <StyledListItem>
-            <User 
+            <User
                 name = {name}
                 image = {image}
                 username = {username}
                 following = {following}
               >
             </User>
-            <Button 
-              type ={'primary'} 
+            <Button
+              type ={'primary'}
               size ={'middle'}
               onClick= {handleClick}
-              style={{ 
+              style={{
                 background: following ? '#DD2E44':'#007BED' ,
                 borderColor :  following ? '#DD2E44':'#007BED' ,
                 borderRadius: '0.5em',
@@ -95,7 +95,7 @@ const FollowList = ({followings}) =>{
                 fontSize: '1em',
                 fontWeight: 'bold',
               }}
-            
+
             >
               {following ? 'Following' : '+ Follow'}
             </Button>
