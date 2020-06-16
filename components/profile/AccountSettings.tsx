@@ -6,7 +6,7 @@ import checkLogin from "../../lib/utils/checkLogin";
 import styled from "styled-components";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 
-import { Avatar, Row, Col, Input, Form,Button } from 'antd';
+import { Avatar, Row, Col, Input, Form, Button, message } from 'antd';
 
 const { TextArea } = Input;
 
@@ -77,6 +77,9 @@ const SettingsForm = () => {
       window.localStorage.setItem("user", JSON.stringify(data.user));
       mutate("user", data.user);
     }
+    if(status===200){
+      message.success("Account Settings were Updated")
+    }
   };
 
   const Reupload = async (value) => {
@@ -104,6 +107,7 @@ const SettingsForm = () => {
       {
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
           Authorization: `Token ${currentUser?.token}`,
         },
       }
@@ -118,6 +122,12 @@ const SettingsForm = () => {
       mutate("user", data.user);
     }
     setUserInfo(newState);
+    if(status===200){
+      message.success("User Profile Image was Updated")
+    }
+    else{
+      message.error("There was some error in updating. Please try again later.")
+    }
   }
 
   return (
