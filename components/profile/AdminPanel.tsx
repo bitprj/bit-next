@@ -3,7 +3,7 @@ import { DownOutlined } from '@ant-design/icons';
 import React from "react";
 import { Mentions } from 'antd';
 import 'antd/dist/antd.css';
-import useSWR,{mutate,trigger} from "swr";
+import useSWR, { mutate, trigger } from "swr";
 import fetcher from "../../lib/utils/fetcher";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import { Button } from 'antd';
@@ -11,113 +11,100 @@ import TagAPI from "../../lib/api/tag";
 import { Alert } from 'antd';
 
 type AlertError = 'info' | 'warning' | 'success' | 'error'
-var alertType : AlertError ;
-
+var alertType: AlertError;
 
 const { Option } = Mentions;
 
 const Admin = (props) => {
-   
-
     const [value, setValue] = React.useState("Select tag")
     const [key, setKey] = React.useState("")
 
     const [selectedOption, setSelectedOption] = React.useState()
     const [alert, setAlert] = React.useState(false)
-    const [alertMessage,setAlertMessage] = React.useState("")
+    const [alertMessage, setAlertMessage] = React.useState("")
+    const [tag, setTag] = React.useState([])
+    const [tagMemberOptions, setTagMemberOptions] = React.useState([])
 
-    const [tag,setTag] = React.useState([
-
-    ])
-    const [tagMemberOptions,setTagMemberOptions] = React.useState([
-
-    ])
-    const tagMembers= async(key)=>{ 
-        var options =[]
-        if(key != null){
-          var res =   await TagAPI.getMembers(key)
-          var tagMembers = await res.data
-          var tagMem = []
-        if (tagMembers && tagMembers.tagFollowers.length > 0) {
-        for (var members of tagMembers.tagFollowers) {
-            tagMem.push(members.profile.username)
-            options.push(<Option value={members.profile.username}>
-                {members.profile.username}
-        </Option>)
-       
+    const tagMembers = async (key) => {
+        var options = []
+        if (key != null) {
+            var res = await TagAPI.getMembers(key)
+            var tagMembers = await res.data
+            var tagMem = []
+            if (tagMembers && tagMembers.tagFollowers.length > 0) {
+                for (var members of tagMembers.tagFollowers) {
+                    tagMem.push(members.profile.username)
+                    options.push(<Option value={members.profile.username}>
+                        {members.profile.username}
+                    </Option>)
+                }
+            }
+            setTagMemberOptions(tagMem)
         }
+        return options
     }
-       setTagMemberOptions(tagMem)
-     }
-     return options
-     
-    }
-    const handleClickFavorite = async (slug,selectedOption) => {
-        
-        if(slug != null && selectedOption != null && selectedOption.length != 0 && selectedOption !="@"){
-        if(tagMemberOptions && tagMemberOptions.includes(selectedOption) ){
-        mutate(
-            `${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`,
-            {},
-            true
-          );
-                var response = await TagAPI.moderators(slug,selectedOption)
-                        if(response && response.status == 200){
-                            alertType = "success"
-                            setAlert(true)
-                            setAlertMessage("The member "+ selectedOption +" is added as the moderator for the tag "+ value +" successfully")
-                        
-                        }else{
-                           
-                            setAlert(true)
-                            var responseText = response.data.errors.body[0]
-                            alertType = "error"
-                            setAlertMessage(responseText)
-                           
+    const handleClickFavorite = async (slug, selectedOption) => {
 
-                        }
+        if (slug != null && selectedOption != null && selectedOption.length != 0 && selectedOption != "@") {
+            if (tagMemberOptions && tagMemberOptions.includes(selectedOption)) {
+                mutate(
+                    `${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`,
+                    {},
+                    true
+                );
+                var response = await TagAPI.moderators(slug, selectedOption)
+                if (response && response.status == 200) {
+                    alertType = "success"
+                    setAlert(true)
+                    setAlertMessage("The member " + selectedOption + " is added as the moderator for the tag " + value + " successfully")
+
+                } else {
+
+                    setAlert(true)
+                    var responseText = response.data.errors.body[0]
+                    alertType = "error"
+                    setAlertMessage(responseText)
+
+
+                }
                 trigger(`${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`);
 
-          }else{
+            } else {
+                alertType = "error"
+                setAlertMessage("Member " + selectedOption + " is not present for the tag " + value)
+                setAlert(true)
+
+            }
+        } else {
             alertType = "error"
-            setAlertMessage("Member "+ selectedOption +" is not present for the tag "+ value)
-            setAlert(true)
-            
-          }}else{
-              alertType = "error"
-              if(slug == null){
+            if (slug == null) {
                 setAlertMessage("Enter a valid tag")
 
-              }else if (selectedOption== null){
+            } else if (selectedOption == null) {
                 setAlertMessage("Enter a valid member")
-              }
-               setAlert(true)
+            }
+            setAlert(true)
+        }
+    };
 
-          }
-    
-        };
-        
 
-    const onTagClick = async(clicked) => {
-        
+    const onTagClick = async (clicked) => {
         setValue(clicked.item.node.innerText)
         setKey(clicked.key)
         setAlert(false)
         var tag = await tagMembers(clicked.key)
         setTag(tag)
     }
+
     const onSelect = (selectedOption) => {
-        
-    setSelectedOption(selectedOption.value)
-      setAlert(false)
+        setSelectedOption(selectedOption.value)
+        setAlert(false)
     }
+
     const onChange = (value) => {
-        
         setSelectedOption(value.split("@")[1])
         setAlert(false)
-      }
-  
-
+    }
 
     const menu = () => {
         var tagData = []
@@ -132,7 +119,6 @@ const Admin = (props) => {
         )
     }
 
-
     return (
         <div>
             <Dropdown overlay={menu} placement="bottomCenter">
@@ -143,16 +129,16 @@ const Admin = (props) => {
                     {value} <DownOutlined />
                 </a>
             </Dropdown>
-            <div style = {{ width: '100%', marginTop: "2em",fontWeight:"bold" }}> Search Tag Members</div>
+            <div style={{ width: '100%', marginTop: "2em", fontWeight: "bold" }}> Search Tag Members</div>
             <Mentions
                 style={{ marginTop: "2em" }}
-               onChange = { onChange}
-                onSelect = {onSelect} >
+                onChange={onChange}
+                onSelect={onSelect} >
                 {tag}
             </Mentions>
-            <Button style = {{marginTop: "1em",background:"black" }} type="primary" onClick = {()=> handleClickFavorite(key,selectedOption)}>Make Moderator</Button>
-            {alert? <Alert style ={{marginTop: "1em"}} message={alertMessage} type={alertType}></Alert> : null}
-            
+            <Button style={{ marginTop: "1em", background: "black" }} type="primary" onClick={() => handleClickFavorite(key, selectedOption)}>Make Moderator</Button>
+            {alert ? <Alert style={{ marginTop: "1em" }} message={alertMessage} type={alertType}></Alert> : null}
+
         </div>
     )
 }
