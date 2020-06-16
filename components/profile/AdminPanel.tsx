@@ -13,6 +13,7 @@ import { Alert } from 'antd';
 const { Option } = Mentions;
 type AlertError = 'info' | 'warning' | 'success' | 'error'
 var alertType : AlertError ;
+
 const Admin = (props) => {
    
 
@@ -65,6 +66,7 @@ const Admin = (props) => {
                             setAlertMessage("The member "+ selectedOption +" is added as the moderator for the tag "+ value +" successfully")
                         
 
+
                         }else{
                            
                             setAlert(true)
@@ -72,16 +74,20 @@ const Admin = (props) => {
                             alertType = "error"
                             setAlertMessage(responseText)
                            
+
+
                         }
                 trigger(`${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`);
 
           }else{
+
             alertType = "error"
             setAlertMessage("Member "+ selectedOption +" is not present for the tag "+ value)
             setAlert(true)
             
           }}else{
             alertType = "error"
+
               if(slug == null){
                 setAlertMessage("Enter a valid tag")
 
@@ -89,7 +95,7 @@ const Admin = (props) => {
                 setAlertMessage("Enter a valid member")
               }
                setAlert(true)
-        
+
           }
     
         };
