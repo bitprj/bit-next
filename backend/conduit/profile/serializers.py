@@ -12,6 +12,7 @@ class ProfileSchema(Schema):
     location = fields.Str()
     occupation = fields.Str()
     joined = fields.DateTime(format='%m-%d-%Y')
+    isAdmin = fields.Boolean()
     # ugly hack.
     profile = fields.Nested('self', exclude=('profile',), default=True, load_only=True)
 

@@ -11,11 +11,13 @@ from sqlalchemy.exc import IntegrityError
 from conduit.database import db
 from conduit.exceptions import InvalidUsage
 from conduit.user.models import User
+from conduit.organizations.serializers import organization_schema, organization_members_schema
 from conduit.profile.models import UserProfile
-from .models import Organization
-from .serializers import (organization_schema, organizations_schema,
-                          organization_members_schema)
+from conduit.articles.models import Article
+from conduit.tags.models import Tags
 from conduit.profile.serializers import (profile_schema, profile_schemas)
+from conduit.articles.serializers import article_schema
+from .models import Organization
 
 blueprint = Blueprint('organizations', __name__)
 
@@ -142,5 +144,45 @@ def remove_member(slug, username, **kwargs):
     if organization.moderator(profile):
         organization.remove_member(user.profile)
     organization.save()
+
+    return '', 200
+
+  
+@blueprint.route('/api/organizations/<org_slug>/articles/<slug>', methods=('POST',))
+@jwt_required
+@marshal_with(article_schema)
+def submit_article_for_review(org_slug, slug):
+    organization = Organization.query.filter_by(slug=org_slug).first()
+    if not organization:
+        raise InvalidUsage.organization_not_found()
+    article = Article.query.filter_by(slug=slug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    article.needsReview = True
+    article.save()
+    organization.request_review(article)
+    organization.save()
+    
+    return article
+    
+
+@blueprint.route('/api/organizations/<org_slug>/articles/<slug>', 
+                methods=('DELETE',))
+@jwt_required
+def reviewed_article(slug, org_slug, **kwargs):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=org_slug).first()
+    article = Article.query.filter_by(slug=slug).first()
+
+    if not organization.moderator(profile):
+        raise InvalidUsage.not_admin()
+
+    if article not in organization.pending_articles:
+        raise InvalidUsage.article_not_found()
+
+    organization.pending_articles.remove(article)
+    organization.save()
+    article.add_organization(organization)    
+    article.save()
 
     return '', 200

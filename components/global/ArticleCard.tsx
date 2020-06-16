@@ -90,10 +90,10 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
             as={`/profile/${encodeURIComponent(article.author?.username)}`}
             className="author"
           >
-            {!article.articleState && <Avatar src={article.author.image} size={40} />}
+            {article.isPublished && <Avatar src={article.author.image} size={40} />}
           </CustomLink>
-          {article.articleState === 'draft' && <StyledTag>Draft</StyledTag>}
-          {article.articleState === 'review' && <StyledTag>Review</StyledTag>}
+          {!article.isPublished && !article.needsReview && <StyledTag>Draft</StyledTag>}
+          {article.needsReview && <StyledTag>Review</StyledTag>}
         </Col>
 
         <Col style={{ flex: "auto" }}>
@@ -105,7 +105,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
           <TagsDiv>
             <Space>{tags}</Space>
           </TagsDiv>
-          {!article.articleState &&
+          {article.isPublished &&
             <CustomLink
               href="/profile/[pid]"
               as={`/profile/${encodeURIComponent(article.author?.username)}`}
@@ -118,7 +118,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
           <StatDiv>
             {/* left bottom: show author avatar or icons */}
             <Col style={{ marginTop: "1em" }}>
-              {article.articleState && article.articleState !== "draft" &&
+              {!article.isPublished && article.needsReview &&
                 <User
                   name={article.author.name}
                   image={article.author.image}
@@ -126,7 +126,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                   emptySubtitle={true}
                 />
               }
-              {!article.articleState &&
+              {article.isPublished &&
                 <Space size={"large"}>
                   <Twemoji options={{ className: 'twemoji' }}>
                     <StyledEmoji>{"❤️ " + article.favoritesCount}</StyledEmoji>
@@ -139,7 +139,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
             {/* rigt bottom: show two buttons */}
             <Col>
               <Button
-                disabled={!article.articleState}
+                disabled={article.isPublished}
                 onClick={onLeftButtonClick}
                 style={{
                   border: "none",
@@ -147,8 +147,8 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                 }}
               >
                 {
-                  !article.articleState ? (article.readtime && article.readtime + ' min read') :
-                    article.articleState === 'published' ? 'Reject' : 'Delete'
+                    article.isPublished ? (article.readtime && article.readtime + ' min read') :
+                    article.needsReview ? 'Reject' : 'Delete'
                 }
               </Button>
               <Button
@@ -157,13 +157,13 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                 style={{
                   fontWeight: 'bold',
                   borderRadius: "0.5em",
-                  background: article.articleState === 'published' ? '#4EC700' : '#007BED',
-                  borderColor: article.articleState === 'published' ? '#4EC700' : '#007BED',
+                  background: article.isPublished ? '#4EC700' : '#007BED',
+                  borderColor: article.isPublished ? '#4EC700' : '#007BED',
                 }}
               >
                 {
-                  !article.articleState ? 'BookMark' :
-                    article.articleState === 'published' ? 'Published' : 'Edit'
+                    article.isPublished ? 'BookMark' :
+                    article.needsReview ? 'Published' : 'Edit'
                 }
               </Button>
             </Col>
