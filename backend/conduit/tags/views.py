@@ -9,7 +9,7 @@ from conduit.articles.serializers import article_schema, articles_schema
 from conduit.articles.models import Article
 from conduit.user.models import User
 
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask_apispec import marshal_with, use_kwargs
 from flask_jwt_extended import current_user, jwt_optional, jwt_required
 
@@ -19,6 +19,13 @@ blueprint = Blueprint('tags', __name__)
 ##########
 # Tags
 ##########
+
+@blueprint.route('/api/tags', methods=('GET',))
+@jwt_optional
+def get_tags():
+    if current_user:
+        return jsonify({'tags': [(tag.tagname, tag.slug) for tag in current_user.profile.followed_tags.limit(5)]})
+    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.limit(5)]})
 
 
 @blueprint.route('/api/tags/<slug>', methods=('GET',))
@@ -116,6 +123,7 @@ def invite_moderator(slug, username):
     tag.addModerator(toBeAddedUser.profile)
     tag.save()
     return toBeAddedUser
+
 
 @blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('PUT',))
 @jwt_required
