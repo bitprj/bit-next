@@ -14,6 +14,8 @@ class OrganizationSchema(Schema):
     description = fields.Str()
     createdAt = fields.DateTime()
     username = fields.Str()
+    image = fields.Str()
+    is_following = fields.Bool()
     moderators = fields.Nested(ProfileSchema, many=True)
     members = fields.Nested(ProfileSchema, many=True)
 

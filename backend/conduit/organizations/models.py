@@ -37,6 +37,7 @@ class Organization(Model, SurrogatePK):
     name = Column(db.String(100), nullable=False)
     slug = Column(db.Text, nullable=False, unique=True)
     description = Column(db.Text, nullable=False)
+    image = Column(db.Text, nullable=True)
     createdAt = Column(db.DateTime, default=dt.datetime.utcnow)
     moderators = relationship('UserProfile', secondary=moderator_assoc,
                               backref=db.backref('mod_organization'), lazy='dynamic')
@@ -103,4 +104,10 @@ class Organization(Model, SurrogatePK):
         if article in self.pending_articles:
             self.pending_articles.remove(article)
             return True
+        return False
+
+    @property
+    def is_following(self):
+        if current_user:
+            return current_user.profile in self.members or current_user.profile in self.moderators 
         return False
