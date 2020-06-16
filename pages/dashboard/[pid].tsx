@@ -76,6 +76,8 @@ const Profile = ({ initialProfile }) => {
 			setAllArticles(true);
 			setDrafts(false);
 			setPublished(false);
+
+			setArticleType("all");
 		}
 		else if (key == "Followers") {
 			setTabList(["Old -> New"])
