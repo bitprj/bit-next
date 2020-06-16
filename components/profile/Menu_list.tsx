@@ -22,6 +22,8 @@ const Menu_list=(props)=>{
 			<Menu.Item key={"Followers"}>Followers</Menu.Item>
 			<Menu.Item key={"Following"}>Followings</Menu.Item>
 			<Menu.Item key={"Account Settings"}>Account Settings</Menu.Item>
+			{props.isAdmin ?  <Menu.Item key={"Admin"}>Admin</Menu.Item> :null}
+
 		</Menu>
 		</>
 	);
