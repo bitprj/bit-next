@@ -10,9 +10,9 @@ import { Button } from 'antd';
 import TagAPI from "../../lib/api/tag";
 import { Alert } from 'antd';
 
-
 const { Option } = Mentions;
-
+type AlertError = 'info' | 'warning' | 'success' | 'error'
+var alertType : AlertError ;
 const Admin = (props) => {
    
 
@@ -22,13 +22,13 @@ const Admin = (props) => {
     const [selectedOption, setSelectedOption] = React.useState()
     const [alert, setAlert] = React.useState(false)
     const [alertMessage,setAlertMessage] = React.useState("")
-    const [alertType,setAlertType] = React.useState()
     const [tag,setTag] = React.useState([
 
     ])
     const [tagMemberOptions,setTagMemberOptions] = React.useState([
 
     ])
+
     const tagMembers= async(key)=>{ 
         var options =[]
         if(key != null){
@@ -60,26 +60,28 @@ const Admin = (props) => {
           );
                 var response = await TagAPI.moderators(slug,selectedOption)
                         if(response && response.status == 200){
-                            
+                            alertType = "success"
                             setAlert(true)
                             setAlertMessage("The member "+ selectedOption +" is added as the moderator for the tag "+ value +" successfully")
-                            setAlertType("success")
+                        
 
                         }else{
                            
                             setAlert(true)
                             var responseText = response.data.errors.body[0]
-                        
+                            alertType = "error"
                             setAlertMessage(responseText)
-                            setAlertType("error")
+                           
                         }
                 trigger(`${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`);
 
           }else{
+            alertType = "error"
             setAlertMessage("Member "+ selectedOption +" is not present for the tag "+ value)
             setAlert(true)
-            setAlertType("error")
+            
           }}else{
+            alertType = "error"
               if(slug == null){
                 setAlertMessage("Enter a valid tag")
 
@@ -87,8 +89,7 @@ const Admin = (props) => {
                 setAlertMessage("Enter a valid member")
               }
                setAlert(true)
-               setAlertType("error")
-
+        
           }
     
         };
@@ -127,7 +128,6 @@ const Admin = (props) => {
                 {tagData}</Menu>
         )
     }
-
 
 
     return (
