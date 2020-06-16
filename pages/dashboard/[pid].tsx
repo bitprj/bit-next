@@ -45,8 +45,7 @@ const Profile = ({ initialProfile }) => {
 	const { profile } = fetchedProfile || initialProfile;
 	const { username, bio, image, following } = profile;
 	const [list, setList] = React.useState(["Posts", "Followers", "Following", "Account Settings"])
-	{/*const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])*/}
-	const [tab_select_list, setTabList] = React.useState(["All Posts"])
+	const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
 	const [isPosts, setPostsPage] = React.useState(true)
 	const [isFollowers, setFollowersPage] = React.useState(false)
 	const [isFollowings, setFollowingsPage] = React.useState(false)
@@ -60,15 +59,7 @@ const Profile = ({ initialProfile }) => {
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 
-	const {
-		data: articleData,
-		error: articleError,
-	} = useSWR(
-		`${SERVER_BASE_URL}/profile/articles?type=all`,
-		fetcher
-	);
-
-	if (!articleData)	return <ErrorMessage message="Articles Loading" />;
+	const [articleType, setArticleType] = React.useState("all");
 
 	const { TabPane } = Tabs;
 
@@ -84,6 +75,8 @@ const Profile = ({ initialProfile }) => {
 			setAllArticles(true);
 			setDrafts(false);
 			setPublished(false);
+
+			setArticleType("all")
 		}
 		else if (key == "Followers") {
 			setTabList(["Old -> New"])
@@ -124,16 +117,22 @@ const Profile = ({ initialProfile }) => {
 			setAllArticles(true);
 			setDrafts(false);
 			setPublished(false);
+
+			setArticleType("all");
 		}
 		else if (key == "Published") {
 			setAllArticles(false);
 			setDrafts(false);
 			setPublished(true);
+
+			setArticleType("published");
 		}
 		else if (key == "Drafts") {
 			setAllArticles(false);
 			setDrafts(true);
 			setPublished(false);
+
+			setArticleType("drafts");
 		}
 		else {
 			setAllArticles(false);
@@ -141,6 +140,14 @@ const Profile = ({ initialProfile }) => {
 			setPublished(false);
 		}
 	}
+
+	const {
+		data: articleData,
+		error: articleError,
+	} = useSWR(
+		`${SERVER_BASE_URL}/profile/articles?type=${encodeURIComponent(String(articleType))}`,
+		fetcher
+	);
 
 	if (isUser) {
 		return (
@@ -164,9 +171,7 @@ const Profile = ({ initialProfile }) => {
 							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
-							{isPosts && isAllArticles ? <ArticleList articles={articleData.articles} /> : null}
-							{isPosts && isPublished ? <div>published stuff</div> : null}
-							{isPosts && isDrafts ? <div>Drafts here</div> : null}
+							{isPosts && articleData ? <ArticleList articles={articleData.articles} /> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
 							{isFollowings ? <FollowList followings={true} /> : null}
 							{isTag ? <ArticleList /> : null}
