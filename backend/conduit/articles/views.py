@@ -33,6 +33,8 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
     if isPublished is not None:
         if isPublished != 'all':
           res = Article.query.filter_by(isPublished=True, needsReview=False)
+    else:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
