@@ -18,6 +18,8 @@ import AccountSettings from "../../components/profile/AccountSettings";
 import { Row, Col, Tabs, Menu } from 'antd';
 
 import styled from "styled-components";
+import AdminPanel from "../../components/profile/AdminPanel";
+
 
 const StyledMenu = styled(Menu)`
 	font-size: 15px;
@@ -54,8 +56,11 @@ const Profile = ({ initialProfile }) => {
 	const [isAllArticles, setAllArticles] = React.useState(true);
 	const [isPublished, setPublished] = React.useState(false);
 	const [isDrafts, setDrafts] = React.useState(false);
+	const [isAdmin, setIsAdmin] = React.useState(false)
+
 	const { data: currentUser } = useSWR("user", storage);
 	const { data: fetchedArticles } = useSWR(`${SERVER_BASE_URL}/articles?author=${initialProfile.profile.username}`, fetcher);
+	const { data: dropDownTags } = useSWR(`${SERVER_BASE_URL}/tags`, fetcher);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 
@@ -64,6 +69,7 @@ const Profile = ({ initialProfile }) => {
 	const { TabPane } = Tabs;
 
 	const TabChange = (key) => {
+		
 		if (key == "Posts") {
 			setTabList(["All Posts", "Published", "Drafts"])
 			setPostsPage(true)
@@ -77,6 +83,8 @@ const Profile = ({ initialProfile }) => {
 			setPublished(false);
 
 			setArticleType("all")
+			setIsAdmin(false)
+
 		}
 		else if (key == "Followers") {
 			setTabList(["Old -> New"])
@@ -85,6 +93,7 @@ const Profile = ({ initialProfile }) => {
 			setFollowingsPage(false)
 			setTagPage(false)
 			setSettingsPage(false)
+			setIsAdmin(false)
 		}
 		else if (key == "Following") {
 			setTabList(["Old -> New"])
@@ -93,6 +102,7 @@ const Profile = ({ initialProfile }) => {
 			setFollowingsPage(true)
 			setTagPage(false)
 			setSettingsPage(false)
+			setIsAdmin(false)
 		}
 		else if (key == "Account Settings") {
 			setTabList(["Settings", "Organization", "API Keys"])
@@ -101,6 +111,15 @@ const Profile = ({ initialProfile }) => {
 			setFollowingsPage(false)
 			setTagPage(false)
 			setSettingsPage(true)
+			setIsAdmin(false)
+		}else if (key== "Admin"){
+			setIsAdmin(true)
+			setTabList(["Admin"])
+			setPostsPage(false)
+			setFollowersPage(false)
+			setFollowingsPage(false)
+			setTagPage(false)
+			setSettingsPage(false)
 		}
 		else {
 			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
@@ -109,6 +128,7 @@ const Profile = ({ initialProfile }) => {
 			setFollowingsPage(false)
 			setTagPage(true)
 			setSettingsPage(false)
+			setIsAdmin(false)
 		}
 	}
 
@@ -159,9 +179,12 @@ const Profile = ({ initialProfile }) => {
 							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
+
 							<StyledMenu>
 								{list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
 							</StyledMenu>
+							<Menu_list isAdmin ={initialProfile.profile.isAdmin}  onClick={key => TabChange(key)} />
+
 						</Col>
 					</Row>
 				</Col>
@@ -176,6 +199,7 @@ const Profile = ({ initialProfile }) => {
 							{isFollowings ? <FollowList followings={true} /> : null}
 							{isTag ? <ArticleList /> : null}
 							{isSettings ? <AccountSettings /> : null}
+							{isAdmin ?<AdminPanel tags = {dropDownTags}/>:null}
 						</Col>
 					</Row>
 				</Col>
