@@ -10,9 +10,12 @@ import { Button } from 'antd';
 import TagAPI from "../../lib/api/tag";
 import { Alert } from 'antd';
 
-const { Option } = Mentions;
 type AlertError = 'info' | 'warning' | 'success' | 'error'
 var alertType : AlertError ;
+
+
+const { Option } = Mentions;
+
 const Admin = (props) => {
    
 
@@ -22,13 +25,13 @@ const Admin = (props) => {
     const [selectedOption, setSelectedOption] = React.useState()
     const [alert, setAlert] = React.useState(false)
     const [alertMessage,setAlertMessage] = React.useState("")
+
     const [tag,setTag] = React.useState([
 
     ])
     const [tagMemberOptions,setTagMemberOptions] = React.useState([
 
     ])
-
     const tagMembers= async(key)=>{ 
         var options =[]
         if(key != null){
@@ -64,7 +67,6 @@ const Admin = (props) => {
                             setAlert(true)
                             setAlertMessage("The member "+ selectedOption +" is added as the moderator for the tag "+ value +" successfully")
                         
-
                         }else{
                            
                             setAlert(true)
@@ -72,6 +74,7 @@ const Admin = (props) => {
                             alertType = "error"
                             setAlertMessage(responseText)
                            
+
                         }
                 trigger(`${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`);
 
@@ -81,7 +84,7 @@ const Admin = (props) => {
             setAlert(true)
             
           }}else{
-            alertType = "error"
+              alertType = "error"
               if(slug == null){
                 setAlertMessage("Enter a valid tag")
 
@@ -89,7 +92,7 @@ const Admin = (props) => {
                 setAlertMessage("Enter a valid member")
               }
                setAlert(true)
-        
+
           }
     
         };
