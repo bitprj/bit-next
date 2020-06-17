@@ -33,6 +33,8 @@ def get_articles(isPublished=None, tag=None, author=None, favorited=None, limit=
     if isPublished is not None:
         if isPublished != 'all':
           res = Article.query.filter_by(isPublished=True, needsReview=False)
+    else:
+        res = Article.query.filter_by(isPublished=True, needsReview=False)
     if tag:
         res = res.filter(Article.tagList.any(Tags.slug == tag))
     if author:
@@ -162,15 +164,6 @@ def bookmark_an_article(slug):
     article.bookmark(profile)
     article.save()
     return article
-
-
-######
-# Tags
-######
-
-@blueprint.route('/api/tags', methods=('GET',))
-def get_tags():
-    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
 
 
 ##########

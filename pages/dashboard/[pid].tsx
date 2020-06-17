@@ -5,6 +5,7 @@ import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import UserAPI from "../../lib/api/user";
+import ArticleAPI from "../../lib/api/article";
 import checkLogin from "../../lib/utils/checkLogin";
 
 import ArticleList from "../../components/article/ArticleList";
@@ -14,7 +15,14 @@ import FollowList from "../../components/global/FollowList";
 import Tab_list from "../../components/profile/Tab_list";
 import Menu_list from "../../components/profile/Menu_list";
 import AccountSettings from "../../components/profile/AccountSettings";
-import { Row, Col, Tabs } from 'antd';
+import { Row, Col, Tabs, Menu } from 'antd';
+
+import styled from "styled-components";
+
+const StyledMenu = styled(Menu)`
+	font-size: 15px;
+	font-weight: bold;
+`
 
 const Profile = ({ initialProfile }) => {
 	const router = useRouter();
@@ -31,31 +39,44 @@ const Profile = ({ initialProfile }) => {
 		{ initialData: initialProfile }
 	);
 
+
 	if (profileError) return <ErrorMessage message="Can't load profile" />;
 
 	const { profile } = fetchedProfile || initialProfile;
 	const { username, bio, image, following } = profile;
 	const [list, setList] = React.useState(["Posts", "Followers", "Following", "Account Settings"])
-	const [tab_select_list, setTabList] = React.useState(["Most Viewed", "Most Liked", "Most Recent"])
+	const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
 	const [isPosts, setPostsPage] = React.useState(true)
 	const [isFollowers, setFollowersPage] = React.useState(false)
 	const [isFollowings, setFollowingsPage] = React.useState(false)
 	const [isTag, setTagPage] = React.useState(false)
 	const [isSettings, setSettingsPage] = React.useState(false)
-
+	const [isAllArticles, setAllArticles] = React.useState(true);
+	const [isPublished, setPublished] = React.useState(false);
+	const [isDrafts, setDrafts] = React.useState(false);
 	const { data: currentUser } = useSWR("user", storage);
+	const { data: fetchedArticles } = useSWR(`${SERVER_BASE_URL}/articles?author=${initialProfile.profile.username}`, fetcher);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
+
+	const [articleType, setArticleType] = React.useState("all");
+
 	const { TabPane } = Tabs;
 
 	const TabChange = (key) => {
 		if (key == "Posts") {
-			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
+			setTabList(["All Posts", "Published", "Drafts"])
 			setPostsPage(true)
 			setFollowersPage(false)
 			setFollowingsPage(false)
 			setTagPage(false)
 			setSettingsPage(false)
+
+			setAllArticles(true);
+			setDrafts(false);
+			setPublished(false);
+
+			setArticleType("all")
 		}
 		else if (key == "Followers") {
 			setTabList(["Old -> New"])
@@ -90,7 +111,43 @@ const Profile = ({ initialProfile }) => {
 			setSettingsPage(false)
 		}
 	}
-	const TabView = (key) => { }
+
+	const TabView = (key) => {
+	 	if (key == "All Posts") {
+			setAllArticles(true);
+			setDrafts(false);
+			setPublished(false);
+
+			setArticleType("all");
+		}
+		else if (key == "Published") {
+			setAllArticles(false);
+			setDrafts(false);
+			setPublished(true);
+
+			setArticleType("published");
+		}
+		else if (key == "Drafts") {
+			setAllArticles(false);
+			setDrafts(true);
+			setPublished(false);
+
+			setArticleType("drafts");
+		}
+		else {
+			setAllArticles(false);
+			setDrafts(false);
+			setPublished(false);
+		}
+	}
+
+	const {
+		data: articleData,
+		error: articleError,
+	} = useSWR(
+		`${SERVER_BASE_URL}/profile/articles?type=${encodeURIComponent(String(articleType))}`,
+		fetcher
+	);
 
 	if (isUser) {
 		return (
@@ -102,7 +159,9 @@ const Profile = ({ initialProfile }) => {
 							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
-							<Menu_list onClick={key => TabChange(key)} />
+							<StyledMenu>
+								{list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
+							</StyledMenu>
 						</Col>
 					</Row>
 				</Col>
@@ -112,7 +171,7 @@ const Profile = ({ initialProfile }) => {
 							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
-							{isPosts ? <ArticleList /> : null}
+							{isPosts && articleData ? <ArticleList articles={articleData.articles} /> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
 							{isFollowings ? <FollowList followings={true} /> : null}
 							{isTag ? <ArticleList /> : null}

@@ -13,10 +13,10 @@ if (typeof window !== "undefined") {
 
 export default ({ Component, pageProps }) => {
   return (
-    <ContextProvider>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </ContextProvider>
+      <ContextProvider>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ContextProvider>
   );
 };

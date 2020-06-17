@@ -5,11 +5,11 @@ from conduit.decorators import isAdmin
 from conduit.exceptions import InvalidUsage
 from conduit.profile.models import UserProfile
 from conduit.profile.serializers import profile_schema, profile_schemas
-from conduit.articles.serializers import article_schema
+from conduit.articles.serializers import article_schema, articles_schema
 from conduit.articles.models import Article
 from conduit.user.models import User
 
-from flask import Blueprint
+from flask import Blueprint, jsonify
 from flask_apispec import marshal_with, use_kwargs
 from flask_jwt_extended import current_user, jwt_optional, jwt_required
 
@@ -19,6 +19,13 @@ blueprint = Blueprint('tags', __name__)
 ##########
 # Tags
 ##########
+
+@blueprint.route('/api/tags', methods=('GET',))
+@jwt_optional
+def get_tags():
+    if current_user:
+        return jsonify({'tags': [(tag.tagname, tag.slug) for tag in current_user.profile.followed_tags.limit(5)]})
+    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.limit(5)]})
 
 
 @blueprint.route('/api/tags/<slug>', methods=('GET',))
@@ -117,6 +124,7 @@ def invite_moderator(slug, username):
     tag.save()
     return toBeAddedUser
 
+
 @blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('PUT',))
 @jwt_required
 @marshal_with(article_schema)
@@ -137,3 +145,18 @@ def review_article(slug, articleSlug):
             article.set_needsReview(False)
     article.save()
     return article
+
+
+#Route to return an article filtered by tag names
+@blueprint.route('/api/user/tags/articles', methods=('GET',))
+@jwt_optional
+@marshal_with(articles_schema)
+def get_articles_tags(isPublished=None, tag=None, author=None, favorited=None, limit=5, offset=0):
+    tagLists = current_user.profile.followed_tags
+    result = Article.query.filter_by(isPublished=True)
+    ans = []
+    if tagLists.count() == 0:
+        tagLists = Tags.query.limit(5)
+    for tag in tagLists:
+        ans.append(result.filter(Article.tagList.any(Tags.slug == tag.slug)).order_by(Article.id.desc()).limit(5).all())
+    return [article for list in ans for article in list]
