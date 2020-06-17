@@ -166,15 +166,6 @@ def bookmark_an_article(slug):
     return article
 
 
-######
-# Tags
-######
-
-@blueprint.route('/api/tags', methods=('GET',))
-def get_tags():
-    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
-
-
 ##########
 # Comments
 ##########
