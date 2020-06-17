@@ -13,10 +13,10 @@ class UserSchema(Schema):
     createdAt = fields.DateTime(attribute='created_at', dump_only=True)
     updatedAt = fields.DateTime(attribute='updated_at')
     occupation = fields.Str()
-    githubLink = fields.Url()
-    twitterLink = fields.Url()
-    linkedinLink = fields.Url()
-    website = fields.Url()
+    githubLink = fields.Str()
+    twitterLink = fields.Str()
+    linkedinLink = fields.Str()
+    website = fields.Str()
     # ugly hack.
     user = fields.Nested('self', exclude=('user',), default=True, load_only=True)
 
