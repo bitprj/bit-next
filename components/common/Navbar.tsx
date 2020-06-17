@@ -1,5 +1,6 @@
 import React from "react";
-import useSWR from "swr";
+import Router from "next/router";
+import useSWR, { mutate, trigger } from "swr";
 
 import CustomLink from "./CustomLink";
 import Maybe from "./Maybe";
@@ -14,6 +15,13 @@ const Navbar = () => {
   const isLoggedIn = checkLogin(currentUser);
 
   const handleClick = React.useCallback(() => setPage(0), []);
+
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    window.localStorage.removeItem("user");
+    mutate("user", null);
+    Router.push(`/`).then(() => trigger("user"));
+  };
 
   return (
     <nav className="navbar navbar-light" style={{background:"white"}}>
@@ -35,10 +43,7 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink href="/user/settings" as="/user/settings">
-                <i className="ion-gear-a" />
-                &nbsp;Settings
-              </NavLink>
+              <a className="nav-link false" onClick={handleLogout}>Logout</a>
             </li>
             <li className="nav-item">
               <NavLink
