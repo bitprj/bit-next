@@ -60,10 +60,10 @@ const SettingsForm = () => {
     user.updatedAt ? delete user.updatedAt : null;
     user.password === "" ? delete user.password : null;
     user.image===null ? delete user.image:null;
-    user.twitterLink===null || user.twitterLink === "" ? delete user.twitterLink:null;
-    user.githubLink===null || user.githubLink === "" ? delete user.githubLink:null;
-    user.website===null || user.website === "" ? delete user.website:null;
-    user.linkedinLink===null || user.linkedinLink === "" ? delete user.linkedinLink:null;
+    user.twitterLink===null ? delete user.twitterLink:null;
+    user.githubLink===null ? delete user.githubLink:null;
+    user.website===null ? delete user.website:null;
+    user.linkedinLink===null ? delete user.linkedinLink:null;
     user.occupation===null ? delete user.occupation:null;
     user.bio===null ? delete user.bio:null;
 
