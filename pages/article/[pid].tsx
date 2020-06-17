@@ -169,8 +169,6 @@ const ArticlePage = (initialArticle) => {
     }
   };
 
-  const staticSrc = 'https://i.ytimg.com/vi/cNEsl9J69OQ/maxresdefault.jpg';
-
   const markup = {
     __html: marked(article.body, { sanitize: true }),
   };
@@ -178,7 +176,7 @@ const ArticlePage = (initialArticle) => {
   return (
     <div className="article-page">
       <ArticleContain>
-        <img src={(article as any).image ? (article as any).image : staticSrc} alt='image' style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
+        <img src={(article as any).image} style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
         <ArticleBody>
           <ArticleTags article={article} />
           <h1>{article.title}</h1>
