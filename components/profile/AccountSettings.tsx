@@ -35,7 +35,8 @@ const SettingsForm = () => {
     linkedinLink: "",
     token: "",
     createdAt: "",
-    updatedAt: ""
+    updatedAt: "",
+    occupation:""
   });
   const [form] = Form.useForm();
   const { data: currentUser } = useSWR("user", storage);
