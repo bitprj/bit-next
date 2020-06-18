@@ -40,5 +40,22 @@ const TagAPI = {
       return error.response;
     }
   }
-};
+, moderators: async (slug,member) => {
+  const user: any = JSON.parse(window.localStorage.getItem("user"));
+  const token = user?.token;
+  try {
+    const response = await axios.post(
+      `${SERVER_BASE_URL}/tags/${slug}/moderator/${member}`,{},
+      {
+        headers: {
+          Authorization: `Token ${encodeURIComponent(token)}`,
+        }
+      }
+    );
+    return response
+  } catch (error) {
+    return error.response;
+  }
+
+},getMembers :(slug) => axios.get(`${SERVER_BASE_URL}/tags/${slug}/members`)};
 export default TagAPI;
