@@ -13,6 +13,8 @@ from flask import Blueprint, jsonify
 from flask_apispec import marshal_with, use_kwargs
 from flask_jwt_extended import current_user, jwt_optional, jwt_required
 
+from marshmallow import fields
+
 blueprint = Blueprint('tags', __name__)
 
 
@@ -22,7 +24,11 @@ blueprint = Blueprint('tags', __name__)
 
 @blueprint.route('/api/tags', methods=('GET',))
 @jwt_optional
-def get_tags():
+@use_kwargs({'quantity': fields.Str()})
+def get_tags(quantity=None):
+    print(quantity)
+    if quantity == 'all':
+        return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
     if current_user:
         return jsonify({'tags': [(tag.tagname, tag.slug) for tag in current_user.profile.followed_tags.limit(5)]})
     return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.limit(5)]})

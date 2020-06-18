@@ -66,7 +66,7 @@ const Profile = ({ initialProfile }) => {
 
 	const { data: currentUser } = useSWR("user", storage);
 	const { data: fetchedArticles } = useSWR(`${SERVER_BASE_URL}/articles?author=${initialProfile.profile.username}`, fetcher);
-	const { data: dropDownTags } = useSWR(`${SERVER_BASE_URL}/tags`, fetcher);
+	const { data: dropDownTags } = useSWR(`${SERVER_BASE_URL}/tags?quantity=all`, fetcher);
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 
