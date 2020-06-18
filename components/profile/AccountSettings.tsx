@@ -6,7 +6,7 @@ import checkLogin from "../../lib/utils/checkLogin";
 import styled from "styled-components";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 
-import { Avatar, Row, Col, Input, Form,Button } from 'antd';
+import { Avatar, Row, Col, Input, Form, Button, message } from 'antd';
 
 const { TextArea } = Input;
 
@@ -35,7 +35,8 @@ const SettingsForm = () => {
     linkedinLink: "",
     token: "",
     createdAt: "",
-    updatedAt: ""
+    updatedAt: "",
+    occupation:""
   });
   const [form] = Form.useForm();
   const { data: currentUser } = useSWR("user", storage);
@@ -58,10 +59,17 @@ const SettingsForm = () => {
     user.createdAt ? delete user.createdAt : null;
     user.updatedAt ? delete user.updatedAt : null;
     user.password === "" ? delete user.password : null;
+    user.image===null ? delete user.image:null;
+    user.twitterLink===null ? delete user.twitterLink:null;
+    user.githubLink===null ? delete user.githubLink:null;
+    user.website===null ? delete user.website:null;
+    user.linkedinLink===null ? delete user.linkedinLink:null;
+    user.occupation===null ? delete user.occupation:null;
+    user.bio===null ? delete user.bio:null;
 
     const { data, status } = await axios.put(
       `${SERVER_BASE_URL}/user`,
-      JSON.stringify({ user: {user} }),
+      JSON.stringify({ user }),
       {
         headers: {
           "Content-Type": "application/json",
@@ -76,6 +84,12 @@ const SettingsForm = () => {
     if (data?.user) {
       window.localStorage.setItem("user", JSON.stringify(data.user));
       mutate("user", data.user);
+    }
+    if(status===200){
+      message.success("Account Settings were Updated")
+    }
+    else{
+      message.error("There was some error in updating. Please try again later.")
     }
   };
 
@@ -97,13 +111,21 @@ const SettingsForm = () => {
     user.createdAt ? delete user.createdAt : null;
     user.updatedAt ? delete user.updatedAt : null;
     user.password === "" ? delete user.password : null;
+    user.image===null ? delete user.image:null;
+    delete user.twitterLink;
+    delete user.githubLink;
+    delete user.website;
+    delete user.linkedinLink;
+    delete user.occupation;
+    delete user.bio;
 
     const { data, status } = await axios.put(
       `${SERVER_BASE_URL}/user`,
-      JSON.stringify({ user:{user} }),
+      JSON.stringify({ user }),
       {
         headers: {
           "Content-Type": "application/json",
+          "X-Requested-With": "XMLHttpRequest",
           Authorization: `Token ${currentUser?.token}`,
         },
       }
@@ -118,6 +140,12 @@ const SettingsForm = () => {
       mutate("user", data.user);
     }
     setUserInfo(newState);
+    if(status===200){
+      message.success("User Profile Image was Updated")
+    }
+    else{
+      message.error("There was some error in updating. Please try again later.")
+    }
   }
 
   return (
@@ -127,24 +155,24 @@ const SettingsForm = () => {
             <Form
               layout="horizontal"
               onFinish={submitForm}
-              initialValues={{Username:currentUser.username,Email:currentUser.email}}
+              initialValues={{Username:currentUser.username,Email:currentUser.email,Github:currentUser.githubLink,Twitter:currentUser.twitterLink,LinkedIn:currentUser.linkedinLink,Website:currentUser.website}}
               form={form}
             >
               <Form.Item label="User Profile">
                 <Avatar src={userInfo.image} size={40} />
                 <label style={{ color: "black",marginLeft:"1em" }}>Reupload Image<input style={{ display: "none" }} type="file" onChange={Reupload} /></label>
               </Form.Item>
-              <Form.Item label="Github" name="Github">
-                <StyledInput value={userInfo.githubLink} placeholder={"www.github.com"} onChange={updateState("githubLink")} />
+              <Form.Item label="Github" name="Github" rules={[{type:'url', message: 'Please enter valid url'}]}>
+                <StyledInput value={userInfo.githubLink} placeholder={"http://www.github.com"} onChange={updateState("githubLink")} />
               </Form.Item>
-              <Form.Item label="Twitter">
-                <StyledInput value={userInfo.twitterLink} placeholder={"www.twitter.com"} onChange={updateState("twitterLink")} />
+              <Form.Item label="Twitter" name="Twitter" rules={[{type:'url', message: 'Please enter valid url'}]}>
+                <StyledInput value={userInfo.twitterLink} placeholder={"http://www.twitter.com"} onChange={updateState("twitterLink")} />
               </Form.Item>
-              <Form.Item label="LinkedIn">
-                <StyledInput value={userInfo.linkedinLink} placeholder={"www.linkedin.com"} onChange={updateState("linkedinLink")} />
+              <Form.Item label="LinkedIn" name="LinkedIn" rules={[{type:'url', message: 'Please enter valid url'}]}>
+                <StyledInput value={userInfo.linkedinLink} placeholder={"http://www.linkedin.com"} onChange={updateState("linkedinLink")} />
               </Form.Item>
-              <Form.Item label="Personal Website">
-                <StyledInput value={userInfo.website} placeholder={"www.example.com"} onChange={updateState("website")} />
+              <Form.Item label="Personal Website" name="Website" rules={[{type:'url', message: 'Please enter valid url'}]}>
+                <StyledInput value={userInfo.website} placeholder={"http://www.example.com"} onChange={updateState("website")} />
               </Form.Item>
               <Form.Item label="Username" name="Username" rules={[{ required: true, message: 'Please input your username!' }]}>
                 <StyledInput value={userInfo.username} placeholder={"Username"} onChange={updateState("username")} />

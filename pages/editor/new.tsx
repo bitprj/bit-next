@@ -7,7 +7,7 @@ import Editor from 'rich-markdown-editor';
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import storage from "../../lib/utils/storage";
-import { Alert, Upload, message, Button, Col, Row, Divider, Spin } from 'antd';
+import { Upload, message, Button, Col, Row, Divider, Spin } from 'antd';
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import Tab_list from "../../components/profile/Tab_list";
 import { UploadOutlined  } from '@ant-design/icons';
@@ -35,10 +35,6 @@ const PublishArticleEditor = () => {
   const [dark_theme, Change_theme] = useState(false)
 
   const [isLoading, setLoading] = React.useState(false);
-
-  const [Title_required, setTitle_required] = useState(false)
-
-  const [Save_Alert, setSaveAlert] = useState(false)
 
   const [tags, setTags] = useState([])
 
@@ -83,7 +79,6 @@ const PublishArticleEditor = () => {
 
   const handleTitle = e => {
     setTitle(e.target.value)
-    setTitle_required(false)
   }
   const handleDesc = e => {
     setDesc(e.target.value)
@@ -154,7 +149,6 @@ const PublishArticleEditor = () => {
   const Save_Draft = async () => {
     if (id == null) {
       if (title != "") {
-        setSaveAlert(true)
         initialState.title = title
         initialState.description = description ? description : "This article has no description"
         initialState.body = value_dummy
@@ -166,30 +160,25 @@ const PublishArticleEditor = () => {
           currentUser?.token
         );
         setId(data.article.slug)
-        setTimeout(() => {
-          setSaveAlert(false)
-        }, 1000);
+        message.success("Your Article Draft is Saved")
       }
       else {
         if (Title.current) {
           Title.current.focus();
         }
-        setTitle_required(true);
+        message.warning("Title Required for this Article")
       }
     }
     else {
       if (title != "") {
-        setSaveAlert(true)
         AutoSave()
-        setTimeout(() => {
-          setSaveAlert(false)
-        }, 1000);
+        message.success("Your Article Draft is Saved")
       }
       else {
         if (Title.current) {
           Title.current.focus();
         }
-        setTitle_required(true);
+        message.warning("Title Required for this Article")
       }
     }
   }
@@ -221,13 +210,14 @@ const PublishArticleEditor = () => {
         );
       }
       setLoading(false);
+      message.success("Your Article is Published")
       Router.push("/");
     }
     else {
       if (Title.current) {
         Title.current.focus();
       }
-      setTitle_required(true);
+      message.warning("Title Required for this Article")
     }
   };
 
@@ -244,9 +234,6 @@ const PublishArticleEditor = () => {
     <div style={{ background: "white", width: '75%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
     <Row>
     <Col span={18} style={{paddingRight:"2em"}}>
-      {Title_required ? <Alert message="Title required" type="warning" /> : null}
-      {Save_Alert ? <Alert message="Your Article is Saved" type="success" /> : null}
-      {Title_required || Save_Alert? <br/>:null}
       <input
         type="text"
         placeholder="Title..."
