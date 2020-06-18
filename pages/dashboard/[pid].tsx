@@ -46,7 +46,13 @@ const Profile = ({ initialProfile }) => {
 
 	const { profile } = fetchedProfile || initialProfile;
 	const { username, bio, image, following } = profile;
-	const [list, setList] = React.useState(["Posts", "Followers", "Following", "Account Settings"])
+	let tabsList =[]
+	if(initialProfile.profile.isAdmin){
+		tabsList = ["Posts", "Followers", "Following", "Account Settings","Admin"]
+	}else{
+		tabsList = ["Posts", "Followers", "Following", "Account Settings"]
+	}
+	const [list, setList] = React.useState(tabsList)
 	const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
 	const [isPosts, setPostsPage] = React.useState(true)
 	const [isFollowers, setFollowersPage] = React.useState(false)
@@ -183,8 +189,6 @@ const Profile = ({ initialProfile }) => {
 							<StyledMenu>
 								{list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
 							</StyledMenu>
-							<Menu_list isAdmin ={initialProfile.profile.isAdmin}  onClick={key => TabChange(key)} />
-
 						</Col>
 					</Row>
 				</Col>
