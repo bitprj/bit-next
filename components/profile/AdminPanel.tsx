@@ -9,10 +9,39 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import { Button } from 'antd';
 import TagAPI from "../../lib/api/tag";
 import { Alert } from 'antd';
+import styled from 'styled-components';
+
+
+
+type AlertError = 'info' | 'warning' | 'success' | 'error'
+let alertType : AlertError ;
+const SearchDiv = styled.div`
+width: 100%;
+ margin-top: 2em;
+ font-weight:bold;
+ margin-bottom : 2em
+`
+const Link = styled.a`
+    border: 1px solid black;
+    padding: 0.5em
+`
+
+const AlertStyle = styled(Alert)`
+    margin-top: 1em
+`
+const ButtonStyle = styled(Button)`
+    margin-top: 1em;
+    background: black;
+    &:hover {
+        background: black
+      }
+      &:focus {
+        background: black
+      }
+`
 
 const { Option } = Mentions;
-type AlertError = 'info' | 'warning' | 'success' | 'error'
-var alertType : AlertError ;
+
 
 const Admin = (props) => {
    
@@ -23,21 +52,35 @@ const Admin = (props) => {
     const [selectedOption, setSelectedOption] = React.useState()
     const [alert, setAlert] = React.useState(false)
     const [alertMessage,setAlertMessage] = React.useState("")
+
     const [tag,setTag] = React.useState([
 
     ])
     const [tagMemberOptions,setTagMemberOptions] = React.useState([
 
     ])
+    function isNotNull(value){
+        if(value != null && value.length >0  )
+        return true
+        else 
+        return false
+    }
+    function isResponse ( response){
+        if(response && response.status == 200)
+        return true
+        else 
+        return false
+
+    }
 
     const tagMembers= async(key)=>{ 
-        var options =[]
+        let options =[]
         if(key != null){
-          var res =   await TagAPI.getMembers(key)
-          var tagMembers = await res.data
-          var tagMem = []
-        if (tagMembers && tagMembers.tagFollowers.length > 0) {
-        for (var members of tagMembers.tagFollowers) {
+          let res =   await TagAPI.getMembers(key)
+          let tagMembers = await res.data
+          let tagMem = []
+        if (tagMembers && isNotNull(tagMembers.tagFollowers)) {
+        for (let members of tagMembers.tagFollowers) {
             tagMem.push(members.profile.username)
             options.push(<Option value={members.profile.username}>
                 {members.profile.username}
@@ -51,47 +94,41 @@ const Admin = (props) => {
      
     }
     const handleClickFavorite = async (slug,selectedOption) => {
-        
-        if(slug != null && selectedOption != null && selectedOption.length != 0 && selectedOption !="@"){
+        if(isNotNull(slug) && isNotNull(selectedOption)){
         if(tagMemberOptions && tagMemberOptions.includes(selectedOption) ){
         mutate(
             `${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`,
             {},
             true
           );
-                var response = await TagAPI.moderators(slug,selectedOption)
-                        if(response && response.status == 200){
+                let response = await TagAPI.moderators(slug,selectedOption)
+                        if(isResponse(response)){
                             alertType = "success"
                             setAlert(true)
                             setAlertMessage("The member "+ selectedOption +" is added as the moderator for the tag "+ value +" successfully")
                         
-
-
                         }else{
                            
                             setAlert(true)
-                            var responseText = response.data.errors.body[0]
+                            let responseText = response.data.errors.body[0]
                             alertType = "error"
                             setAlertMessage(responseText)
                            
-
 
                         }
                 trigger(`${SERVER_BASE_URL}/tags/${slug}/moderator/${selectedOption}`);
 
           }else{
-
             alertType = "error"
             setAlertMessage("Member "+ selectedOption +" is not present for the tag "+ value)
             setAlert(true)
             
           }}else{
-            alertType = "error"
-
-              if(slug == null){
+              alertType = "error"
+              if(!isNotNull(slug) ){
                 setAlertMessage("Enter a valid tag")
 
-              }else if (selectedOption== null){
+              }else if (!isNotNull(selectedOption)){
                 setAlertMessage("Enter a valid member")
               }
                setAlert(true)
@@ -106,7 +143,7 @@ const Admin = (props) => {
         setValue(clicked.item.node.innerText)
         setKey(clicked.key)
         setAlert(false)
-        var tag = await tagMembers(clicked.key)
+        let tag = await tagMembers(clicked.key)
         setTag(tag)
     }
     const onSelect = (selectedOption) => {
@@ -123,8 +160,8 @@ const Admin = (props) => {
 
 
     const menu = () => {
-        var tagData = []
-        for (var tag of props.tags.tags) {
+        let tagData = []
+        for (let tag of props.tags.tags) {
             tagData.push(<Menu.Item key={tag[1]} onClick={onTagClick.bind(tag[1])}>
                 {tag[0]}
             </Menu.Item>)
@@ -139,22 +176,18 @@ const Admin = (props) => {
     return (
         <div>
             <Dropdown overlay={menu} placement="bottomCenter">
-                <a className="ant-dropdown-link" style={{
-                    border: "1px solid black",
-                    padding: '0.5em'
-                }} >
+                <Link className="ant-dropdown-link"  >
                     {value} <DownOutlined />
-                </a>
+                </Link>
             </Dropdown>
-            <div style = {{ width: '100%', marginTop: "2em",fontWeight:"bold" }}> Search Tag Members</div>
+            <SearchDiv> Search Tag Members</SearchDiv>
             <Mentions
-                style={{ marginTop: "2em" }}
                onChange = { onChange}
                 onSelect = {onSelect} >
                 {tag}
             </Mentions>
-            <Button style = {{marginTop: "1em",background:"black" }} type="primary" onClick = {()=> handleClickFavorite(key,selectedOption)}>Make Moderator</Button>
-            {alert? <Alert style ={{marginTop: "1em"}} message={alertMessage} type={alertType}></Alert> : null}
+            <ButtonStyle  type={"primary"} onClick = {()=> handleClickFavorite(key,selectedOption)}>Make Moderator</ButtonStyle>
+            {alert? <AlertStyle message={alertMessage} type={alertType}></AlertStyle> : null}
             
         </div>
     )
