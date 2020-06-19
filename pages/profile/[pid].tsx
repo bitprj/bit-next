@@ -1,19 +1,22 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { mutate, trigger } from "swr";
+import styled from 'styled-components';
 
-import ArticleList from "../../components/article/ArticleList";
-import CustomImage from "../../components/common/CustomImage";
 import ErrorMessage from "../../components/common/ErrorMessage";
-import Maybe from "../../components/common/Maybe";
-import EditProfileButton from "../../components/profile/EditProfileButton";
-import FollowUserButton from "../../components/profile/FollowUserButton";
-import ProfileTab from "../../components/profile/ProfileTab";
+import ArticleList from "../../components/article/ArticleList";
+import FollowList from "../../components/global/FollowList";
 import UserAPI from "../../lib/api/user";
-import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
-import storage from "../../lib/utils/storage";
+import Header from "../../components/global/Header"
+import { Tabs } from 'antd';
+
+const { TabPane } = Tabs;
+
+const StyledDiv = styled.div`
+  padding-top: 3em;
+`
 
 const Profile = ({ initialProfile }) => {
   const router = useRouter();
@@ -33,26 +36,22 @@ const Profile = ({ initialProfile }) => {
   if (profileError) return <ErrorMessage message="Can't load profile" />;
 
   const { profile } = fetchedProfile || initialProfile;
-  const { username, bio, image, following } = profile;
-
-  const { data: currentUser } = useSWR("user", storage);
-  const isLoggedIn = checkLogin(currentUser);
-  const isUser = currentUser && username === currentUser?.username;
+  const { username, email } = profile;
 
   const handleFollow = async () => {
     mutate(
       `${SERVER_BASE_URL}/profiles/${pid}`,
       { profile: { ...profile, following: true } },
-      false
+      true
     );
-    UserAPI.follow(pid);
+    UserAPI.follow(pid, email);
     trigger(`${SERVER_BASE_URL}/profiles/${pid}`);
   };
 
   const handleUnfollow = async () => {
     mutate(
       `${SERVER_BASE_URL}/profiles/${pid}`,
-      { profile: { ...profile, following: true } },
+      { profile: { ...profile, following: false } },
       true
     );
     UserAPI.unfollow(pid);
@@ -60,43 +59,29 @@ const Profile = ({ initialProfile }) => {
   };
 
   return (
-    <div className="profile-page">
-      <div className="user-info">
-        <div className="container">
-          <div className="row">
-            <div className="col-xs-12 col-md-10 offset-md-1">
-              <CustomImage
-                src={image}
-                alt="User's profile image"
-                className="user-img"
-              />
-              <h4>{username}</h4>
-              <p>{bio}</p>
-              <EditProfileButton isUser={isUser} />
-              <Maybe test={isLoggedIn}>
-                <FollowUserButton
-                  isUser={isUser}
-                  username={username}
-                  following={following}
+    <div className="container page">
+      <StyledDiv>
+            <div className="row">
+              <div className="col-xs-12 col-md-10 ">
+                <Header
+                  user={profile}
                   follow={handleFollow}
                   unfollow={handleUnfollow}
                 />
-              </Maybe>
+                <Tabs defaultActiveKey="1"  >
+                  <TabPane key="1" tab={"Posts"}>
+                    <ArticleList />
+                  </TabPane>
+                  <TabPane key="2" tab={"Followers"}>
+                    <FollowList followings={false} />
+                  </TabPane>
+                  <TabPane key="3" tab={"Following"}>
+                    <FollowList followings={true} />
+                  </TabPane>
+                </Tabs>
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="container">
-        <div className="row">
-          <div className="col-xs-12 col-md-10 offset-md-1">
-            <div className="articles-toggle">
-              <ProfileTab profile={profile} />
-            </div>
-            <ArticleList />
-          </div>
-        </div>
-      </div>
+      </StyledDiv>
     </div>
   );
 };

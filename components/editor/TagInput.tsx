@@ -40,6 +40,7 @@ const TagInput = ({ tagList, addTag, removeTag }) => {
           onChange={changeTagInput}
           onBlur={handleAddTag}
           onKeyDown={handleTagInputKeyDown}
+          style={{marginBottom:"1%",border:"none",padding:"0"}}
         />
 
         <div className="tag-list">
@@ -49,7 +50,7 @@ const TagInput = ({ tagList, addTag, removeTag }) => {
                 className="ion-close-round"
                 onClick={() => handleRemoveTag(tag)}
               />
-              {tag}
+              {tag.slug}
             </span>
           ))}
         </div>

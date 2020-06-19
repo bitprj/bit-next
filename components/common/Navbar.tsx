@@ -1,5 +1,6 @@
 import React from "react";
-import useSWR from "swr";
+import Router from "next/router";
+import useSWR, { mutate, trigger } from "swr";
 
 import CustomLink from "./CustomLink";
 import Maybe from "./Maybe";
@@ -15,11 +16,18 @@ const Navbar = () => {
 
   const handleClick = React.useCallback(() => setPage(0), []);
 
+  const handleLogout = async (e) => {
+    e.preventDefault();
+    window.localStorage.removeItem("user");
+    mutate("user", null);
+    Router.push(`/`).then(() => trigger("user"));
+  };
+
   return (
-    <nav className="navbar navbar-light">
+    <nav className="navbar navbar-light" style={{background:"white"}}>
       <div className="container">
         <CustomLink className="navbar-brand" href="/" as="/">
-          <span onClick={handleClick}>conduit</span>
+          <span onClick={handleClick}>Bit Project</span>
         </CustomLink>
         <ul className="nav navbar-nav pull-xs-right">
           <li className="nav-item">
@@ -35,15 +43,12 @@ const Navbar = () => {
               </NavLink>
             </li>
             <li className="nav-item">
-              <NavLink href="/user/settings" as="/user/settings">
-                <i className="ion-gear-a" />
-                &nbsp;Settings
-              </NavLink>
+              <a className="nav-link false" onClick={handleLogout}>Logout</a>
             </li>
             <li className="nav-item">
               <NavLink
-                href={`/profile/${currentUser?.username}`}
-                as={`/profile/${currentUser?.username}`}
+                href={`/dashboard/${currentUser?.username}`}
+                as={`/dashboard/${currentUser?.username}`}
               >
                 <span onClick={handleClick}>{currentUser?.username}</span>
               </NavLink>
