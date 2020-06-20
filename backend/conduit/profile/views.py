@@ -51,6 +51,7 @@ def unfollow_user(username):
     current_user.profile.save()
     return user.profile
 
+
 @blueprint.route('/api/profiles/<username>/tags', methods=('GET',))
 @jwt_required
 @marshal_with(tags_schemas)
@@ -58,7 +59,7 @@ def profile_tags(username):
     user = User.query.filter_by(username=username).first()
     if not user:
         raise InvalidUsage.user_not_found()
-    return user.profile.followed_tags.with_entities(Tags.tagname, Tags.slug)
+    return user.profile.followed_tags
 
 
 @blueprint.route('/api/profiles/<username>/followers', methods=('GET',))
