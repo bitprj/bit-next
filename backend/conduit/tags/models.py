@@ -79,3 +79,10 @@ class Tags(Model):
         if current_user:
             return self.is_follow(current_user.profile)
         return False
+
+    @property
+    def moderator(self):
+        if current_user:
+            return self.is_moderator(current_user.profile)
+        else:
+            return False

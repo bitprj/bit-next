@@ -8,7 +8,7 @@ import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import storage from "../../lib/utils/storage";
-import { Alert, Upload, message, Button, Col, Row, Divider, Spin } from 'antd';
+import { Upload, message, Button, Col, Row, Divider, Spin } from 'antd';
 import Tab_list from "../../components/profile/Tab_list";
 import Twemoji from 'react-twemoji';
 import { UploadOutlined } from '@ant-design/icons';
@@ -33,8 +33,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
   var [value_dummy, setDummyValue] = useState(initialState.body)
 
   const [dark_theme, Change_theme] = useState(false)
-
-  const [Title_required, setTitle_required] = useState(false)
 
   const [tags, setTags] = useState([])
 
@@ -91,7 +89,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const handleTitle = e => {
     setTitle(e.target.value)
-    setTitle_required(false)
   }
   const handleDesc = e => {
     setDesc(e.target.value)
@@ -177,13 +174,14 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         }
       );
       setLoading(false);
+      message.success("Your Article is Updated")
       Router.push("/");
     }
     else {
       if (Title.current) {
         Title.current.focus();
       }
-      setTitle_required(true);
+      message.warning("Title Required for this Article")
     }
   };
 
@@ -200,8 +198,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     <div style={{ background: "white", width: '75%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
       <Row>
         <Col span={18} style={{paddingRight:"2em"}}>
-        {Title_required ? <Alert message="Title required" type="warning" /> : null}
-        <br />
         <input
         type="text"
         placeholder="Title..."
