@@ -1,15 +1,19 @@
-from flask import Blueprint
-from flask_apispec import marshal_with, use_kwargs
-from flask_jwt_extended import current_user, jwt_required
-
-from conduit.decorators import isAdmin
 from .models import Tags
 from .serializers import tag_schema, tag_mebership_schema
+
+from conduit.decorators import isAdmin
 from conduit.exceptions import InvalidUsage
 from conduit.profile.models import UserProfile
 from conduit.profile.serializers import profile_schema, profile_schemas
+from conduit.articles.serializers import article_schema, articles_schema
+from conduit.articles.models import Article
 from conduit.user.models import User
 
+from flask import Blueprint, jsonify
+from flask_apispec import marshal_with, use_kwargs
+from flask_jwt_extended import current_user, jwt_optional, jwt_required
+
+from marshmallow import fields
 
 blueprint = Blueprint('tags', __name__)
 
@@ -18,9 +22,20 @@ blueprint = Blueprint('tags', __name__)
 # Tags
 ##########
 
+@blueprint.route('/api/tags', methods=('GET',))
+@jwt_optional
+@use_kwargs({'quantity': fields.Str()})
+def get_tags(quantity=None):
+    print(quantity)
+    if quantity == 'all':
+        return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
+    if current_user:
+        return jsonify({'tags': [(tag.tagname, tag.slug) for tag in current_user.profile.followed_tags.limit(5)]})
+    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.limit(5)]})
+
 
 @blueprint.route('/api/tags/<slug>', methods=('GET',))
-@jwt_required
+@jwt_optional
 @marshal_with(tag_schema)
 def get_tag(slug, **kwargs):
     tag = Tags.query.filter_by(slug=slug).first()
@@ -80,6 +95,8 @@ def unfollow_a_tag(slug):
 @marshal_with(tag_mebership_schema)
 def get_members_from_tag(slug):
     tag = Tags.query.filter_by(slug=slug).first()
+    if not tag:
+        raise InvalidUsage.tag_not_found()
     return tag
 
 
@@ -88,8 +105,11 @@ def get_members_from_tag(slug):
 @isAdmin
 @marshal_with(tag_schema)
 def claim_tag(slug):
+    profile = current_user.profile
     tag = Tags.query.filter_by(slug=slug).first()
-    tag.addModerator(current_user.profile)
+    if not tag:
+        raise InvalidUsage.tag_not_found()
+    tag.addModerator(profile)
     tag.save()
     return tag
 
@@ -110,3 +130,39 @@ def invite_moderator(slug, username):
     tag.save()
     return toBeAddedUser
 
+
+@blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('PUT',))
+@jwt_required
+@marshal_with(article_schema)
+def review_article(slug, articleSlug):
+    profile = current_user.profile
+    tag = Tags.query.filter_by(slug=slug).first()
+    if not tag:
+        raise InvalidUsage.tag_not_found()
+    if tag not in profile.moderated_tags:
+        raise InvalidUsage.not_moderator()
+    
+    article = Article.query.filter_by(slug=articleSlug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    if article.needsReview:
+        article.remove_needReviewTag(tag)
+        if article.is_allTagReviewed():
+            article.set_needsReview(False)
+    article.save()
+    return article
+
+
+#Route to return an article filtered by tag names
+@blueprint.route('/api/user/tags/articles', methods=('GET',))
+@jwt_optional
+@marshal_with(articles_schema)
+def get_articles_tags(isPublished=None, tag=None, author=None, favorited=None, limit=5, offset=0):
+    tagLists = current_user.profile.followed_tags
+    result = Article.query.filter_by(isPublished=True)
+    ans = []
+    if tagLists.count() == 0:
+        tagLists = Tags.query.limit(5)
+    for tag in tagLists:
+        ans.append(result.filter(Article.tagList.any(Tags.slug == tag.slug)).order_by(Article.id.desc()).limit(5).all())
+    return [article for list in ans for article in list]

@@ -64,3 +64,20 @@ class UserProfile(Model, SurrogatePK):
     @property
     def email(self):
         return self.user.email
+
+    @property
+    def location(self):
+        return self.user.location
+
+    @property
+    def occupation(self):
+        return self.user.occupation
+
+    @property
+    def joined(self):
+        return self.user.created_at
+
+    @property
+    def isAdmin(self):
+        return self.user.isAdmin
+    

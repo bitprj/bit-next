@@ -16,6 +16,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     JWT_AUTH_USERNAME_KEY = 'email'
     JWT_AUTH_HEADER_PREFIX = 'Token'
+    JWT_ACCESS_TOKEN_EXPIRES = False
     PROPAGATE_EXCEPTIONS = True
     CORS_ORIGIN_WHITELIST = [
         'http://0.0.0.0:4100',
@@ -28,7 +29,8 @@ class Config(object):
         'http://localhost:4000',
         'http://localhost:3000',
         'https://bit-next-ixppal0sd.now.sh',
-        'https://bit-next-git-staging.bitproject.now.sh'
+        'https://bit-next-git-staging.bitproject.now.sh',
+        'https://bit-next-git-master.bitproject.now.sh'
     ]
     JWT_HEADER_TYPE = 'Token'
 

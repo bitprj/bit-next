@@ -7,17 +7,22 @@ import User from './User';
 
 const { Meta } = Card;
 
+const MiniTitle = styled.div`
+    font-size: 12px;
+    line-height: 10px;
+    color: rgba(0, 0, 0, 0.5);
+    padding: 2em 0 0.5em 0;
+`
+
 const StyledBio = styled.div`
     padding-top: 1em;
     color: black;
     font-size: 12px;
 `
 
-const MiniTitle = styled.div`
-    font-size: 8px;
-    line-height: 10px;
-    color: rgba(0, 0, 0, 0.5);
-    padding: 2em 0 0.5em 0;
+const StyledDiv = styled.div`
+    background-color: red;
+    border-radius: 5px;
 `
 
 const UserMeta = styled.div`
@@ -28,10 +33,9 @@ const UserMeta = styled.div`
 `
 
 const UserArticle = (props) => {
-    // console.log(initialProfile.author.username)
     return (
-        <div className="site-card-border-less-wrapper">
-            <Card bordered={false} style={{ width: 300 }}>
+        <StyledDiv>
+            <Card bordered={false}>
                 <User {...props} />
                 <StyledBio>{props.bio}</StyledBio>
                 <MiniTitle>Location</MiniTitle>
@@ -41,7 +45,7 @@ const UserArticle = (props) => {
                 <MiniTitle>Joined</MiniTitle>
                 <UserMeta>{props.joined}</UserMeta>
             </Card>
-        </div>
+        </StyledDiv>
     )
 }
 

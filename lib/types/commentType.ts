@@ -9,6 +9,7 @@ export type CommentType = {
   slug: string;
   author: Author;
   updatedAt: number;
+  parentComment: CommentChildren;
 };
 
 export type Author = {
@@ -17,3 +18,7 @@ export type Author = {
   image: string;
   following: boolean;
 };
+
+export type CommentChildren = {
+  comments: CommentType[];
+}

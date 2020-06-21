@@ -5,29 +5,17 @@ import styled from 'styled-components';
 
 import ErrorMessage from "../../components/common/ErrorMessage";
 import ArticleList from "../../components/article/ArticleList";
+import FollowList from "../../components/global/FollowList";
 import UserAPI from "../../lib/api/user";
-import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
-import storage from "../../lib/utils/storage";
 import Header from "../../components/global/Header"
 import { Tabs } from 'antd';
 
+const { TabPane } = Tabs;
+
 const StyledDiv = styled.div`
   padding-top: 3em;
-`
-
-const StyledTabs = styled.div`
-
-    .ant-tabs-nav::before {
-      display: none;
-    }
-
-    .ant-tabs-tab-active {
-      border-color: #000;
-      background: #fff;
-    }
-
 `
 
 const Profile = ({ initialProfile }) => {
@@ -50,11 +38,6 @@ const Profile = ({ initialProfile }) => {
   const { profile } = fetchedProfile || initialProfile;
   const { username, email } = profile;
 
-  const { data: currentUser } = useSWR("user", storage);
-  const isLoggedIn = checkLogin(currentUser);
-  const isUser = currentUser && username === currentUser?.username;
-  const {TabPane} = Tabs;
-
   const handleFollow = async () => {
     mutate(
       `${SERVER_BASE_URL}/profiles/${pid}`,
@@ -76,34 +59,30 @@ const Profile = ({ initialProfile }) => {
   };
 
   return (
-    <StyledDiv>
-      <div className="user-info">
-        <div className="container">
-          <div className="row">
-            <div className="col-xs-12 col-md-10 ">
-              <Header
-                user={profile}
-                follow={handleFollow}
-                unfollow={handleUnfollow}
-              />
-              <StyledTabs>        
-                <Tabs defaultActiveKey="1" size = {"large"}  type={"card"} tabBarGutter={32} >
-                  <Tabs.TabPane key="1" tab={"Posts"}>
-                      <ArticleList/>
-                  </Tabs.TabPane>
-                  <Tabs.TabPane key="2" tab={"Followers"}> 
-                      Followers 
-                  </Tabs.TabPane>
-                  <Tabs.TabPane key="3" tab={"Following"}> 
-                    Following 
-                  </Tabs.TabPane>
+    <div className="container page">
+      <StyledDiv>
+            <div className="row">
+              <div className="col-xs-12 col-md-10 ">
+                <Header
+                  user={profile}
+                  follow={handleFollow}
+                  unfollow={handleUnfollow}
+                />
+                <Tabs defaultActiveKey="1"  >
+                  <TabPane key="1" tab={"Posts"}>
+                    <ArticleList />
+                  </TabPane>
+                  <TabPane key="2" tab={"Followers"}>
+                    <FollowList followings={false} />
+                  </TabPane>
+                  <TabPane key="3" tab={"Following"}>
+                    <FollowList followings={true} />
+                  </TabPane>
                 </Tabs>
-              </StyledTabs> 
+              </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </StyledDiv>
+      </StyledDiv>
+    </div>
   );
 };
 

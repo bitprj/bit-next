@@ -8,7 +8,7 @@ const ArticleList = props =>(
       dataSource={props.articles}
       renderItem={article => (
         <List.Item>
-           <ArticleCard 
+           <ArticleCard
               article = {article}
               onLeftButtonClick = {props.onLeftButtonClick}
               onRightButtonClick = {props.onRightButtonClick}
