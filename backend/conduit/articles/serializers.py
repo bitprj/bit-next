@@ -23,7 +23,7 @@ class ArticleSchema(Schema):
     # for the envelope
     article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
     tagList = fields.Nested(TagSchema, many=True)
-    favoritesCount = fields.Int(dump_only=True)
+    tagList = fields.List(fields.Str())
     commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
     isPublished = fields.Bool()
