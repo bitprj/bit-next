@@ -5,10 +5,10 @@
 // export const SERVER_BASE_URL = `http://127.0.0.1:5000/api`;
 
 // Staging url
-//export const SERVER_BASE_URL = `https://bit-devs-staging.herokuapp.com/api`;
+export const SERVER_BASE_URL = `https://bit-devs-staging.herokuapp.com/api`;
 
 // Production url. ONLY USE IN PRODUCTION
-export const SERVER_BASE_URL = `https://bit-devs.herokuapp.com/api`;
+// export const SERVER_BASE_URL = `https://bit-devs.herokuapp.com/api`;
 
 
 

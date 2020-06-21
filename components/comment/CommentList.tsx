@@ -33,11 +33,12 @@ const CommentList = () => {
 
   const { comments } = data;
 
-  return (
-    <div>
-      <CommentInput />
-      {comments.map((comment: CommentType) => (
+  const recurseComments = (comments) => {
+    return (
+      comments.map((comment: CommentType) => (
         <Comment
+          key={comment.id}
+          actions={[<span key="comment-nested-reply-to">Reply to</span>]}
           author={comment.author.username}
           avatar={
             <Avatar
@@ -46,10 +47,18 @@ const CommentList = () => {
             />
           }
           content={
-          <p>{comment.body}</p>
+            <p>{comment.body}</p>
           }
-        />
-      ))}
+        >
+          {comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null}
+        </Comment>
+      )))
+  }
+
+  return (
+    <div>
+      <CommentInput />
+      {recurseComments(comments)}
     </div>
   );
 };

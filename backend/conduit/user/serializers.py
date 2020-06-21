@@ -4,6 +4,7 @@ from marshmallow import Schema, fields, pre_load, post_dump
 
 
 class UserSchema(Schema):
+    name = fields.Str()
     username = fields.Str()
     email = fields.Email()
     password = fields.Str(load_only=True)
@@ -13,6 +14,7 @@ class UserSchema(Schema):
     createdAt = fields.DateTime(attribute='created_at', dump_only=True)
     updatedAt = fields.DateTime(attribute='updated_at')
     occupation = fields.Str()
+    location = fields.Str()
     githubLink = fields.Str()
     twitterLink = fields.Str()
     linkedinLink = fields.Str()
