@@ -114,6 +114,8 @@ def get_article(slug):
     article = Article.query.filter_by(slug=slug).first()
     if not article:
         raise InvalidUsage.article_not_found()
+    article.update(views=article.views+1)
+    article.save()
     return article
 
 
