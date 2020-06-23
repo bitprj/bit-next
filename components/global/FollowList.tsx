@@ -18,7 +18,7 @@ const StyledListItem = styled(List.Item)`
     background: #FFFFFF;
 `
 
-const FollowList = ({followings, pageName}) =>{
+const FollowList = ({followings, pageName = 'profiles'}) =>{
   
   const followStr = followings ? "followings" : "followers";
   const router = useRouter();
