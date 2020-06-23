@@ -68,6 +68,10 @@ class Comment(Model, SurrogatePK):
         return bool(self.query.filter(db.and_(comment_like_assoc.c.profile_liking_comment == profile.id,
             comment_like_assoc.c.comment_liked == self.id)).count())
 
+    @property
+    def likesCount(self):
+        return len(self.comment_likers.all())
+
 
 class Article(SurrogatePK, Model):
     __tablename__ = 'article'
