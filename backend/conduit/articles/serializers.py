@@ -27,6 +27,7 @@ class ArticleSchema(Schema):
     commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
     isPublished = fields.Bool()
+    views = fields.Int(dump_only=True)
 
     @pre_load
     def make_article(self, data, **kwargs):
