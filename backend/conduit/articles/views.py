@@ -215,7 +215,7 @@ def delete_comment_on_article(slug, cid):
 @marshal_with(comment_schema)
 def like_comment_on_article(commentId):
     profile = current_user.profile
-    comment = Comment.query.filter_by(id=commentId, author=profile).first()
+    comment = Comment.query.filter_by(id=commentId).first()
     if not comment:
         raise InvalidUsage.comment_not_found()
     comment.like_comment(profile)

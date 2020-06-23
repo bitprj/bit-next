@@ -61,7 +61,6 @@ class Comment(Model, SurrogatePK):
         if not self.is_liked(profile):
             self.comment_likers.append(profile)
             return True
-        print("LOLOL")
         return False
 
     #Function to check if a current like already exists for a particular comment and user
