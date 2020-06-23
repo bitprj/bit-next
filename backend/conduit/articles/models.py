@@ -60,6 +60,7 @@ class Article(SurrogatePK, Model):
     updatedAt = Column(db.DateTime, nullable=False, default=dt.datetime.utcnow)
     needsReview = Column(db.Boolean, nullable=False, default=False)
     isPublished = Column(db.Boolean, nullable=False)
+    views = Column(db.Integer, nullable=False, default=0)
 
     author_id = reference_col('userprofile', nullable=False)
     author = relationship('UserProfile', backref=db.backref('articles'))
