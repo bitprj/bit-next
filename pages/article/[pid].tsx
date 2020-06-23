@@ -176,7 +176,7 @@ const ArticlePage = (initialArticle) => {
   return (
     <div className="article-page">
       <ArticleContain>
-        <img src={(article as any).image} style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
+        <img src={(article as any).coverImage} style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
         <ArticleBody>
           <ArticleTags article={article} />
           <h1>{article.title}</h1>

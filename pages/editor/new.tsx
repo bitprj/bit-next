@@ -13,6 +13,7 @@ import Tab_list from "../../components/profile/Tab_list";
 import { UploadOutlined  } from '@ant-design/icons';
 import Twemoji from 'react-twemoji';
 
+var timeout = null
 const PublishArticleEditor = () => {
   var initialState = {
     title: "",
@@ -79,9 +80,11 @@ const PublishArticleEditor = () => {
 
   const handleTitle = e => {
     setTitle(e.target.value)
+    AutoSave_Call()
   }
   const handleDesc = e => {
     setDesc(e.target.value)
+    AutoSave_Call()
   }
 
   const ChangeTheme = () => {
@@ -100,30 +103,55 @@ const PublishArticleEditor = () => {
 
   const handleChange = (value => {
     setDummyValue(value())
-    if (id != null) {
-      AutoSave()
-    }
+    AutoSave_Call()
   });
 
+  const AutoSave_Call = () =>{
+    if (id != null && title!="") {
+      if(timeout){
+        clearTimeout(timeout)
+      }
+      timeout = setTimeout(()=>{
+        setLoading(true)
+        AutoSave()
+      },3000);
+    }
+  }
+
   const uploadCover = async (file) => {
-    const cover = new FormData();
-    cover.append("file", file);
-    cover.append("upload_preset", 'upload')
-    const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
-      method: 'POST',
-      body: cover
-    });
-    const response = await res.json();
-    setCoverImg(response.secure_url);
+    if(file){ 
+      if(file.type.split("/")[0]=="image"){  
+        const cover = new FormData();
+        cover.append("file", file);
+        cover.append("upload_preset", 'upload')
+        const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/image/upload", {
+          method: 'POST',
+          body: cover
+        });
+        const response = await res.json();
+        setCoverImg(response.secure_url);
+      }
+      else{
+        message.warning("File Type Error: Please Upload an Image File")
+      } 
+    }
   }
 
   const uploadCoverChange = (info) => {
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-    if (fileList.length == 0) {
-      setCoverImg("")
+    if(info.file){
+      if(info.file.type.split("/")[0]=="image"){
+        let fileList = [...info.fileList];
+        fileList = fileList.slice(-1);
+        if (fileList.length == 0) {
+          setCoverImg("")
+        }
+        setCoverImgList(fileList)
+      }
     }
-    setCoverImgList(fileList)
+  }
+
+  const RemoveCoverImage = () => {
+    console.log("Cover Image removed")
   }
 
   const AutoSave = async () => {
@@ -133,6 +161,7 @@ const PublishArticleEditor = () => {
       initialState.body = value_dummy
       initialState.tagList = tags
       initialState.coverImage = coverImg
+      initialState.isPublished = false
       const { data, status } = await axios.put(
         `${SERVER_BASE_URL}/articles/${id}`,
         JSON.stringify({ article: initialState }),
@@ -143,6 +172,7 @@ const PublishArticleEditor = () => {
           },
         }
       );
+      setLoading(false)
     }
   }
 
@@ -247,7 +277,7 @@ const PublishArticleEditor = () => {
         placeholder="Set a description"
         value={description}
         onChange={handleDesc}
-        style={{ marginBottom: "2%", border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
+        style={{ border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
       />
       <Divider style={{marginBottom:"0"}}></Divider>
       <Tab_list tabs={["Write","Preview"]} onClick={key => TabView(key)} position={"top"} />
@@ -276,7 +306,7 @@ const PublishArticleEditor = () => {
     </Row>
     <Col span={5}>
       <Row style={{marginLeft:"1em"}}>
-        {id? <div>{!isLoading?<p>✓ Draft Saved</p>:<p><Spin/> Saving Draft</p>}</div> :<Button style={{ marginTop: "2%"}}
+        {id? <div>{!isLoading?<p>✓ Draft Saved</p>:<p><Spin/> AutoSaving Draft</p>}</div> :<Button style={{ marginTop: "2%"}}
         type="primary"
         disabled={isLoading}
         onClick={Save_Draft}
@@ -306,18 +336,20 @@ const PublishArticleEditor = () => {
         />
       </Row>
       <Divider style={{marginTop:"0"}}></Divider>
-      <Row style={{marginLeft:"1em"}}>
+      <Row style={{marginLeft:"1em",width:"100%"}}>
          <Twemoji options={{ className: 'twemoji' }}>
             <StyledEmoji>📷<StyledSpan> Select a cover for this story</StyledSpan></StyledEmoji>
         </Twemoji>
         <Upload
             beforeUpload={uploadCover}
             onChange={uploadCoverChange}
+            onRemove={RemoveCoverImage}
             fileList={coverImgList}>
             <Button style={{marginTop:"1em"}}>
               <UploadOutlined/>Add Cover
             </Button>
         </Upload>
+        {coverImg?<img src={coverImg} style={{width:"-webkit-fill-available"}}/>:null}
       </Row>
       <Divider></Divider>
     </Col>

@@ -13,6 +13,7 @@ import Tab_list from "../../components/profile/Tab_list";
 import Twemoji from 'react-twemoji';
 import { UploadOutlined } from '@ant-design/icons';
 
+var timeout = null
 const UpdateArticleEditor = ({ article: initialArticle }) => {
   const initialState = {
     title: initialArticle.title,
@@ -89,9 +90,11 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const handleTitle = e => {
     setTitle(e.target.value)
+    AutoSave_Call()
   }
   const handleDesc = e => {
     setDesc(e.target.value)
+    AutoSave_Call()
   }
 
   const ChangeTheme = () => {
@@ -103,25 +106,40 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     }
   }
 
-  const uploadCover = async (file) =>{
-    const cover = new FormData();
-    cover.append("file", file);
-    cover.append("upload_preset", 'upload')
-    const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
-      method: 'POST',
-      body: cover
-     });
-    const response = await res.json();
-    setCoverImg(response.secure_url);
+  const uploadCover = async (file) => {
+    if(file){ 
+      if(file.type.split("/")[0]=="image"){  
+        const cover = new FormData();
+        cover.append("file", file);
+        cover.append("upload_preset", 'upload')
+        const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/image/upload", {
+          method: 'POST',
+          body: cover
+        });
+        const response = await res.json();
+        setCoverImg(response.secure_url);
+      }
+      else{
+        message.warning("File Type Error: Please Upload an Image File")
+      } 
+    }
   }
 
-  const uploadCoverChange = (info) =>{
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-    if(fileList.length==0){
-      setCoverImg("")
+  const uploadCoverChange = (info) => {
+    if(info.file){
+      if(info.file.type.split("/")[0]=="image"){
+        let fileList = [...info.fileList];
+        fileList = fileList.slice(-1);
+        if (fileList.length == 0) {
+          setCoverImg("")
+        }
+        setCoverImgList(fileList)
+      }
     }
-    setCoverImgList(fileList)
+  }
+
+  const RemoveCoverImage = () => {
+    console.log("Cover Image removed")
   }
 
   const Save = () => {
@@ -131,10 +149,20 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const handleChange = (value => {
     setDummyValue(value())
-    if (title != "") {
-      saveDraft()
-    }
+    AutoSave_Call()
   });
+
+  const AutoSave_Call = () =>{
+    if (title != "") {
+      if(timeout){
+        clearTimeout(timeout)
+      }
+      timeout = setTimeout(()=>{
+        setLoading(true)
+        saveDraft()
+      },3000);
+    }
+  }
 
   const saveDraft = async () => {
     initialState.title = title
@@ -152,6 +180,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         },
       }
     );
+    setLoading(false)
   }
 
   const handleSubmit = async () => {
@@ -211,7 +240,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
           placeholder="Set a description"
           value={description}
           onChange={handleDesc}
-          style={{ marginBottom: "2%", border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
+          style={{ border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
         />
         <Divider style={{marginBottom:"0"}}></Divider>
         <Tab_list tabs={["Write","Preview"]} onClick={key => TabView(key)} position={"top"} />
@@ -269,12 +298,14 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         </Twemoji>
         <Upload
             beforeUpload={uploadCover}
+            onRemove={RemoveCoverImage}
             onChange={uploadCoverChange}
             fileList={coverImgList}>
             <Button style={{marginTop:"1em"}}>
               <UploadOutlined/>Add Cover
             </Button>
         </Upload>
+        {coverImg?<img src={coverImg} style={{width:"-webkit-fill-available",marginTop:"2%"}}/>:null}
       </Row>
       <Divider></Divider>
     </Col>
