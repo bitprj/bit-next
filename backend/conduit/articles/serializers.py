@@ -88,6 +88,7 @@ class ArticleSchemas(ArticleSchema):
 
 
 class CommentSchema(Schema):
+    id = fields.Int()
     comment_id = fields.Int()
     body = fields.Str()
     createdAt = fields.DateTime()
