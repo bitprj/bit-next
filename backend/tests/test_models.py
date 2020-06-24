@@ -101,7 +101,7 @@ class TestProfile:
 class TestArticles:
     def test_create_article(self, user):
         u1 = user.get()
-        article = Article(u1.profile, 'title', 'some body', description='some', isPublished='True')
+        article = Article(u1.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         assert article.author.user == u1
 
@@ -110,7 +110,7 @@ class TestArticles:
         u1.save()
         p1 = UserProfile(u1)
         p1.save()
-        article = Article(p1, 'title', 'some body', description='some', isPublished='True')
+        article = Article(p1, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         assert article.favourite(u1.profile)
         assert article.is_favourite(u1.profile)
@@ -126,7 +126,7 @@ class TestArticles:
         p2 = UserProfile(u2)
         p2.save()
 
-        article = Article(p1, 'title', 'some body', description='some', isPublished='True')
+        article = Article(p1, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         assert article.favourite(p1)
         assert article.unfavourite(p1)
@@ -134,7 +134,7 @@ class TestArticles:
 
     def test_add_tag(self, user):
         user = user.get()
-        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True')
+        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         t = Tags(tagname='python')
         t1 = Tags(tagname='flask')
@@ -144,7 +144,7 @@ class TestArticles:
 
     def test_remove_tag(self, user):
         user = user.get()
-        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True')
+        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         t1 = Tags(tagname='flask')
         assert article.add_tag(t1)
@@ -157,7 +157,7 @@ class TestComment:
 
     def test_make_comment(self, user):
         user = user.get()
-        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True')
+        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         comment = Comment(article, user.profile, 'some body')
         comment.save()
@@ -167,7 +167,7 @@ class TestComment:
 
     def test_make_comments(self, user):
         user = user.get()
-        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True')
+        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
         article.save()
         comment = Comment(article, user.profile, 'some body')
         comment1 = Comment(article, user.profile, 'some body2')

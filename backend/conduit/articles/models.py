@@ -15,6 +15,10 @@ favoriter_assoc = db.Table("favoritor_assoc",
                            db.Column("favoriter", db.Integer, db.ForeignKey("userprofile.id")),
                            db.Column("favorited_article", db.Integer, db.ForeignKey("article.id")))
 
+comment_like_assoc = db.Table("comment_like_assoc",
+                           db.Column("profile_liking_comment", db.Integer, db.ForeignKey("userprofile.id")),
+                           db.Column("comment_liked", db.Integer, db.ForeignKey("comment.id")))
+
 tag_assoc = db.Table("tag_assoc",
                      db.Column("tag", db.Integer, db.ForeignKey("tags.id")),
                      db.Column("article", db.Integer, db.ForeignKey("article.id")))
@@ -43,8 +47,30 @@ class Comment(Model, SurrogatePK):
     comment_id = Column(db.Integer, db.ForeignKey('comment.id'), nullable=True)
     parentComment = relationship('Comment', backref=db.backref('parent', remote_side=[id]), lazy='dynamic')
 
+    comment_likers = relationship(
+        'UserProfile',
+        secondary=comment_like_assoc,
+        backref='likes',
+        lazy='dynamic')
+
     def __init__(self, article, author, body, comment_id=None, **kwargs):
         db.Model.__init__(self, author=author, body=body, article=article, **kwargs)
+
+    #Function to like a comment
+    def like_comment(self, profile):
+        if not self.is_liked(profile):
+            self.comment_likers.append(profile)
+            return True
+        return False
+
+    #Function to check if a current like already exists for a particular comment and user
+    def is_liked(self, profile):
+        return bool(self.query.filter(db.and_(comment_like_assoc.c.profile_liking_comment == profile.id,
+            comment_like_assoc.c.comment_liked == self.id)).count())
+
+    @property
+    def likesCount(self):
+        return len(self.comment_likers.all())
 
 
 class Article(SurrogatePK, Model):

@@ -208,3 +208,16 @@ def delete_comment_on_article(slug, cid):
     comment = article.comments.filter_by(id=cid, author=current_user.profile).first()
     comment.delete()
     return '', 200
+
+
+@blueprint.route('/api/comments/<commentId>/favorite', methods=('POST',))
+@jwt_required
+@marshal_with(comment_schema)
+def like_comment_on_article(commentId):
+    profile = current_user.profile
+    comment = Comment.query.get(commentId)
+    if not comment:
+        raise InvalidUsage.comment_not_found()
+    comment.like_comment(profile)
+    comment.save()
+    return comment
