@@ -27,6 +27,7 @@ class ArticleSchema(Schema):
     commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
     isPublished = fields.Bool()
+    views = fields.Int(dump_only=True)
 
     @pre_load
     def make_article(self, data, **kwargs):
@@ -73,37 +74,6 @@ class ArticleFormSchema(Schema):
         strict = True
 
 
-class OrgArticleSchema(Schema):
-    org_slug = fields.Str()
-    slug = fields.Str(dump_only=True)
-    title = fields.Str()
-    description = fields.Str()
-    createdAt = fields.DateTime()
-    body = fields.Str()
-    updatedAt = fields.DateTime(dump_only=True)
-    author = fields.Nested(ProfileSchema)
-    
-    # for the envelope
-    article = fields.Nested('self', exclude=('article',), default=True, load_only=True)
-    tagList = fields.List(fields.Str())
-    favoritesCount = fields.Int(dump_only=True)
-    favorited = fields.Bool(dump_only=True)
-    needsReview = fields.Bool()
-
-
-    @pre_load
-    def make_article(self, data, **kwargs):
-        return data['article']
-
-    @post_dump
-    def dump_article(self, data, **kwargs):
-        data['author'] = data['author']['profile']
-        return {'article': data}
-
-    class Meta:
-        strict = True
-
-
 class ArticleSchemas(ArticleSchema):
 
     @post_dump
@@ -117,11 +87,13 @@ class ArticleSchemas(ArticleSchema):
 
 
 class CommentSchema(Schema):
-    createdAt = fields.DateTime()
+    id = fields.Int()
+    comment_id = fields.Int()
     body = fields.Str()
+    createdAt = fields.DateTime()
     updatedAt = fields.DateTime(dump_only=True)
     author = fields.Nested(ProfileSchema)
-    id = fields.Int()
+    parentComment = fields.Nested('self', many=True)
 
     # for the envelope
     comment = fields.Nested('self', exclude=('comment',), default=True, load_only=True)

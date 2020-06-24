@@ -43,7 +43,7 @@ const UserArticle = (props) => {
                 <MiniTitle>Occupation</MiniTitle>
                 <UserMeta>{props.occupation}</UserMeta>
                 <MiniTitle>Joined</MiniTitle>
-                <UserMeta>{new Date(props.joined).toDateString()}</UserMeta>
+                <UserMeta>{props.joined}</UserMeta>
             </Card>
         </StyledDiv>
     )

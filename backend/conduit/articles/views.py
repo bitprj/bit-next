@@ -114,6 +114,8 @@ def get_article(slug):
     article = Article.query.filter_by(slug=slug).first()
     if not article:
         raise InvalidUsage.article_not_found()
+    article.update(views=article.views+1)
+    article.save()
     return article
 
 
@@ -164,15 +166,6 @@ def bookmark_an_article(slug):
     article.bookmark(profile)
     article.save()
     return article
-
-
-######
-# Tags
-######
-
-@blueprint.route('/api/tags', methods=('GET',))
-def get_tags():
-    return jsonify({'tags': [(tag.tagname, tag.slug) for tag in Tags.query.all()]})
 
 
 ##########

@@ -1,14 +1,17 @@
 import axios from "axios";
 import Router, { useRouter } from "next/router";
 import React, { useState } from "react";
+import styled from 'styled-components';
 import useSWR from "swr";
 import Editor from 'rich-markdown-editor';
 import TagInput from "../../components/editor/TagInput";
 import ArticleAPI from "../../lib/api/article";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import storage from "../../lib/utils/storage";
-import { Alert, Upload, message, Button } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
+import { Upload, message, Button, Col, Row, Divider, Spin } from 'antd';
+import Tab_list from "../../components/profile/Tab_list";
+import Twemoji from 'react-twemoji';
+import { UploadOutlined } from '@ant-design/icons';
 
 const UpdateArticleEditor = ({ article: initialArticle }) => {
   const initialState = {
@@ -31,8 +34,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const [dark_theme, Change_theme] = useState(false)
 
-  const [Title_required, setTitle_required] = useState(false)
-
   const [tags, setTags] = useState([])
 
   const [tags_display, setTagsDisplay] = useState(initialState.tagList)
@@ -40,6 +41,8 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
   const [coverImg,setCoverImg] = useState(initialState.coverImage)
 
   const [coverImgList,setCoverImgList] = useState([])
+
+  const [read,SetReadOnly] = useState(false)
 
   const { Dragger } = Upload;
 
@@ -58,9 +61,22 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
     }
     setTags(tag_list)
   }
+
+  const StyledEmoji = styled(Twemoji)`
+  .emoji {
+    width: 20px;
+    height: 20px;
+  }
+  `;
+  const StyledSpan = styled.span`
+    font-size: 15px;
+    font-weight: bold;
+    line-height: 20px;
+    color: #000000;
+  `;
   
   const addTag = (tag) => {
-    if(!tags.includes(tag)){
+    if(!tags.includes(tag) && tags.length<=4){
       setTags([...tags, tag])
       setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
     }
@@ -73,7 +89,6 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 
   const handleTitle = e => {
     setTitle(e.target.value)
-    setTitle_required(false)
   }
   const handleDesc = e => {
     setDesc(e.target.value)
@@ -159,82 +174,111 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
         }
       );
       setLoading(false);
+      message.success("Your Article is Updated")
       Router.push("/");
     }
     else {
       if (Title.current) {
         Title.current.focus();
       }
-      setTitle_required(true);
+      message.warning("Title Required for this Article")
     }
   };
 
+  const TabView = (key) =>{
+    if(key=="Write"){
+      SetReadOnly(false)
+    }
+    else{
+      SetReadOnly(true)
+    }
+  }
+
   return (
-    <div style={{ background: "white", width: '60%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
-      <br />
-      {Title_required ? <Alert message="Title required" type="warning" /> : null}
-      <br />
-      <Dragger
-        beforeUpload={uploadCover}
-        onChange={uploadCoverChange}
-        fileList={coverImgList}>
-        <p className="ant-upload-drag-icon">
-          <InboxOutlined />
-        </p>
-        <p className="ant-upload-text">Click or drag file to this area to upload Cover Image</p>
-      </Dragger>
-      <br/>
-      <input
-        className="form-control form-control-lg"
+    <div style={{ background: "white", width: '75%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
+      <Row>
+        <Col span={18} style={{paddingRight:"2em"}}>
+        <input
         type="text"
-        placeholder="Set a Title for Your Article"
+        placeholder="Title..."
         value={title}
         onChange={handleTitle}
-        style={{ marginBottom: "2%", border: "none", padding: "0" }}
+        style={{ marginBottom: "2%", border: "none", padding: "0",fontSize:"4em",width:"100%",color:"black",fontWeight:"lighter"}}
         ref={Title}
-      />
-      <input
-        className="form-control form-control-lg"
-        type="text"
-        placeholder="Set a description"
-        value={description}
-        onChange={handleDesc}
-        style={{ marginBottom: "2%", border: "none", padding: "0" }}
-      />
-      <TagInput
+        />
+        <input
+          type="text"
+          placeholder="Set a description"
+          value={description}
+          onChange={handleDesc}
+          style={{ marginBottom: "2%", border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
+        />
+        <Divider style={{marginBottom:"0"}}></Divider>
+        <Tab_list tabs={["Write","Preview"]} onClick={key => TabView(key)} position={"top"} />
+        <Editor
+          id="new_article"
+          value={values}
+          readOnly={false}
+          defaultValue={values}
+          onKeyDown={null}
+          onChange={handleChange}
+          dark={dark_theme}
+          uploadImage={async file => {
+            const data = new FormData();
+            data.append("file", file);
+            data.append("upload_preset", 'upload')
+            const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
+              method: 'POST',
+              body: data
+            });
+            const response = await res.json();
+            return response.secure_url;
+          }}
+          autoFocus
+        />
+      </Col>
+    <Row>
+      <Divider type="vertical" style={{height:"100%",marginRight:"0"}}></Divider>
+    </Row>
+    <Col span={5}>
+      <Row style={{marginLeft:"1em"}}>
+        <Button style={{ marginTop: "2%" }}
+        type="primary"
+        disabled={isLoading}
+        onClick={Save}
+        >
+        Publish Article
+        </Button>
+      </Row>
+      <Divider></Divider>
+      <Row style={{marginLeft:"1em"}}>
+        <Twemoji options={{ className: 'twemoji' }}>
+            <StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
+        </Twemoji>
+        <p>Enter upto 5 Tags. Enter tag names below.</p>
+        <TagInput
         tagList={tags_display}
         addTag={addTag}
         removeTag={removeTag}
-      />
-      <Editor
-        id="new_article"
-        value={values}
-        readOnly={false}
-        defaultValue={values}
-        onKeyDown={null}
-        onChange={handleChange}
-        dark={dark_theme}
-        uploadImage={async file => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", 'upload')
-          const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
-            method: 'POST',
-            body: data
-          });
-          const response = await res.json();
-          return response.secure_url;
-        }}
-        autoFocus
-      />
-      <button style={{ marginTop: "2%" }}
-        className="btn btn-lg pull-xs-right btn-primary"
-        type="button"
-        disabled={isLoading}
-        onClick={Save}
-      >
-        Publish Article
-        </button>
+        />
+      </Row>
+      <Divider style={{marginTop:"0"}}></Divider>
+      <Row style={{marginLeft:"1em"}}>
+         <Twemoji options={{ className: 'twemoji' }}>
+            <StyledEmoji>📷<StyledSpan> Select a cover for this story</StyledSpan></StyledEmoji>
+        </Twemoji>
+        <Upload
+            beforeUpload={uploadCover}
+            onChange={uploadCoverChange}
+            fileList={coverImgList}>
+            <Button style={{marginTop:"1em"}}>
+              <UploadOutlined/>Add Cover
+            </Button>
+        </Upload>
+      </Row>
+      <Divider></Divider>
+    </Col>
+    </Row>
     </div>
   );
 };

@@ -35,19 +35,19 @@ const TitleDiv = styled.div`
   font-size: 1.56em;
   line-height: 1.5em;
   color: #000000;
-  margin-bottom:0.2em; 
+  margin-bottom:0.2em;
 `
 const TagsDiv = styled.div`
   font-size: 0.7em;
   line-height: 1em;
   color: #383838;
-  margin-bottom:1em; 
+  margin-bottom:1em;
 `
 const AuthDiv = styled.div`
   font-size: 0.7em;
   line-height: 1em;
   color: rgba(56, 56, 56, 0.7);
-  margin-bottom:1em;  
+  margin-bottom:1em;
 `
 const StatDiv = styled(Row)`
   font-size: 1em;
@@ -56,7 +56,7 @@ const StatDiv = styled(Row)`
   margin-top: 1em;
   display: flex;
   justify-content : space-between;
-  align-items: center; 
+  align-items: center;
 `
 
 const StyledEmoji = styled.span`
@@ -176,4 +176,3 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
 
 
 export default ArticleCard
-
