@@ -163,3 +163,7 @@ class Article(SurrogatePK, Model):
             profile = current_user.profile
             return self.query.join(Article.favoriters).filter(UserProfile.id == profile.id).count() == 1
         return False
+
+    @property
+    def bookmarked(self):
+        return self.query.filter(Article.id == self.id).join(Article.bookmarkers).filter_by(id=current_user.profile.id).count() == 1
