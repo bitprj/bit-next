@@ -26,8 +26,11 @@ const ArticlePreview = ({ article }) => {
 
   const handleClickFavorite = async (slug) => {
     if (!isLoggedIn) {
+      console.log("[ARTICLEPREVIEW] not logged in")
       Router.push(`/user/login`);
       return;
+    } else {
+      console.log("[ARTICLEPREVIEW] already logged in")
     }
 
     setPreview({

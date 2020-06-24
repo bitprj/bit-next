@@ -18,6 +18,7 @@ import CommentList from "../../components/comment/CommentList";
 import ArticleAPI from "../../lib/api/article";
 import { Article } from "../../lib/types/articleType";
 import ArticleTags from "../../components/article/ArticleTags";
+import { emitKeypressEvents } from "readline";
 
 const ArticleContain = styled.div`  
   width: 880px;
@@ -83,6 +84,18 @@ const ArticlePage = (initialArticle) => {
   const [preview, setPreview] = React.useState({ ...article, bookmarked: false, bookmarkCount: null });
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
+
+  // ADDED
+  const handleClickReplyTo = () => {
+    if (!isLoggedIn) {
+      console.log("[PID]Not logged in");
+    }
+    else {
+      console.log("[PID] Yes Logged in");
+    }
+  };
+  // END ADDED
+
 
   const handleClickFavorite = async slug => {
     if (!isLoggedIn) {
