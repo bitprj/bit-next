@@ -29,7 +29,11 @@ class Config(object):
         'http://localhost:4000',
         'http://localhost:3000',
         'https://bit-next-ixppal0sd.now.sh',
-        'https://bit-next-git-staging.bitproject.now.sh'
+        'https://bit-next-git-staging.bitproject.now.sh',
+        'https://bit-next-git-master.bitproject.now.sh',
+        'https://staging.bitproject.org',
+        'https://dev.bitproject.org',
+        'https://bit-next.now.sh'
     ]
     JWT_HEADER_TYPE = 'Token'
 

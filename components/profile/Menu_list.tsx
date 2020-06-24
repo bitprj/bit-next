@@ -17,11 +17,13 @@ const Menu_list=(props)=>{
 	  }
 	  return(
 	  	<>
-		<Menu onClick={handleclick} style={{ width: 256 }} mode="vertical">
+		<Menu onClick={handleclick} style={{ width: '100%' }} mode="vertical">
 			<Menu.Item key={"Posts"}>Posts</Menu.Item>
 			<Menu.Item key={"Followers"}>Followers</Menu.Item>
 			<Menu.Item key={"Following"}>Followings</Menu.Item>
 			<Menu.Item key={"Account Settings"}>Account Settings</Menu.Item>
+			{props.isAdmin ?  <Menu.Item key={"Admin"}>Admin</Menu.Item> :null}
+
 		</Menu>
 		</>
 	);

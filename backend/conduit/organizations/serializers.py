@@ -14,8 +14,10 @@ class OrganizationSchema(Schema):
     description = fields.Str()
     createdAt = fields.DateTime()
     username = fields.Str()
+    image = fields.Str()
+    is_following = fields.Bool()
     moderators = fields.Nested(ProfileSchema, many=True)
-    members = fields.Nested(ProfileSchema, many=True)
+    members = fields.Nested(ProfileSchema, many=True, data_key='followers')
 
     organization = fields.Nested('self', exclude=('organization',), 
                                 default=True, load_only=True)
@@ -27,7 +29,7 @@ class OrganizationSchema(Schema):
     @post_dump 
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
-        data['members'] = data['members']
+        data['followers'] = data['followers']
         
         return {'organization': data }
 
@@ -37,7 +39,7 @@ class OrganizationSchema(Schema):
 
 class OrganizationMembersSchema(Schema):
     moderators = fields.Nested(ProfileSchema, many=True)
-    members = fields.Nested(ProfileSchema, many=True)
+    members = fields.Nested(ProfileSchema, many=True, data_key='followers')
 
     organization = fields.Nested('self', exclude=('organization',), 
                                 default=True, load_only=True)
@@ -49,7 +51,7 @@ class OrganizationMembersSchema(Schema):
     @post_dump 
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
-        data['members'] = data['members']
+        data['followers'] = data['followers']
         
         return {'organization': data }
 
@@ -62,7 +64,7 @@ class OrganizationsSchema(OrganizationSchema):
     @post_dump
     def dump_organization(self, data, **kwargs):
         data['moderators'] = data['moderators']
-        data['members'] = data['members']
+        data['followers'] = data['followers']
 
         return data
     

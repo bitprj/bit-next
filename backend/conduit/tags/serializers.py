@@ -4,6 +4,7 @@ from marshmallow import Schema, fields, pre_load, post_dump
 
 from conduit.profile.serializers import ProfileSchema
 
+
 class TagSchema(Schema):
     tagname = fields.Str()
     description = fields.Str()
@@ -11,6 +12,7 @@ class TagSchema(Schema):
     icon = fields.Str()
     modSetting = fields.Int()
     following = fields.Boolean()
+    moderator = fields.Boolean()
     tag = fields.Nested('self', exclude=('tag',), default=True, load_only=True)
     tagFollowers = fields.List(fields.Nested("ProfileSchema"))
     moderators = fields.List(fields.Nested("ProfileSchema"))
@@ -23,7 +25,10 @@ class TagSchema(Schema):
     def dump_Tag(self, data, **kwargs):
         return {'tag': data}
 
+
 class TagsSchema(TagSchema):
+    class Meta:
+        exclude = ('tagFollowers', 'moderators',)
 
     @post_dump
     def dump_Tag(self, data, **kwargs):
@@ -32,6 +37,7 @@ class TagsSchema(TagSchema):
     @post_dump(pass_many=True)
     def dump_Tags(self, data, many, **kwargs):
         return {'tags': data}
+
 
 class TagMembershipSchema(Schema):
     tagFollowers = fields.List(fields.Nested("ProfileSchema"))
