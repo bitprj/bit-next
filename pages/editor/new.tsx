@@ -70,21 +70,25 @@ const PublishArticleEditor = () => {
     if(!tags.includes(tag) && tags.length<=4){
       setTags([...tags, tag])
       setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
+      AutoSave_Call(title,description,value_dummy,tags,coverImg)
     }
   }
 
   const removeTag = (tag) => {
+    var tags_list=tags
+    tags_list=tags_list.filter(item => item != tag.slug)
     setTags(tags.filter(item => item != tag.slug))
     setTagsDisplay(tags_display.filter(item => item != tag))
+    AutoSave_Call(title,description,value_dummy,tags_list,coverImg)
   }
 
   const handleTitle = e => {
     setTitle(e.target.value)
-    AutoSave_Call()
+    AutoSave_Call(e.target.value,description,value_dummy,tags,coverImg)
   }
   const handleDesc = e => {
     setDesc(e.target.value)
-    AutoSave_Call()
+    AutoSave_Call(title,e.target.value,value_dummy,tags,coverImg)
   }
 
   const ChangeTheme = () => {
@@ -103,18 +107,18 @@ const PublishArticleEditor = () => {
 
   const handleChange = (value => {
     setDummyValue(value())
-    AutoSave_Call()
+    AutoSave_Call(title,description,value(),tags,coverImg)
   });
 
-  const AutoSave_Call = () =>{
+  const AutoSave_Call = (title_save,desc_save,body_save,tags_save,coverImg_save) =>{
     if (id != null && title!="") {
       if(timeout){
         clearTimeout(timeout)
       }
       timeout = setTimeout(()=>{
         setLoading(true)
-        AutoSave()
-      },3000);
+        AutoSave(title_save,desc_save,body_save,tags_save,coverImg_save)
+      },5000);
     }
   }
 
@@ -154,13 +158,13 @@ const PublishArticleEditor = () => {
     console.log("Cover Image removed")
   }
 
-  const AutoSave = async () => {
+  const AutoSave = async (title_save,desc_save,body_save,tags_save,coverImg_save) => {
     if (title != "") {
-      initialState.title = title
-      initialState.description = description ? description : "This article has no description"
-      initialState.body = value_dummy
-      initialState.tagList = tags
-      initialState.coverImage = coverImg
+      initialState.title = title_save
+      initialState.description = desc_save ? desc_save : "This article has no description"
+      initialState.body = body_save
+      initialState.tagList = tags_save
+      initialState.coverImage = coverImg_save
       initialState.isPublished = false
       const { data, status } = await axios.put(
         `${SERVER_BASE_URL}/articles/${id}`,
@@ -201,7 +205,7 @@ const PublishArticleEditor = () => {
     }
     else {
       if (title != "") {
-        AutoSave()
+        AutoSave(title,description,value_dummy,tags,coverImg)
         message.success("Your Article Draft is Saved")
       }
       else {
@@ -305,14 +309,15 @@ const PublishArticleEditor = () => {
     <Divider type="vertical" style={{height:"100%",marginRight:"0"}}></Divider>
     </Row>
     <Col span={5}>
+      {id? <div style={{marginLeft:"1em"}}>{!isLoading?<p style={{marginBottom:"0"}}>✓ Draft Saved</p>:<p style={{marginBottom:"0"}}><Spin/> AutoSaving Draft</p>}</div> :null}
       <Row style={{marginLeft:"1em"}}>
-        {id? <div>{!isLoading?<p>✓ Draft Saved</p>:<p><Spin/> AutoSaving Draft</p>}</div> :<Button style={{ marginTop: "2%"}}
+        <Button style={{ marginTop: "2%"}}
         type="primary"
         disabled={isLoading}
         onClick={Save_Draft}
         >
         Save Draft
-        </Button>}
+        </Button>
       </Row>
       <Row style={{marginLeft:"1em"}}>
         <Button style={{ marginTop: "2%" }}
