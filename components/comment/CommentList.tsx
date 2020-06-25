@@ -4,10 +4,12 @@ import useSWR from "swr";
 
 
 // ADDED
+import { Component } from 'react';
 import {message, Form, Button, List, Input} from 'antd';
 const { TextArea } = Input;
 import checkLogin from "../../lib/utils/checkLogin";
 import storage from "../../lib/utils/storage";
+import EditorBox from "./EditorBox";
 //import handleClickReplyTo from "../../pages/article/[pid]"
 // END ADDED
 
@@ -35,24 +37,42 @@ const Editor = ({onChange, onSubmit, submitting, value }) => (
 )
 // END ADDED
 
+var clickedReplyTo = true;
+var count = 0;
+
 const CommentList = () => {
 
-// ADDED
-const { data: currentUser } = useSWR("user", storage);
-const isLoggedIn = checkLogin(currentUser)
+  // ADDED
+  const { data: currentUser } = useSWR("user", storage);
+  const isLoggedIn = checkLogin(currentUser)
 
-const handleClickReplyTo = () => {
-  console.log("In HandleClickReplyTo")
-  if (isLoggedIn) {
-    console.log("ALREADY LOGGED IN")
+  const handleClickReplyTo = (comment) => {
+    console.log("In HandleClickReplyTo")
+    if (isLoggedIn) {
+      console.log("ALREADY LOGGED IN, Clicked")
+      clickedReplyTo = true;
+      console.log("comment ID", comment.id, "*");
+      console.log("replyToClicked?" , comment.replyToClicked, "*")
+      comment.replyToClicked = true;
+      console.log("replyToClicked?" , comment.replyToClicked, "*")
+      count = count + 1;
+      return (
+        <div>
+          <CommentInput />
+                
+          {recurseComments(comments)}
+    
+        </div>
+      );
+      
 
 
-  } else {
-    console.log("NOT YET LOGGED IN")
-    message.info("Please log in to reply", 10)
+    } else {
+      console.log("NOT YET LOGGED IN")
+      message.info("Please log in to reply", 10)
+    }
   }
-}
-// END ADDED
+  // END ADDED
 
 
   const router = useRouter();
@@ -78,16 +98,20 @@ const handleClickReplyTo = () => {
   
   
   const recurseComments = (comments) => {
-    // ADDED  
-    var state = {
-      comments: [],
-      submitting: false,
-      value: '',
-    };
     
-  console.log("[COMMENTS] HI8")
-  
-   // END ADDED 
+        
+    for (let aComment of comments) {
+      //aComment.replyToClicked = false;
+      console.log("this is ", aComment.id, "&", aComment.replyToClicked, "*");
+      
+    }
+    
+    console.log(comments.length, "ok");
+
+    
+
+    // END ADDED 
+
    return (
    
       comments.map((comment: CommentType) => (
@@ -96,7 +120,7 @@ const handleClickReplyTo = () => {
           actions= {[
             
             <span key="comment-nested-reply-to"
-            onClick= {() => handleClickReplyTo()}>Reply to HI8</span>
+            onClick= {() => handleClickReplyTo(comment)}>Reply to HI8</span>
           ]}
           
           
@@ -108,41 +132,26 @@ const handleClickReplyTo = () => {
             />
           }
           content={
-            //style = "display:none;"
-            <p>{comment.body}</p>
-            /*
-            <Editor onChange={console.log("onchange")}//this.handleChange}
-              onSubmit={console.log("onsubmit")}//this.handleSubmit}
-              submitting={false}//submitting}
-              value={'HEYWORLD'}//value}
-            />
-            */
+            <div>
+              <p>{comment.body + String(count) + String(comment.replyToClicked)}
+              </p>
+              <EditorBox thisValue = {comment.replyToClicked} />
+            </div>
+            
+            
           }
-          //children = []
         >
+            
           {comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null}
         </Comment>
         
-        /*
-        <Editor onChange={console.log("onchange")}//this.handleChange}
-              onSubmit={console.log("onsubmit")}//this.handleSubmit}
-              submitting={false}//submitting}
-              value={'HEYWORLD'}//value}
-            />
-          */
-
+        
       )))
   }
 
   return (
     <div>
       <CommentInput />
-      <Editor onChange={console.log("onchange")}//this.handleChange}
-              onSubmit={console.log("onsubmit")}//this.handleSubmit}
-              submitting={false}//submitting}
-              value={'HEYWORLD'}//value}
-            />
-      
       {recurseComments(comments)}
 
     </div>
