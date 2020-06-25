@@ -42,23 +42,36 @@ const StickyLeft = styled(Affix)`
   }
 `;
 
-const TagPage = (initialTag) => {
+const TagPage = (id) => {
+	
 	const router = useRouter();
-	const [top] = useState(10);
 
 	const {
-		query: { pid },
-	} = router;
-
+		query: { pid},
+	} = router
 	const {
 		data: fetchedArticles,
 	} = useSWR(
-		`${SERVER_BASE_URL}/articles/?tag=${encodeURIComponent(String(pid))}`,
+		`${SERVER_BASE_URL}/articles/?tag=${encodeURIComponent(String(id.id))}`,
 		fetcher
 	);
+	 const [top] = useState(10);
+	
+	const [tags,setTags] = React.useState(JSON.parse("[{}]"))
+	const getTags= async (currentUser) => {
+		if(id != null){
+		const { data: initialTag } = await TagAPI.get(id.id,currentUser);
+		setTags(initialTag)
+		}
+	}
+	React.useEffect(() => {
+		let user = JSON.parse(localStorage.getItem("user"))
+		getTags(user)
+		
+	  }, [id]);
 
-	const tag = initialTag.initialTag;
-
+	const tag = tags;
+	if(tag.tag != null ){
 	return (
 		<>
 			<Head>
@@ -83,11 +96,17 @@ const TagPage = (initialTag) => {
 			</div>
 		</>
 	)
+}
+else {
+	return (
+		<div></div>
+	)
+}
+}
+TagPage.getInitialProps = async ({ query: { pid } }) => {
+	let id = pid
+return {id};
 };
 
-TagPage.getInitialProps = async ({ query: { pid } }) => {
-	const { data: initialTag } = await TagAPI.get(pid);
-	return { initialTag };
-};
 
 export default TagPage;

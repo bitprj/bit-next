@@ -80,6 +80,24 @@ const ArticleAPI = {
       status,
     };
   },
+  bookmark : async(slug,token)=>{
+    try {
+      const response = await axios.post(
+        `${SERVER_BASE_URL}/articles/${slug}/bookmark`,
+        {},
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+
+  }
+  
 };
 
 export default ArticleAPI;

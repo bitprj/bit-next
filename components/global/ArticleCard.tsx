@@ -66,9 +66,19 @@ const StyledEmoji = styled.span`
       width: 20px;
     }
 `
+const StyledEmoji2 = styled.span`
+background: red;
+border-radius: 22px;
+padding: 0.2em 0.4em 0.2em 0.4em;
+  img {
+      width: 11px;
+    }
+`
+
+
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
+const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null,favoriteClick = null ,isFavorite }) => {
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
       <CustomLink
@@ -129,7 +139,10 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
               {article.isPublished &&
                 <Space size={"large"}>
                   <Twemoji options={{ className: 'twemoji' }}>
-                    <StyledEmoji>{"❤️ " + article.favoritesCount}</StyledEmoji>
+                  {!isFavorite?
+                   <span><StyledEmoji2  onClick = {favoriteClick}>{'🤍'}</StyledEmoji2>  <span>{article.favoritesCount} </span></span>
+                  
+                   : <StyledEmoji onClick = {favoriteClick}>{"❤️ " + article.favoritesCount}</StyledEmoji>}
                     <StyledEmoji>{"💬 " + article.commentsCount}</StyledEmoji>
                   </Twemoji>
                 </Space>
@@ -157,12 +170,12 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                 style={{
                   fontWeight: 'bold',
                   borderRadius: "0.5em",
-                  background: article.isPublished ? '#4EC700' : '#007BED',
-                  borderColor: article.isPublished ? '#4EC700' : '#007BED',
+                  background: article.isPublished ? ! article.bookmarked ?'#4EC700' : '#007BED': '#007BED',
+                  borderColor: article.isPublished ? !article.bookmarked  ?'#4EC700' : '#007BED' : '#007BED',
                 }}
               >
                 {
-                    article.isPublished ? 'BookMark' :
+                    article.isPublished ? article.bookmarked  ? 'BookMarked' :'Bookmark':
                     article.needsReview ? 'Published' : 'Edit'
                 }
               </Button>

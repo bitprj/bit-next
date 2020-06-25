@@ -5,6 +5,7 @@ import storage from "../../lib/utils/storage";
 import styled from 'styled-components';
 import Twemoji from 'react-twemoji';
 import { Button, List } from 'antd';
+import { version } from "os";
 
 const StyledEmoji = styled(Twemoji)`
   .emoji {
@@ -31,17 +32,20 @@ const StyledSpan = styled.span`
     padding-right: 15px;
     color: #000000;
 `
-
+const FollowButton = styled(Button)`
+background : ${props => props.following ? "green" : ""} !important; 
+`
 const TagHeader = ({ tagData, follow, unfollow }) => {
     // console.log(tagData)
     // const { data: currentUser } = useSWR("user", storage);
-
+    const [following,setFollowing] = React.useState(tagData.following)
     const handleClick = (e) => {
         e.preventDefault();
         tagData.following ? unfollow(tagData.slug) : follow(tagData.slug);
+        setFollowing( !tagData.following)  
         tagData.following = tagData.following === true ? false : true;
+  
     };
-
     return (
         <StyledItem
             avatar={
@@ -52,11 +56,18 @@ const TagHeader = ({ tagData, follow, unfollow }) => {
             title={
                 <span>
                     <StyledSpan>{tagData.tagname}</StyledSpan>
-                    <Button
-                        type="primary"
+                    {tagData.following ? <FollowButton
+                        type ={"primary"}
                         size={"small"}
+                        following = {tagData.following}
                         onClick={handleClick}
-                    >+ Follow</Button>
+                    >Following</FollowButton> : 
+                    <FollowButton
+                        type ={"primary"}
+                        size={"small"}
+                        following = {tagData.following}
+                        onClick={handleClick}
+                    >+ Follow</FollowButton> }
                 </span >
             }
             description={
@@ -64,6 +75,8 @@ const TagHeader = ({ tagData, follow, unfollow }) => {
             }
         />
     )
-};
+
+}
+;
 
 export default TagHeader;
