@@ -192,6 +192,7 @@ def make_comment_on_article(slug, body, comment_id=None, **kwargs):
         raise InvalidUsage.article_not_found()
     if comment_id:
         comment = Comment(None, current_user.profile, body, comment_id, **kwargs)
+        comment.comment_id = comment_id
     else:
         comment = Comment(article, current_user.profile, body, comment_id, **kwargs)
     comment.save()
