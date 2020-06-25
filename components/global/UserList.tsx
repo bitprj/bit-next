@@ -9,9 +9,10 @@ const StyledHeader = styled.div`
   font-weight: 600;
   font-size: 1.25em;
   line-height: 1.7em;
-  color: rgba(0, 0, 0, 0.8);
-  margin-bottom: 1em;
+  color: rgba(0, 0, 0, 0.5);
+  margin-bottom: 0.2em;
 `
+
 const UserList = (props) => (
   <>
     <StyledHeader>{props.header}</StyledHeader>
@@ -20,14 +21,15 @@ const UserList = (props) => (
       itemLayout="horizontal"
       dataSource={props.users}
       renderItem={ user => (
+
         <List.Item style={{border: 'none'}}>
           <Skeleton avatar title={false} loading={props.loading} active>
             <User 
-              name = {user['name']}
-              image = {user['image']}
-              userName = {user['username']}
-              following = {user['following']}
-              onClick = {props['onClick']}
+              name = {user['profile']['username']}
+              image = {user['profile']['image']}
+              username = {user['profile']['username']}
+              following = {user['profile']['following']}
+              hasButton = {true}
             />
           </Skeleton>
         </List.Item>
