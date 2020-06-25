@@ -3,7 +3,6 @@ import React from "react";
 import useSWR from "swr";
 
 import CommentInput from "./CommentInput";
-import CommentReply from "./CommentReply";
 
 import ErrorMessage from "../common/ErrorMessage";
 import LoadingSpinner from "../common/LoadingSpinner";
