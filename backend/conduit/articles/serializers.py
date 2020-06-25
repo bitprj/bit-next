@@ -27,6 +27,7 @@ class ArticleSchema(Schema):
     commentsCount = fields.Int(dump_only=True)
     favorited = fields.Bool(dump_only=True)
     isPublished = fields.Bool()
+    bookmarked = fields.Bool(dump_only=True)
     views = fields.Int(dump_only=True)
 
     @pre_load
@@ -94,6 +95,7 @@ class CommentSchema(Schema):
     updatedAt = fields.DateTime(dump_only=True)
     author = fields.Nested(ProfileSchema)
     parentComment = fields.Nested('self', many=True)
+    likesCount = fields.Int(dump_only=True)
 
     # for the envelope
     comment = fields.Nested('self', exclude=('comment',), default=True, load_only=True)
