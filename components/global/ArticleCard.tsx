@@ -78,7 +78,7 @@ padding: 0.2em 0.4em 0.2em 0.4em;
 
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null,favoriteClick = null ,isFavorite }) => {
+const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null,favoriteClick = null  }) => {
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
       <CustomLink
@@ -139,7 +139,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
               {article.isPublished &&
                 <Space size={"large"}>
                   <Twemoji options={{ className: 'twemoji' }}>
-                  {!isFavorite?
+                  {!article.favorited?
                    <span><StyledEmoji2  onClick = {favoriteClick}>{'🤍'}</StyledEmoji2>  <span>{article.favoritesCount} </span></span>
                   
                    : <StyledEmoji onClick = {favoriteClick}>{"❤️ " + article.favoritesCount}</StyledEmoji>}

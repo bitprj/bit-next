@@ -145,7 +145,7 @@ const ArticleList = (props) => {
           as={`/article/${article.slug}`}
           className="preview-link"
         >
-          <ArticleCard key={article.slug} article={article} onRightButtonClick ={(e)=>rightButtonClicked(e,article.slug,article.bookmarked)} favoriteClick = {(e)=>handleClickFavorite(e,article.slug,article.favorited)} isFavorite={article.favorited}  />
+          <ArticleCard key={article.slug} article={article} onRightButtonClick ={(e)=>rightButtonClicked(e,article.slug,article.bookmarked)} favoriteClick = {(e)=>handleClickFavorite(e,article.slug,article.favorited)}  />
         </CustomLink>
       ))}
 
