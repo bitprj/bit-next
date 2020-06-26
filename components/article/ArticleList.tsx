@@ -26,6 +26,7 @@ import {message} from 'antd';
 
 
 const ArticleList = (props) => {
+  console.log(props)
   const [refresh,setRefresh] = React.useState(false)
 
   const page = usePageState();
@@ -98,11 +99,20 @@ const ArticleList = (props) => {
     if(currentUser == null){
       message.info('Please Sign in');
     }else{
+
       if(!bookmarked){
-        setRefresh(true)
-        await ArticleAPI.bookmark(slug,currentUser.token);
         
+        await ArticleAPI.bookmark(slug,currentUser.token);
+      }else{
+        await ArticleAPI.removeBookmark(slug,currentUser.token); 
       }
+      for (let index in props.articles){
+        if(props.articles[index].slug== slug){
+          props.articles[index].bookmarked = !bookmarked
+          break;
+        }
+      }
+      setRefresh(!refresh)
 
     }
 
@@ -120,7 +130,7 @@ const ArticleList = (props) => {
             Authorization: `Token ${currentUser?.token}`,
           },
         });
-        setRefresh(false)
+        
       } else {
         await axios.post(
           `${SERVER_BASE_URL}/articles/${slug}/favorite`,
@@ -131,8 +141,15 @@ const ArticleList = (props) => {
             },
           }
         );
-        setRefresh(true)
+     
       }
+      for (let index in props.articles){
+        if(props.articles[index].slug== slug){
+          props.articles[index].favorited = !favorited
+          break;
+        }
+      }
+      setRefresh(!refresh)
     } catch (error) {
      
     }

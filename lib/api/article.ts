@@ -96,8 +96,23 @@ const ArticleAPI = {
       return error.response;
     }
 
-  }
-  
+  },
+  removeBookmark : async(slug,token)=>{
+    try {
+      const response = await axios.delete(
+        `${SERVER_BASE_URL}/articles/${slug}/bookmark`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+
+  },
 };
 
 export default ArticleAPI;
