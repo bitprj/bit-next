@@ -35,13 +35,17 @@ const CommentList = () => {
     return (
       <ErrorMessage message="Cannot load comments related to this article..." />
     );
-
   const { comments } = data;
   const onCommentClick=(id)=>{
     if(!isLoggedIn){
       message.info('Please Sign in')
     }else{
-    setReplyTo(id)
+      if(replyTo == ""){
+      setReplyTo(id)
+      }
+      else{
+       setReplyTo("")
+      }
     }
   }
 
