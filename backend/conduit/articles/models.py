@@ -136,6 +136,13 @@ class Article(SurrogatePK, Model):
             return True
         return False
 
+    #Function to remove bookmark on an article
+    def unbookmark(self, profile):
+        if self.is_bookmarked(profile):
+            self.bookmarkers.remove(profile)
+            return True
+        return False
+
     #Function to check if a current bookmark already exists for a particular article and user
     def is_bookmarked(self, profile):
         return bool(self.query.filter(db.and_(bookmarker_assoc.c.bookmarker == profile.id,

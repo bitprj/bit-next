@@ -168,6 +168,20 @@ def bookmark_an_article(slug):
     return article
 
 
+#Route to remove a bookmark on a particular article
+@blueprint.route('/api/articles/<slug>/bookmark', methods=('DELETE',))
+@jwt_required
+@marshal_with(article_schema)
+def unbookmark_an_article(slug):
+    profile = current_user.profile
+    article = Article.query.filter_by(slug=slug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    article.unbookmark(profile)
+    article.save()
+    return article
+
+
 ##########
 # Comments
 ##########
