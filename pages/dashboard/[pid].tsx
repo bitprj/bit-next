@@ -5,10 +5,12 @@ import fetcher from "../../lib/utils/fetcher";
 import storage from "../../lib/utils/storage";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import UserAPI from "../../lib/api/user";
-import ArticleAPI from "../../lib/api/article";
 import checkLogin from "../../lib/utils/checkLogin";
 
-import ArticleList from "../../components/article/ArticleList";
+import GroupSetting from "../../components/profile/GroupSetting";
+
+//DIFFERENT ONE
+import ArticleList from "../../components/global/ArticleList";
 import ErrorMessage from "../../components/common/ErrorMessage";
 import User from "../../components/global/User";
 import FollowList from "../../components/global/FollowList";
@@ -41,8 +43,14 @@ const Profile = ({ initialProfile }) => {
 		{ initialData: initialProfile }
 	);
 
-
 	if (profileError) return <ErrorMessage message="Can't load profile" />;
+
+	const {
+		data: modTags,
+		error: tagError,
+	} = useSWR(`${SERVER_BASE_URL}/profiles/${encodeURIComponent(String(pid))}/tags`, fetcher)
+
+	let tagsList = [];
 
 	const { profile } = fetchedProfile || initialProfile;
 	const { username, bio, image, following } = profile;
@@ -52,6 +60,7 @@ const Profile = ({ initialProfile }) => {
 	}else{
 		tabsList = ["Posts", "Followers", "Following", "Account Settings"]
 	}
+	//here's where we're getting the list from
 	const [list, setList] = React.useState(tabsList)
 	const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
 	const [isPosts, setPostsPage] = React.useState(true)
@@ -62,11 +71,21 @@ const Profile = ({ initialProfile }) => {
 	const [isAllArticles, setAllArticles] = React.useState(true);
 	const [isPublished, setPublished] = React.useState(false);
 	const [isDrafts, setDrafts] = React.useState(false);
-	const [isAdmin, setIsAdmin] = React.useState(false)
+	const [isAdmin, setIsAdmin] = React.useState(false);
+
+	const [subTags, setSubTags] = React.useState(false);
+	const [pubTags, setPubTags] = React.useState(false);
+	const [tagSettings, setTagSettings] = React.useState(false);
+	const [tagsType, setTagsType] = React.useState("Submitted");
+	const [currentTag, setTag] = React.useState(null);
+
+	const [currentOrg, setOrg] = React.useState(null);
+	const [isMembers, setMembers] = React.useState(null);
 
 	const { data: currentUser } = useSWR("user", storage);
 	const { data: fetchedArticles } = useSWR(`${SERVER_BASE_URL}/articles?author=${initialProfile.profile.username}`, fetcher);
 	const { data: dropDownTags } = useSWR(`${SERVER_BASE_URL}/tags?quantity=all`, fetcher);
+
 	const isLoggedIn = checkLogin(currentUser);
 	const isUser = currentUser && username === currentUser?.username;
 
@@ -75,7 +94,6 @@ const Profile = ({ initialProfile }) => {
 	const { TabPane } = Tabs;
 
 	const TabChange = (key) => {
-		
 		if (key == "Posts") {
 			setTabList(["All Posts", "Published", "Drafts"])
 			setPostsPage(true)
@@ -90,7 +108,6 @@ const Profile = ({ initialProfile }) => {
 
 			setArticleType("all")
 			setIsAdmin(false)
-
 		}
 		else if (key == "Followers") {
 			setTabList(["Old -> New"])
@@ -118,7 +135,7 @@ const Profile = ({ initialProfile }) => {
 			setTagPage(false)
 			setSettingsPage(true)
 			setIsAdmin(false)
-		}else if (key== "Admin"){
+		} else if (key == "Admin"){
 			setIsAdmin(true)
 			setTabList(["Admin"])
 			setPostsPage(false)
@@ -127,15 +144,27 @@ const Profile = ({ initialProfile }) => {
 			setTagPage(false)
 			setSettingsPage(false)
 		}
-		else {
-			setTabList(["Most Viewed", "Most Liked", "Most Recent"])
-			setPostsPage(false)
-			setFollowersPage(false)
-			setFollowingsPage(false)
-			setTagPage(true)
-			setSettingsPage(false)
-			setIsAdmin(false)
-		}
+	}
+
+	{/*for tag menu items*/}
+	const TagChange = (key) => {
+		setPostsPage(false)
+		setFollowersPage(false)
+		setFollowingsPage(false)
+		setSettingsPage(false)
+		setIsAdmin(false)
+
+		setTabList(["Submitted", "Published", "Settings"])
+		setTagPage(true)
+		setTag(key);
+		setSubTags(true);
+		setPubTags(false);
+		setTagSettings(false);
+	}
+
+	{/*for org menu items*/}
+	const OrgChange = (key) => {
+
 	}
 
 	const TabView = (key) => {
@@ -147,11 +176,17 @@ const Profile = ({ initialProfile }) => {
 			setArticleType("all");
 		}
 		else if (key == "Published") {
-			setAllArticles(false);
-			setDrafts(false);
-			setPublished(true);
+			if (isPosts) {
+				setAllArticles(false);
+				setDrafts(false);
+				setPublished(true);
 
-			setArticleType("published");
+				setArticleType("published");
+			} else {
+				setSubTags(false);
+				setPubTags(true);
+				setTagSettings(false);
+			}
 		}
 		else if (key == "Drafts") {
 			setAllArticles(false);
@@ -159,6 +194,16 @@ const Profile = ({ initialProfile }) => {
 			setPublished(false);
 
 			setArticleType("drafts");
+		}
+		else if (key == "Submitted") {
+			setSubTags(true);
+			setPubTags(false);
+			setTagSettings(false);
+		}
+		else if (key == "Settings") {
+			setSubTags(false);
+			setPubTags(false);
+			setTagSettings(true);
 		}
 		else {
 			setAllArticles(false);
@@ -175,7 +220,41 @@ const Profile = ({ initialProfile }) => {
 		fetcher
 	);
 
-	if (isUser) {
+	const {
+		data: tagReviews,
+		error: reviewsError,
+	} = useSWR(
+		`${SERVER_BASE_URL}/articles?tag=${encodeURIComponent(String(currentTag))}`,
+		fetcher
+	);
+
+	console.log(tagReviews);
+
+	let needsReview = [];
+	let publishedTags = [];
+
+	if (isUser && modTags && tagReviews) {
+
+		{/*for displaying tags in the menu*/}
+		(() => {
+				for (let i=0; i<modTags.tags.length; i++) {
+					if (modTags.tags[i].moderator) {
+						tagsList.push(modTags.tags[i]);
+					}
+				}
+		})();
+
+		{/*for displaying tags in the top tabs*/}
+		(() => {
+				for (let i=0; i<tagReviews.articles.length; i++) {
+					if (tagReviews.articles[i].needsReview) {
+						needsReview.push(tagReviews.articles[i]);
+					} else if (tagReviews.articles[i].isPublished) {
+						publishedTags.push(tagReviews.articles[i]);
+					}
+				}
+		})();
+
 		return (
 			<Row gutter={16} style={{ marginTop: "8em", marginLeft: "0", marginRight: "0" }}>
 				<Col span={2}></Col>
@@ -187,6 +266,8 @@ const Profile = ({ initialProfile }) => {
 						<Col span={24}>
 							<StyledMenu>
 								{list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
+								//lets add some sort of indicator that its tags in here, like key is item.slug+"tag" or something
+								{tagsList.map(item => <Menu.Item key={item.slug} onClick={item => TagChange(item.key)}>{item.tagname}</Menu.Item>)}
 							</StyledMenu>
 						</Col>
 					</Row>
@@ -194,15 +275,20 @@ const Profile = ({ initialProfile }) => {
 				<Col span={12}>
 					<Row gutter={[16, 40]}>
 						<Col span={24}>
-							<Tab_list tabs={tab_select_list} onClick={key => TabView(key)} position={"top"} />
+							<Tab_list tabs={tab_select_list} defaultActiveKey={tab_select_list[0]} onClick={key => TabView(key)} position={"top"} />
 						</Col>
 						<Col span={24} style={{ paddingTop: "0" }}>
 							{isPosts && articleData ? <ArticleList articles={articleData.articles} /> : null}
 							{isFollowers ? <FollowList followings={false} /> : null}
 							{isFollowings ? <FollowList followings={true} /> : null}
-							{isTag ? <ArticleList /> : null}
+							{isTag && subTags ? <ArticleList articles={needsReview} /> : null}
+							{isTag && pubTags ? <ArticleList
+								modReview={true}
+								currentTag={currentTag}
+								articles={publishedTags} /> : null}
+							{isTag && tagSettings ? <GroupSetting /> : null}
 							{isSettings ? <AccountSettings /> : null}
-							{isAdmin ?<AdminPanel tags = {dropDownTags}/>:null}
+							{isAdmin ?<AdminPanel tags = {dropDownTags}/> : null}
 						</Col>
 					</Row>
 				</Col>

@@ -68,7 +68,8 @@ const StyledEmoji = styled.span`
 `
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
+const ArticleCard = ({ article, currentTag = null, modReview=false, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
+
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
       <CustomLink
@@ -139,7 +140,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
             {/* rigt bottom: show two buttons */}
             <Col>
               <Button
-                disabled={article.isPublished}
+                disabled={article.isPublished && !modReview}
                 onClick={onLeftButtonClick}
                 style={{
                   border: "none",
@@ -150,6 +151,10 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                     article.isPublished ? (article.readtime && article.readtime + ' min read') :
                     article.needsReview ? 'Reject' : 'Delete'
                 }
+                {
+                  modReview ? 'Reject' : null
+                }
+
               </Button>
               <Button
                 type={"primary"}
@@ -162,7 +167,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                 }}
               >
                 {
-                    article.isPublished ? 'BookMark' :
+                    modReview ? 'Published' : article.isPublished ? 'BookMark' :
                     article.needsReview ? 'Published' : 'Edit'
                 }
               </Button>
