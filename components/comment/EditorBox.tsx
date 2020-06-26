@@ -35,7 +35,8 @@ const Editor = ({onChange, onSubmit, submitting, value }) => (
 )
 // END ADDED
 
-const EditorBox = (thisValue) => {
+const EditorBox = () => {
+    console.log("EditorBox: entered here");
     const { data: currentUser } = useSWR("user", storage);
     const isLoggedIn = checkLogin(currentUser);
     const router = useRouter();
@@ -47,10 +48,12 @@ const EditorBox = (thisValue) => {
     const [isLoading, setLoading] = React.useState(false);
   
     const handleChange = React.useCallback((e) => {
+      console.log("EditorBox: called handleChange");
       setContent(e.target.value);
     }, []);
   
     const handleSubmit = async (e) => {
+      console.log("EditorBox: Called handleSubmit");
       e.preventDefault();
       setLoading(true);
       await axios.post(
@@ -71,12 +74,12 @@ const EditorBox = (thisValue) => {
       setContent("");
       trigger(`${SERVER_BASE_URL}/articles/${pid}/comments`);
     };
-    var clickedReplyTo = thisValue.thisValue;
+    var clickedReplyTo;// = thisValue.thisValue;
     clickedReplyTo = true;
     console.log("clicekdReplyTo is ", clickedReplyTo, '*');
 
     console.log("IN EDITORBOX");
-    if (!isLoggedIn && !clickedReplyTo) {
+    if (!isLoggedIn) {//} && !clickedReplyTo) {
         return (
             <p>
                 Not Logged In RN
@@ -85,10 +88,11 @@ const EditorBox = (thisValue) => {
 
     } else if (isLoggedIn && clickedReplyTo) {
       return (
-        <Editor onChange={console.log("onchange")}//this.handleChange}
-              onSubmit={console.log("onsubmit" + clickedReplyTo)}//this.handleSubmit}
-              submitting={false}//submitting}
-              value={'HEYWORLD is Logged In'}//value}
+        <Editor 
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              submitting = { isLoading }
+              value={ content }
             />
       );
     }

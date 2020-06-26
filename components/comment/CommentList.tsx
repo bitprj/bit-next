@@ -35,11 +35,19 @@ const Editor = ({onChange, onSubmit, submitting, value }) => (
 </Form.Item>
   </>
 )
+
+
+
+
 // END ADDED
 
 var clickedReplyTo = true;
 var count = 0;
-
+/*
+const showEditor {
+    display: none;
+  }
+*/
 const CommentList = () => {
 
   // ADDED
@@ -47,10 +55,19 @@ const CommentList = () => {
   const isLoggedIn = checkLogin(currentUser)
 
   const handleClickReplyTo = (comment) => {
+
     console.log("In HandleClickReplyTo")
     if (isLoggedIn) {
       console.log("ALREADY LOGGED IN, Clicked")
       clickedReplyTo = true;
+
+      var x = document.getElementById("showEditor");
+      if (x.style.display === "block") {
+        x.style.display = "none";
+      } else {
+        x.style.display = "block";
+      }
+
       console.log("comment ID", comment.id, "*");
       console.log("replyToClicked?" , comment.replyToClicked, "*")
       comment.replyToClicked = true;
@@ -72,6 +89,8 @@ const CommentList = () => {
       message.info("Please log in to reply", 10)
     }
   }
+
+
   // END ADDED
 
 
@@ -120,7 +139,7 @@ const CommentList = () => {
           actions= {[
             
             <span key="comment-nested-reply-to"
-            onClick= {() => handleClickReplyTo(comment)}>Reply to HI8</span>
+            onClick= {() => handleClickReplyTo(comment)}>Reply to</span>
           ]}
           
           
@@ -133,9 +152,13 @@ const CommentList = () => {
           }
           content={
             <div>
-              <p>{comment.body + String(count) + String(comment.replyToClicked)}
+              <p>{comment.body}
               </p>
-              <EditorBox thisValue = {comment.replyToClicked} />
+              <div id="showEditor">
+                
+                <EditorBox />
+              
+              </div>
             </div>
             
             
