@@ -26,7 +26,6 @@ import {message} from 'antd';
 
 
 const ArticleList = (props) => {
-  console.log(props)
   const [refresh,setRefresh] = React.useState(false)
 
   const page = usePageState();
