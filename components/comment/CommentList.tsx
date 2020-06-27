@@ -23,32 +23,21 @@ import fetcher from "../../lib/utils/fetcher";
 import { Comment, Avatar } from 'antd';
 
 // ADDED
-const Editor = ({onChange, onSubmit, submitting, value }) => (
-  <>
-    <Form.Item>
-  <TextArea rows={4} onChange={onChange} value={value} />
-</Form.Item>
-<Form.Item>
-  <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-    Add Comment
-  </Button>
-</Form.Item>
-  </>
-)
-
-
-
 
 // END ADDED
 
 var clickedReplyTo = true;
 var count = 0;
+//var x = document.getElementById("showEditor");
+
 /*
 const showEditor {
     display: none;
   }
 */
 const CommentList = () => {
+
+
 
   // ADDED
   const { data: currentUser } = useSWR("user", storage);
@@ -61,18 +50,11 @@ const CommentList = () => {
       console.log("ALREADY LOGGED IN, Clicked")
       clickedReplyTo = true;
 
-      var x = document.getElementById("showEditor");
-      if (x.style.display === "block") {
-        x.style.display = "none";
-      } else {
-        x.style.display = "block";
-      }
-
-      console.log("comment ID", comment.id, "*");
-      console.log("replyToClicked?" , comment.replyToClicked, "*")
       comment.replyToClicked = true;
       console.log("replyToClicked?" , comment.replyToClicked, "*")
       count = count + 1;
+      
+      /*
       return (
         <div>
           <CommentInput />
@@ -81,7 +63,8 @@ const CommentList = () => {
     
         </div>
       );
-      
+      */
+     return;
 
 
     } else {
@@ -132,14 +115,16 @@ const CommentList = () => {
     // END ADDED 
 
    return (
-   
+      
       comments.map((comment: CommentType) => (
+        
         <Comment
           key={comment.id}
           actions= {[
             
             <span key="comment-nested-reply-to"
             onClick= {() => handleClickReplyTo(comment)}>Reply to</span>
+
           ]}
           
           
@@ -154,18 +139,19 @@ const CommentList = () => {
             <div>
               <p>{comment.body}
               </p>
-              <div id="showEditor">
-                
-                <EditorBox />
-              
-              </div>
+            
+              {String(comment.author.username) == 'amyhuycu' ? <EditorBox commentId = {comment.id}/> : null }
+
             </div>
+            }
             
-            
-          }
+          
+          
         >
-            
-          {comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null}
+          
+          {
+          comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null
+          }
         </Comment>
         
         
@@ -181,13 +167,6 @@ const CommentList = () => {
   );
 };
 
-// ADDED
-/*
-class App extends React.Component {
-
-}
-*/
-// END ADDED
 
 
 export default CommentList;
