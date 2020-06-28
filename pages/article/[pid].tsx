@@ -80,7 +80,11 @@ margin :0.5em;
     }
 `
 
-
+const Image = styled.img`
+width :100%;
+object-fit: cover;
+object-position: 0 40%;
+`
 
 const ArticlePage = (initialArticle) => {
   const router = useRouter();
@@ -209,7 +213,7 @@ const ArticlePage = (initialArticle) => {
                  
                   </Twemoji>
         <ArticleBody>
-        <img src={(article as any).image} style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
+        <Image src={(article as any).image} />
           <ArticleDisplay>
           <ArticleTags article={article} />
           <h1>{article.title}</h1>

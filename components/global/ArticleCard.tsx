@@ -74,6 +74,13 @@ padding: 0.2em 0.4em 0.2em 0.4em;
       width: 11px;
     }
 `
+const StyleButton = styled(Button)`
+font-weight: bold;
+border-radius: 0.5em;
+background:  ${props => props.isPublished ? ! props.bookmarked ? '#4EC700 !important' : '#007BED !important': '#007BED !important' };
+border-color:  ${props => props.isPublished ?  !props.bookmarked  ?'#4EC700 !important' : '#007BED !important' : '#007BED !important'};
+
+`
 
 
 
@@ -164,21 +171,17 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                     article.needsReview ? 'Reject' : 'Delete'
                 }
               </Button>
-              <Button
+              <StyleButton
                 type={"primary"}
                 onClick={onRightButtonClick}
-                style={{
-                  fontWeight: 'bold',
-                  borderRadius: "0.5em",
-                  background: article.isPublished ? ! article.bookmarked ?'#4EC700' : '#007BED': '#007BED',
-                  borderColor: article.isPublished ? !article.bookmarked  ?'#4EC700' : '#007BED' : '#007BED',
-                }}
+                isPublished = {article.isPublished }
+                bookmarked = {article.bookmarked}
               >
                 {
                     article.isPublished ? article.bookmarked  ? 'BookMarked' :'Bookmark':
                     article.needsReview ? 'Published' : 'Edit'
                 }
-              </Button>
+              </StyleButton>
             </Col>
           </StatDiv>
         </Col>
