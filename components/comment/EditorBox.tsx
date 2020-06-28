@@ -35,7 +35,7 @@ const Editor = ({onChange, onSubmit, submitting, value }) => (
 )
 // END ADDED
 
-const EditorBox = ( {commentId} ) => {
+const EditorBox = ( {onChange, commentId} ) => {
     console.log("EditorBox: entered here");
     const { data: currentUser } = useSWR("user", storage);
     const isLoggedIn = checkLogin(currentUser);
@@ -57,7 +57,7 @@ const EditorBox = ( {commentId} ) => {
       e.preventDefault();
       setLoading(true);
       await axios.post(
-        `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}/comments/${commentId}`,
+        `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}/comments`,
         JSON.stringify({
           comment: {
             body: content,

@@ -10,7 +10,7 @@ export type CommentType = {
   author: Author;
   updatedAt: number;
   parentComment: CommentChildren;
-  replyToClicked: boolean;
+  replyToClicked: boolean;  
 };
 
 export type Author = {

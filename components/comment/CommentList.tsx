@@ -55,6 +55,14 @@ const CommentList = () => {
       count = count + 1;
       
       /*
+      var x = document.getElementById("showBox");
+      if (x.style.display === "none") {
+        x.style.display = "block";
+      } else {
+        x.style.display = "none";
+      }
+      */
+      
       return (
         <div>
           <CommentInput />
@@ -63,7 +71,7 @@ const CommentList = () => {
     
         </div>
       );
-      */
+      
      return;
 
 
@@ -101,16 +109,16 @@ const CommentList = () => {
   
   const recurseComments = (comments) => {
     
-        
+    
     for (let aComment of comments) {
       //aComment.replyToClicked = false;
       console.log("this is ", aComment.id, "&", aComment.replyToClicked, "*");
       
     }
-    
-    console.log(comments.length, "ok");
+    /*
+    console.log(comments.length, "ok");//, comment.parentComment.comments + "*");
 
-    
+    */
 
     // END ADDED 
 
@@ -121,11 +129,31 @@ const CommentList = () => {
         <Comment
           key={comment.id}
           actions= {[
-            
-            <span key="comment-nested-reply-to"
-            onClick= {() => handleClickReplyTo(comment)}>Reply to</span>
+             
+              
+              <span key="comment-nested-reply-to"
+              onClick= {() => 
+                handleClickReplyTo(comment)
+                
+              } 
+              
+              >Reply to</span>
 
+              
+            ,
+
+            <div>
+            {
+                comment.replyToClicked ? 
+                  <EditorBox 
+                    onChange = {comment.replyToClicked} 
+                    commentId = {comment.parentComment.comments}
+                  /> : <p>HEYO</p>
+              } 
+            </div>
+            
           ]}
+
           
           
           author={comment.author.username}
@@ -137,16 +165,22 @@ const CommentList = () => {
           }
           content={
             <div>
-              <p>{comment.body}
+              <p>{comment.body} 
               </p>
-            
-              {String(comment.author.username) == 'amyhuycu' ? <EditorBox commentId = {comment.id}/> : null }
-
+              
+              <p>
+              {
+                comment.replyToClicked ? 
+                  <EditorBox 
+                    onChange = {comment.replyToClicked} 
+                    commentId = {comment.parentComment.comments}
+                  /> : <p>HERE</p>
+              } 
+              </p>
+              
+              
             </div>
-            }
-            
-          
-          
+          }
         >
           
           {
@@ -170,3 +204,33 @@ const CommentList = () => {
 
 
 export default CommentList;
+
+
+
+//style="display:none">
+
+/*
+<div id="showBox" >
+                <EditorBox commentId = {comment.id} />
+
+              </div>
+
+{comment.replyToClicked ? <EditorBox onChange = {comment.replyToClicked} commentId = {comment.parentComment.comments}/> : null }
+
+              */
+
+
+/*
+             actions= {[
+            
+              <span key="comment-nested-reply-to"
+              onClick= {() => 
+                handleClickReplyTo(comment)
+              
+              } 
+              
+              >Reply to</span>
+  
+            ]}
+
+            */
