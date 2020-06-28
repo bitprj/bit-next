@@ -53,16 +53,16 @@ const ArticleBody = styled.div`
 `
 
 const ArticleDisplay = styled.div`
-width :100%;
+  width :100%;
 `
 
 const ArticleMD = styled.div`
   margin-top: 2em;
 `
 const StyledEmoji = styled.div`
-padding: 0.5em;
-margin :0.5em;
-border-radius: 22px;
+  padding: 0.5em;
+  margin :0.5em;
+  border-radius: 22px;
 
   img {
       width: 20px;
@@ -71,19 +71,19 @@ border-radius: 22px;
 
 `
 const StyledEmoji2 = styled.div`
-background: red;
-border-radius: 22px;
-padding: 0.2em 0.4em 0.2em 0.4em;
-margin :0.5em;
+  background: red;
+  border-radius: 22px;
+  padding: 0.2em 0.4em 0.2em 0.4em;
+  margin :0.5em;
   img {
       width: 16px;
     }
 `
 
 const Image = styled.img`
-width :100%;
-object-fit: cover;
-object-position: 0 40%;
+  width :100%;
+  object-fit: cover;
+  object-position: 0 40%;
 `
 
 const ArticlePage = (initialArticle) => {
@@ -118,7 +118,7 @@ const ArticlePage = (initialArticle) => {
       Router.push(`/user/login`);
       return;
     }
-    
+
     try {
       if (preview.favorited) {
         await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
@@ -152,7 +152,7 @@ const ArticlePage = (initialArticle) => {
           : preview.favoritesCount + 1,
       });
     } catch (error) {
-      
+
     }
   };
 
@@ -205,23 +205,23 @@ const ArticlePage = (initialArticle) => {
 
   return (
     <div className="article-page">
-    
+
       <ArticleContain>
-      <Twemoji options={{ className: 'twemoji' }}>
-                  {!preview.favorited?
-                   <StyledEmoji2  onClick = {()=>handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
-                   : <StyledEmoji onClick = {()=>handleClickFavorite(article.slug)}>{"❤️ "}</StyledEmoji>}
-                 
-                  </Twemoji>
+        <Twemoji options={{ className: 'twemoji' }}>
+          {!preview.favorited ?
+            <StyledEmoji2 onClick={() => handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
+            : <StyledEmoji onClick={() => handleClickFavorite(article.slug)}>{"❤️ "}</StyledEmoji>}
+
+        </Twemoji>
         <ArticleBody>
-        <Image src={(article as any).image} />
+          <Image src={(article as any).image} />
           <ArticleDisplay>
-          <ArticleTags article={article} />
-          <h1>{article.title}</h1>
-          <ArticleMeta article={article} />
-          <ArticleMD dangerouslySetInnerHTML={markup} />
-          <div className="article-actions" />
-          <CommentList />
+            <ArticleTags article={article} />
+            <h1>{article.title}</h1>
+            <ArticleMeta article={article} />
+            <ArticleMD dangerouslySetInnerHTML={markup} />
+            <div className="article-actions" />
+            <CommentList />
           </ArticleDisplay>
         </ArticleBody>
       </ArticleContain>
