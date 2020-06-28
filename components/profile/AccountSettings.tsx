@@ -13,20 +13,27 @@ const { TextArea } = Input;
 const StyledInput = styled(Input)`
 `;
 
-const StyledButton = styled.button`
-  border-radius: 0px 5px 5px 0px;
+const StyledButton = styled(Button)`
+  width: 100%;
+  fontSize: 12px;
   border: none;
-  background: black;
-  color: white;
-  padding: 2%;
+  background: black !important;
+  &:hover{
+    background: black;
+  }
 `;
 
 const Styledlabel = styled.label`
   color:#555555;
+  margin-left: 1em;
   &:hover{
     color:#000000;
     cursor:pointer;
   }
+`;
+
+const StyledRow = styled(Row)`
+  margin-left: 2%;
 `;
 
 const SettingsForm = () => {
@@ -175,7 +182,7 @@ const SettingsForm = () => {
 
   return (
     <React.Fragment>
-      <Row style={{ marginLeft: '2%' }}>
+      <StyledRow>
         <Col span={24}>
           <Form
             layout="horizontal"
@@ -185,7 +192,7 @@ const SettingsForm = () => {
           >
             <Form.Item label="User Profile">
               <Avatar src={userInfo.image} size={40} />
-              <Styledlabel style={{ marginLeft: "1em" }}>Reupload Image<input style={{ display: "none" }} type="file" onChange={Reupload} /></Styledlabel>
+              <Styledlabel>Reupload Image<input style={{ display: "none" }} type="file" onChange={Reupload} /></Styledlabel>
             </Form.Item>
             <Form.Item label="Name" name="Name">
               <StyledInput value={userInfo.name} placeholder={"Name"} onChange={updateState("name")} />
@@ -227,17 +234,16 @@ const SettingsForm = () => {
               />
             </Form.Item>
             <Form.Item>
-              <Button
+              <StyledButton
                 type="primary"
                 htmlType="submit"
-                style={{ background: "black", width: "100%", fontSize: "12px", border: "none" }}
               >
                 edit
-              </Button>
+              </StyledButton>
             </Form.Item>
           </Form>
         </Col>
-      </Row>
+      </StyledRow>
     </React.Fragment>
   );
 };
