@@ -5,7 +5,7 @@ import storage from "../../lib/utils/storage";
 import checkLogin from "../../lib/utils/checkLogin";
 import styled from "styled-components";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
-
+import Form_Items from "./Form_Items";
 import { Avatar, Row, Col, Input, Form, Button, message } from 'antd';
 
 const { TextArea } = Input;
@@ -35,6 +35,8 @@ const Styledlabel = styled.label`
 const StyledRow = styled(Row)`
   margin-left: 2%;
 `;
+
+var Items = [["Name","Name",[],"Name","name"],["Github","Github",[{ type: 'url', message: 'Please enter valid url' }],"http://www.github.com","githubLink"],["Twitter","Twitter",[{ type: 'url', message: 'Please enter valid url' }],"http://www.twitter.com","twitterLink"],["LinkedIn","LinkedIn",[{ type: 'url', message: 'Please enter valid url' }],"http://www.linkedin.com","linkedinLink"],["Personal Website","Website",[{ type: 'url', message: 'Please enter valid url' }],"http://www.example.com","website"],["Location","Location",[],"Location","location"],["Occupation","Occupation",[],"Occupation","occupation"],["Username","Username",[{ required: true, message: 'Please input your username!' }],"Username","username"],["Email","Email",[{ type: 'email', message: 'The input is not valid E-mail!' }, { required: true, message: 'Please input your E-mail!' }],"Email","email"],["Password","Password",[],"New Password","password"]]
 
 const SettingsForm = () => {
   const [errors, setErrors] = React.useState([]);
@@ -194,36 +196,7 @@ const SettingsForm = () => {
               <Avatar src={userInfo.image} size={40} />
               <Styledlabel>Reupload Image<input style={{ display: "none" }} type="file" onChange={Reupload} /></Styledlabel>
             </Form.Item>
-            <Form.Item label="Name" name="Name">
-              <StyledInput value={userInfo.name} placeholder={"Name"} onChange={updateState("name")} />
-            </Form.Item>
-            <Form.Item label="Github" name="Github" rules={[{ type: 'url', message: 'Please enter valid url' }]}>
-              <StyledInput value={userInfo.githubLink} placeholder={"http://www.github.com"} onChange={updateState("githubLink")} />
-            </Form.Item>
-            <Form.Item label="Twitter" name="Twitter" rules={[{ type: 'url', message: 'Please enter valid url' }]}>
-              <StyledInput value={userInfo.twitterLink} placeholder={"http://www.twitter.com"} onChange={updateState("twitterLink")} />
-            </Form.Item>
-            <Form.Item label="LinkedIn" name="LinkedIn" rules={[{ type: 'url', message: 'Please enter valid url' }]}>
-              <StyledInput value={userInfo.linkedinLink} placeholder={"http://www.linkedin.com"} onChange={updateState("linkedinLink")} />
-            </Form.Item>
-            <Form.Item label="Personal Website" name="Website" rules={[{ type: 'url', message: 'Please enter valid url' }]}>
-              <StyledInput value={userInfo.website} placeholder={"http://www.example.com"} onChange={updateState("website")} />
-            </Form.Item>
-            <Form.Item label="Location" name="Location">
-              <StyledInput value={userInfo.location} placeholder={"Location"} onChange={updateState("location")} />
-            </Form.Item>
-            <Form.Item label="Occupation" name="Occupation">
-              <StyledInput value={userInfo.occupation} placeholder={"Occupation"} onChange={updateState("occupation")} />
-            </Form.Item>
-            <Form.Item label="Username" name="Username" rules={[{ required: true, message: 'Please input your username!' }]}>
-              <StyledInput value={userInfo.username} placeholder={"Username"} onChange={updateState("username")} />
-            </Form.Item>
-            <Form.Item label="Email" name="Email" rules={[{ type: 'email', message: 'The input is not valid E-mail!' }, { required: true, message: 'Please input your E-mail!' }]}>
-              <StyledInput value={userInfo.email} placeholder={"Email"} onChange={updateState("email")} />
-            </Form.Item>
-            <Form.Item label="Password">
-              <StyledInput.Password placeholder={"New Password"} onChange={updateState("password")} />
-            </Form.Item>
+            <Form_Items onChange={key=>updateState(key)} Item={Items}/>
             <Form.Item label="Your Bio">
               <TextArea
                 className="form-control form-control-lg"
