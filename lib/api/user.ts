@@ -65,6 +65,46 @@ const UserAPI = {
       return error.response;
     }
   },
+  changeModSettingTag: async (tag,setting) => {
+    const user: any = window.localStorage.getItem("user");
+    const token = user?.token;
+    try {
+      const response = await axios.post(
+        `${SERVER_BASE_URL}/organizations/${tag}`,
+        JSON.stringify({ setting }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+      console.log(response);
+    } catch (error) {
+      return error.response;
+    }
+  },
+  changeModSettingOrg: async (org,setting) => {
+    const user: any = window.localStorage.getItem("user");
+    const token = user?.token;
+    try {
+      const response = await axios.put(
+        `${SERVER_BASE_URL}/organizations/${org}`,
+        JSON.stringify({ setting }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+      console.log(response);
+    } catch (error) {
+      return error.response;
+    }
+  },
   follow: async (username, email) => {
     const user: any = JSON.parse(window.localStorage.getItem("user"));
     const token = user?.token;
