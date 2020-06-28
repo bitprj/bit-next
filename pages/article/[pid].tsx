@@ -7,6 +7,7 @@ import axios from "axios";
 import storage from "../../lib/utils/storage";
 import styled from 'styled-components';
 import checkLogin from "../../lib/utils/checkLogin";
+import Twemoji from 'react-twemoji';
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 
 import UserArticle from "../../components/global/UserInfoCard";
@@ -26,6 +27,7 @@ const ArticleContain = styled.div`
   @media screen and (min-width: 1250px) {
         margin-left:16px
   }
+  display : flex;
 `;
 
 const StickyRight = styled.div`  
@@ -47,10 +49,41 @@ const StickyRight = styled.div`
 
 const ArticleBody = styled.div`
   padding: 2em;
+  width: 100%
+`
+
+const ArticleDisplay = styled.div`
+  width :100%;
 `
 
 const ArticleMD = styled.div`
   margin-top: 2em;
+`
+const StyledEmoji = styled.div`
+  padding: 0.5em;
+  margin :0.5em;
+  border-radius: 22px;
+
+  img {
+      width: 20px;
+    }
+    background: white;
+
+`
+const StyledEmoji2 = styled.div`
+  background: red;
+  border-radius: 22px;
+  padding: 0.2em 0.4em 0.2em 0.4em;
+  margin :0.5em;
+  img {
+      width: 16px;
+    }
+`
+
+const Image = styled.img`
+  width :100%;
+  object-fit: cover;
+  object-position: 0 40%;
 `
 
 const ArticlePage = (initialArticle) => {
@@ -63,8 +96,7 @@ const ArticlePage = (initialArticle) => {
     data: fetchedArticle,
   } = useSWR(
     `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}`,
-    fetcher,
-    { initialData: initialArticle }
+    fetcher
   );
 
   const { article }: Article = fetchedArticle || initialArticle;
@@ -81,19 +113,12 @@ const ArticlePage = (initialArticle) => {
   const [preview, setPreview] = React.useState({ ...article, bookmarked: false, bookmarkCount: null });
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
-
   const handleClickFavorite = async slug => {
     if (!isLoggedIn) {
       Router.push(`/user/login`);
       return;
     }
-    setPreview({
-      ...preview,
-      favorited: !preview.favorited,
-      favoritesCount: preview.favorited
-        ? preview.favoritesCount - 1
-        : preview.favoritesCount + 1,
-    });
+
     try {
       if (preview.favorited) {
         await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
@@ -101,7 +126,13 @@ const ArticlePage = (initialArticle) => {
             Authorization: `Token ${currentUser?.token}`,
           },
         });
-        alert('Removed from favorites')
+        setPreview({
+          ...preview,
+          favorited: !preview.favorited,
+          favoritesCount: preview.favorited
+            ? preview.favoritesCount - 1
+            : preview.favoritesCount + 1,
+        });
       } else {
         await axios.post(
           `${SERVER_BASE_URL}/articles/${slug}/favorite`,
@@ -112,9 +143,7 @@ const ArticlePage = (initialArticle) => {
             },
           }
         );
-        alert('Added to favorites');
       }
-    } catch (error) {
       setPreview({
         ...preview,
         favorited: !preview.favorited,
@@ -122,6 +151,8 @@ const ArticlePage = (initialArticle) => {
           ? preview.favoritesCount - 1
           : preview.favoritesCount + 1,
       });
+    } catch (error) {
+
     }
   };
 
@@ -158,7 +189,6 @@ const ArticlePage = (initialArticle) => {
         alert('Successfully bookmarked');
       }
     } catch (error) {
-      console.log(error);
       setPreview({
         ...preview,
         bookmarked: !preview.bookmarked,
@@ -175,15 +205,25 @@ const ArticlePage = (initialArticle) => {
 
   return (
     <div className="article-page">
+
       <ArticleContain>
         <img src={(article as any).coverImage} style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
+        <Twemoji options={{ className: 'twemoji' }}>
+          {!preview.favorited ?
+            <StyledEmoji2 onClick={() => handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
+            : <StyledEmoji onClick={() => handleClickFavorite(article.slug)}>{"❤️ "}</StyledEmoji>}
+
+        </Twemoji>
         <ArticleBody>
-          <ArticleTags article={article} />
-          <h1>{article.title}</h1>
-          <ArticleMeta article={article} />
-          <ArticleMD dangerouslySetInnerHTML={markup} />
-          <div className="article-actions" />
-          <CommentList />
+          <Image src={(article as any).image} />
+          <ArticleDisplay>
+            <ArticleTags article={article} />
+            <h1>{article.title}</h1>
+            <ArticleMeta article={article} />
+            <ArticleMD dangerouslySetInnerHTML={markup} />
+            <div className="article-actions" />
+            <CommentList />
+          </ArticleDisplay>
         </ArticleBody>
       </ArticleContain>
       <StickyRight>
