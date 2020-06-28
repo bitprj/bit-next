@@ -13,12 +13,6 @@ import storage from "../../lib/utils/storage";
 import {message, Form, Button, List, Input} from 'antd';
 const { TextArea } = Input;
 
-/*<Editor onChange={console.log("onchange")}//this.handleChange}
-              onSubmit={console.log("onsubmit")}//this.handleSubmit}
-              submitting={false}//submitting}
-              value={'HEYWORLD'}//value}
-            />
-*/
 
 // ADDED
 const Editor = ({onChange, onSubmit, submitting, value }) => (

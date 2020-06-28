@@ -28,13 +28,7 @@ import { Comment, Avatar } from 'antd';
 
 var clickedReplyTo = true;
 var count = 0;
-//var x = document.getElementById("showEditor");
 
-/*
-const showEditor {
-    display: none;
-  }
-*/
 const CommentList = () => {
 
 
@@ -48,10 +42,8 @@ const CommentList = () => {
     console.log("In HandleClickReplyTo")
     if (isLoggedIn) {
       console.log("ALREADY LOGGED IN, Clicked")
-      clickedReplyTo = true;
 
       comment.replyToClicked = true;
-      console.log("replyToClicked?" , comment.replyToClicked, "*")
       count = count + 1;
       
       /*
@@ -76,7 +68,6 @@ const CommentList = () => {
 
 
     } else {
-      console.log("NOT YET LOGGED IN")
       message.info("Please log in to reply", 10)
     }
   }
@@ -111,14 +102,8 @@ const CommentList = () => {
     
     
     for (let aComment of comments) {
-      //aComment.replyToClicked = false;
       console.log("this is ", aComment.id, "&", aComment.replyToClicked, "*");
-      
     }
-    /*
-    console.log(comments.length, "ok");//, comment.parentComment.comments + "*");
-
-    */
 
     // END ADDED 
 
@@ -134,23 +119,30 @@ const CommentList = () => {
               <span key="comment-nested-reply-to"
               onClick= {() => 
                 handleClickReplyTo(comment)
-                
+                /*
+                comment.replyToClicked === true ? 
+                  <EditorBox 
+                    onChange = {comment.replyToClicked} 
+                    commentId = {comment.parentComment.comments}
+                  /> : <p>replyToClicked Not clikced</p>
+                */
               } 
               
               >Reply to</span>
 
               
             ,
-
-            <div>
-            {
-                comment.replyToClicked ? 
+            <p>
+              {
+                  
+                comment.replyToClicked === true ? 
                   <EditorBox 
                     onChange = {comment.replyToClicked} 
                     commentId = {comment.parentComment.comments}
-                  /> : <p>HEYO</p>
-              } 
-            </div>
+                  /> :  <p>NOT replyToClicked</p>
+              }
+              </p>
+            
             
           ]}
 
@@ -165,17 +157,21 @@ const CommentList = () => {
           }
           content={
             <div>
-              <p>{comment.body} 
+              <p>
+                {
+                  comment.body
+                } 
               </p>
               
               <p>
               {
-                comment.replyToClicked ? 
+                  comment.replyToClicked ? 
                   <EditorBox 
                     onChange = {comment.replyToClicked} 
                     commentId = {comment.parentComment.comments}
-                  /> : <p>HERE</p>
-              } 
+                  /> : <p>NOT replyToClicked</p>
+                 
+              }
               </p>
               
               
@@ -184,7 +180,7 @@ const CommentList = () => {
         >
           
           {
-          comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null
+          comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : console.log(comment.id +"is" + comment.replyToClicked)
           }
         </Comment>
         
@@ -205,32 +201,3 @@ const CommentList = () => {
 
 export default CommentList;
 
-
-
-//style="display:none">
-
-/*
-<div id="showBox" >
-                <EditorBox commentId = {comment.id} />
-
-              </div>
-
-{comment.replyToClicked ? <EditorBox onChange = {comment.replyToClicked} commentId = {comment.parentComment.comments}/> : null }
-
-              */
-
-
-/*
-             actions= {[
-            
-              <span key="comment-nested-reply-to"
-              onClick= {() => 
-                handleClickReplyTo(comment)
-              
-              } 
-              
-              >Reply to</span>
-  
-            ]}
-
-            */
