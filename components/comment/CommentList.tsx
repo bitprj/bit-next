@@ -5,6 +5,7 @@ import useSWR from "swr";
 
 // ADDED
 import { Component } from 'react';
+import { useState } from 'react';
 import {message, Form, Button, List, Input} from 'antd';
 const { TextArea } = Input;
 import checkLogin from "../../lib/utils/checkLogin";
@@ -30,7 +31,7 @@ var clickedReplyTo = true;
 var count = 0;
 
 const CommentList = () => {
-
+  const [clickedComment, setClick] = useState(0);
 
 
   // ADDED
@@ -39,6 +40,8 @@ const CommentList = () => {
 
   const handleClickReplyTo = (comment) => {
 
+    //const [clickedComment, setClick] = useState(0);
+
     console.log("In HandleClickReplyTo")
     if (isLoggedIn) {
       console.log("ALREADY LOGGED IN, Clicked")
@@ -46,6 +49,11 @@ const CommentList = () => {
       comment.replyToClicked = true;
       count = count + 1;
       
+      if (clickedComment === 1) {
+        setClick(0);
+      } else {
+        setClick(1);
+      }
       /*
       var x = document.getElementById("showBox");
       if (x.style.display === "none") {
@@ -99,12 +107,13 @@ const CommentList = () => {
   
   
   const recurseComments = (comments) => {
+    //const [clickedComment, setClick] = useState(0);
     
-    
+    /*
     for (let aComment of comments) {
       console.log("this is ", aComment.id, "&", aComment.replyToClicked, "*");
     }
-
+    */
     // END ADDED 
 
    return (
@@ -119,6 +128,7 @@ const CommentList = () => {
               <span key="comment-nested-reply-to"
               onClick= {() => 
                 handleClickReplyTo(comment)
+                //setClick(1)
                 /*
                 comment.replyToClicked === true ? 
                   <EditorBox 
@@ -128,14 +138,14 @@ const CommentList = () => {
                 */
               } 
               
-              >Reply to</span>
+            >Reply to {comment.replyToClicked}</span>
 
               
             ,
             <p>
               {
-                  
-                comment.replyToClicked === true ? 
+                clickedComment === 1 ?  
+                //comment.replyToClicked === true ? 
                   <EditorBox 
                     onChange = {comment.replyToClicked} 
                     commentId = {comment.parentComment.comments}
@@ -163,16 +173,7 @@ const CommentList = () => {
                 } 
               </p>
               
-              <p>
-              {
-                  comment.replyToClicked ? 
-                  <EditorBox 
-                    onChange = {comment.replyToClicked} 
-                    commentId = {comment.parentComment.comments}
-                  /> : <p>NOT replyToClicked</p>
-                 
-              }
-              </p>
+              
               
               
             </div>
@@ -201,3 +202,15 @@ const CommentList = () => {
 
 export default CommentList;
 
+/*
+<p>
+              {
+                  comment.replyToClicked ? 
+                  <EditorBox 
+                    onChange = {comment.replyToClicked} 
+                    commentId = {comment.parentComment.comments}
+                  /> : <p>NOT replyToClicked</p>
+                 
+              }
+              </p>
+*/
