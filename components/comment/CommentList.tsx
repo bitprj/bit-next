@@ -5,7 +5,7 @@ import useSWR from "swr";
 
 // ADDED
 import { Component } from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {message, Form, Button, List, Input} from 'antd';
 const { TextArea } = Input;
 import checkLogin from "../../lib/utils/checkLogin";
@@ -62,7 +62,7 @@ const CommentList = () => {
         x.style.display = "none";
       }
       */
-      
+      /*
       return (
         <div>
           <CommentInput />
@@ -71,7 +71,7 @@ const CommentList = () => {
     
         </div>
       );
-      
+      */
      return;
 
 
@@ -126,33 +126,12 @@ const CommentList = () => {
              
               
               <span key="comment-nested-reply-to"
-              onClick= {() => 
-                handleClickReplyTo(comment)
+                onClick= {() => 
+                  handleClickReplyTo(comment)
                 //setClick(1)
-                /*
-                comment.replyToClicked === true ? 
-                  <EditorBox 
-                    onChange = {comment.replyToClicked} 
-                    commentId = {comment.parentComment.comments}
-                  /> : <p>replyToClicked Not clikced</p>
-                */
               } 
               
-            >Reply to {comment.replyToClicked}</span>
-
-              
-            ,
-            <p>
-              {
-                clickedComment === 1 ?  
-                //comment.replyToClicked === true ? 
-                  <EditorBox 
-                    onChange = {comment.replyToClicked} 
-                    commentId = {comment.parentComment.comments}
-                  /> :  <p>NOT replyToClicked</p>
-              }
-              </p>
-            
+            >Reply to </span>
             
           ]}
 
@@ -172,17 +151,26 @@ const CommentList = () => {
                   comment.body
                 } 
               </p>
-              
-              
-              
-              
+              <p>
+              {
+                clickedComment === 1 ?  
+                  
+                  <EditorBox 
+                    onChange = {comment.replyToClicked} 
+                    commentId = {comment.parentComment.comments}
+                  /> :  null
+                  
+              }
+            </p>
+
             </div>
           }
         >
           
           {
-          comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : console.log(comment.id +"is" + comment.replyToClicked)
+            comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : console.log(comment.id +"is" + comment.replyToClicked)
           }
+
         </Comment>
         
         
