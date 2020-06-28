@@ -118,19 +118,20 @@ const ArticlePage = (initialArticle) => {
       Router.push(`/user/login`);
       return;
     }
-    setPreview({
-      ...preview,
-      favorited: !preview.favorited,
-      favoritesCount: preview.favorited
-        ? preview.favoritesCount - 1
-        : preview.favoritesCount + 1,
-    });
+    
     try {
       if (preview.favorited) {
         await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
           headers: {
             Authorization: `Token ${currentUser?.token}`,
           },
+        });
+        setPreview({
+          ...preview,
+          favorited: !preview.favorited,
+          favoritesCount: preview.favorited
+            ? preview.favoritesCount - 1
+            : preview.favoritesCount + 1,
         });
       } else {
         await axios.post(
@@ -143,8 +144,6 @@ const ArticlePage = (initialArticle) => {
           }
         );
       }
-     
-    } catch (error) {
       setPreview({
         ...preview,
         favorited: !preview.favorited,
@@ -152,6 +151,8 @@ const ArticlePage = (initialArticle) => {
           ? preview.favoritesCount - 1
           : preview.favoritesCount + 1,
       });
+    } catch (error) {
+      
     }
   };
 
@@ -207,7 +208,7 @@ const ArticlePage = (initialArticle) => {
     
       <ArticleContain>
       <Twemoji options={{ className: 'twemoji' }}>
-                  {!article.favorited?
+                  {!preview.favorited?
                    <StyledEmoji2  onClick = {()=>handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
                    : <StyledEmoji onClick = {()=>handleClickFavorite(article.slug)}>{"❤️ "}</StyledEmoji>}
                  
