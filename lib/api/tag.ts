@@ -4,7 +4,22 @@ import { SERVER_BASE_URL } from "../utils/constant";
 
 const TagAPI = {
   getAll: () => axios.get(`${SERVER_BASE_URL}/tags`),
-  get: (slug) => axios.get(`${SERVER_BASE_URL}/tags/${slug}`),
+  get: async(slug,user) => {
+    const token = user?.token;
+
+    try {
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/tags/${slug}`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }},
   follow: async (slug) => {
     const user: any = JSON.parse(window.localStorage.getItem("user"));
     const token = user?.token;
