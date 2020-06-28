@@ -2,7 +2,6 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 
-
 // ADDED
 import { Component } from 'react';
 import { useState, useEffect } from 'react';
@@ -11,7 +10,6 @@ const { TextArea } = Input;
 import checkLogin from "../../lib/utils/checkLogin";
 import storage from "../../lib/utils/storage";
 import EditorBox from "./EditorBox";
-//import handleClickReplyTo from "../../pages/article/[pid]"
 // END ADDED
 
 import CommentInput from "./CommentInput";
@@ -23,15 +21,9 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import { Comment, Avatar } from 'antd';
 
-// ADDED
-
-// END ADDED
-
-var clickedReplyTo = true;
-var count = 0;
 
 const CommentList = () => {
-  const [clickedComment, setClick] = useState(0);
+  var [clickedComment, setClick] = useState( [] );
 
 
   // ADDED
@@ -40,39 +32,27 @@ const CommentList = () => {
 
   const handleClickReplyTo = (comment) => {
 
-    //const [clickedComment, setClick] = useState(0);
-
-    console.log("In HandleClickReplyTo")
     if (isLoggedIn) {
       console.log("ALREADY LOGGED IN, Clicked")
 
-      comment.replyToClicked = true;
-      count = count + 1;
       
-      if (clickedComment === 1) {
-        setClick(0);
+      if (clickedComment.includes(comment.id)) {
+        // Code to hide editor Box via 'Reply To' button
+        // NOT YET WORKING
+        
+        console.log("Clicked, to hide it", comment.id)
+        let temp = clickedComment;
+        let spot = temp.indexOf(comment.id);
+        if (spot > -1) {
+          temp.splice(spot, 1);
+        }
+        setClick(clickedComment = temp);
+        
       } else {
-        setClick(1);
+        // Code to show editor box via 'Reply To' button
+        //console.log("Clicked, to show it", comment.id) // or comment.createdAt
+        setClick(clickedComment.concat( comment.id ));
       }
-      /*
-      var x = document.getElementById("showBox");
-      if (x.style.display === "none") {
-        x.style.display = "block";
-      } else {
-        x.style.display = "none";
-      }
-      */
-      /*
-      return (
-        <div>
-          <CommentInput />
-                
-          {recurseComments(comments)}
-    
-        </div>
-      );
-      */
-     return;
 
 
     } else {
@@ -107,14 +87,7 @@ const CommentList = () => {
   
   
   const recurseComments = (comments) => {
-    //const [clickedComment, setClick] = useState(0);
     
-    /*
-    for (let aComment of comments) {
-      console.log("this is ", aComment.id, "&", aComment.replyToClicked, "*");
-    }
-    */
-    // END ADDED 
 
    return (
       
@@ -123,19 +96,22 @@ const CommentList = () => {
         <Comment
           key={comment.id}
           actions= {[
-             
-              
-              <span key="comment-nested-reply-to"
-                onClick= {() => 
-                  handleClickReplyTo(comment)
-                //setClick(1)
+            clickedComment.includes(comment.id) ?
+            <span key="comment-nested-reply-to" 
+              onClick = {() =>
+                handleClickReplyTo(comment)
+              }
+            >Hide Editor Box</span>
+            :
+            <span key="comment-nested-reply-to"
+              onClick= {() => 
+                handleClickReplyTo(comment)
               } 
-              
+    
             >Reply to </span>
             
+              
           ]}
-
-          
           
           author={comment.author.username}
           avatar={
@@ -152,23 +128,21 @@ const CommentList = () => {
                 } 
               </p>
               <p>
-              {
-                clickedComment === 1 ?  
-                  
-                  <EditorBox 
-                    onChange = {comment.replyToClicked} 
-                    commentId = {comment.parentComment.comments}
-                  /> :  null
-                  
-              }
-            </p>
+                {
+                  clickedComment.includes(comment.id) ?  
+                    
+                    <EditorBox 
+                      commentId = {comment.parentComment.comments}
+                    /> :  null    
+                }
+              </p>
 
             </div>
           }
         >
           
           {
-            comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : console.log(comment.id +"is" + comment.replyToClicked)
+            comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null
           }
 
         </Comment>
@@ -189,16 +163,3 @@ const CommentList = () => {
 
 
 export default CommentList;
-
-/*
-<p>
-              {
-                  comment.replyToClicked ? 
-                  <EditorBox 
-                    onChange = {comment.replyToClicked} 
-                    commentId = {comment.parentComment.comments}
-                  /> : <p>NOT replyToClicked</p>
-                 
-              }
-              </p>
-*/
