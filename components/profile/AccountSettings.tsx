@@ -5,7 +5,7 @@ import storage from "../../lib/utils/storage";
 import checkLogin from "../../lib/utils/checkLogin";
 import styled from "styled-components";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
-import Form_Items from "./Form_Items";
+import FormItem from "./Form_Items";
 import { Avatar, Row, Col, Input, Form, Button, message } from 'antd';
 
 const { TextArea } = Input;
@@ -35,8 +35,6 @@ const Styledlabel = styled.label`
 const StyledRow = styled(Row)`
   margin-left: 2%;
 `;
-
-var Items = [["Name", "Name", [], "Name", "name"], ["Github", "Github", [{ type: 'url', message: 'Please enter valid url' }], "http://www.github.com", "githubLink"], ["Twitter", "Twitter", [{ type: 'url', message: 'Please enter valid url' }], "http://www.twitter.com", "twitterLink"], ["LinkedIn", "LinkedIn", [{ type: 'url', message: 'Please enter valid url' }], "http://www.linkedin.com", "linkedinLink"], ["Personal Website", "Website", [{ type: 'url', message: 'Please enter valid url' }], "http://www.example.com", "website"], ["Location", "Location", [], "Location", "location"], ["Occupation", "Occupation", [], "Occupation", "occupation"], ["Username", "Username", [{ required: true, message: 'Please input your username!' }], "Username", "username"], ["Email", "Email", [{ type: 'email', message: 'The input is not valid E-mail!' }, { required: true, message: 'Please input your E-mail!' }], "Email", "email"], ["Password", "Password", [], "New Password", "password"]]
 
 const SettingsForm = () => {
   const [errors, setErrors] = React.useState([]);
@@ -196,7 +194,16 @@ const SettingsForm = () => {
               <Avatar src={userInfo.image} size={40} />
               <Styledlabel>Reupload Image<input style={{ display: "none" }} type="file" onChange={Reupload} /></Styledlabel>
             </Form.Item>
-            <Form_Items onChange={key => updateState(key)} Item={Items} />
+            <FormItem onChange={updateState("name")} label={"Name"} name={"Name"} rules={[]} placeholder={"Name"}/>
+            <FormItem onChange={updateState("githubLink")} label={"Github"} name={"Github"} rules={[{ type: 'url', message: 'Please enter valid url' }]} placeholder={"http://www.github.com"}/>
+            <FormItem onChange={updateState("twitterLink")} label={"Twitter"} name={"Twitter"} rules={[{ type: 'url', message: 'Please enter valid url' }]} placeholder={"http://www.twitter.com"}/>
+            <FormItem onChange={updateState("linkedinLink")} label={"LinkedIn"} name={"LinkedIn"} rules={[{ type: 'url', message: 'Please enter valid url' }]} placeholder={"http://www.linkedin.com"}/>
+            <FormItem onChange={updateState("website")} label={"Personal Website"} name={"Website"} rules={[{ type: 'url', message: 'Please enter valid url' }]} placeholder={"http://www.example.com"}/>
+            <FormItem onChange={updateState("location")} label={"Location"} name={"Location"} rules={[]} placeholder={"Location"}/>
+            <FormItem onChange={updateState("occupation")} label={"Occupation"} name={"Occupation"} rules={[]} placeholder={"Occupation"}/>
+            <FormItem onChange={updateState("username")} label={"Username"} name={"Username"} rules={[{ required: true, message: 'Please input your username!' }]} placeholder={"Username"}/>
+            <FormItem onChange={updateState("email")} label={"Email"} name={"Email"} rules={[{ type: 'email', message: 'The input is not valid E-mail!' }, { required: true, message: 'Please input your E-mail!' }]} placeholder={"Email"}/>
+            <FormItem onChange={updateState("password")} label={"Password"} name={"Password"} rules={[]} placeholder={"New Password"}/>
             <Form.Item label="Your Bio">
               <TextArea
                 className="form-control form-control-lg"
