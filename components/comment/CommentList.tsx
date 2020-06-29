@@ -33,14 +33,11 @@ const CommentList = () => {
   const handleClickReplyTo = (comment) => {
 
     if (isLoggedIn) {
-      console.log("ALREADY LOGGED IN, Clicked")
-
       
       if (clickedComment.includes(comment.id)) {
         // Code to hide editor Box via 'Reply To' button
         // NOT YET WORKING
-        
-        console.log("Clicked, to hide it", comment.id)
+
         let temp = clickedComment;
         let spot = temp.indexOf(comment.id);
         if (spot > -1) {
@@ -124,7 +121,7 @@ const CommentList = () => {
             <div>
               <p>
                 {
-                  comment.body
+                  comment.body + comment.id
                 } 
               </p>
               <p>
@@ -132,7 +129,7 @@ const CommentList = () => {
                   clickedComment.includes(comment.id) ?  
                     
                     <EditorBox 
-                      commentId = {comment.parentComment.comments}
+                      commentId = {comment.id}
                     /> :  null    
                 }
               </p>

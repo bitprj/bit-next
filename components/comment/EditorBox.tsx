@@ -14,8 +14,7 @@ import {message, Form, Button, List, Input} from 'antd';
 const { TextArea } = Input;
 
 
-// ADDED
-const Editor = ({onChange, onSubmit, submitting, value }) => (
+const Editor = ({onChange, onSubmit, submitting, value, id }) => (
   <>
     <Form.Item>
   <TextArea rows={4} onChange={onChange} value={value} />
@@ -27,10 +26,8 @@ const Editor = ({onChange, onSubmit, submitting, value }) => (
 </Form.Item>
   </>
 )
-// END ADDED
 
 const EditorBox = ( {commentId} ) => {
-    console.log("EditorBox: entered here");
     const { data: currentUser } = useSWR("user", storage);
     const isLoggedIn = checkLogin(currentUser);
     const router = useRouter();
@@ -39,22 +36,23 @@ const EditorBox = ( {commentId} ) => {
     } = router;
   
     const [content, setContent] = React.useState("");
+    const [theId, setId] = React.useState("");
     const [isLoading, setLoading] = React.useState(false);
   
     const handleChange = React.useCallback((e) => {
-      console.log("EditorBox: called handleChange");
       setContent(e.target.value);
+      setId(e.target.id);
     }, []);
   
     const handleSubmit = async (e) => {
-      console.log("EditorBox: Called handleSubmit");
       e.preventDefault();
       setLoading(true);
       await axios.post(
-        `${SERVER_BASE_URL}/articles/${pid}/comments`,
+        `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}/comments`,
         JSON.stringify({
           comment: {
             body: content,
+            comment_id: commentId,
           },
         }),
         {
@@ -68,11 +66,7 @@ const EditorBox = ( {commentId} ) => {
       setContent("");
       trigger(`${SERVER_BASE_URL}/articles/${pid}/comments`);
     };
-    var clickedReplyTo;// = thisValue.thisValue;
-    clickedReplyTo = true;
-    console.log("clicekdReplyTo is ", clickedReplyTo, '*');
 
-    console.log("IN EDITORBOX");
     if (!isLoggedIn) {//} && !clickedReplyTo) {
         return (
             <p>
@@ -80,13 +74,14 @@ const EditorBox = ( {commentId} ) => {
             </p>
         );
 
-    } else if (isLoggedIn && clickedReplyTo) {
+    } else if (isLoggedIn) {
       return (
         <Editor 
               onChange={handleChange}
               onSubmit={ handleSubmit }
               submitting = { isLoading }
               value={ content }
+              id = { theId }
             />
       );
     }
@@ -95,9 +90,7 @@ const EditorBox = ( {commentId} ) => {
             Logged In RN
 
         </p>
-        
-        
-            
+           
     );
 
 };
