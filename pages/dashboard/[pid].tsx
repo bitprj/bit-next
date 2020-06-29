@@ -159,7 +159,6 @@ const Profile = ({ initialProfile }) => {
 
   {/*for org menu items*/ }
   const OrgChange = (key) => {
-    console.log(key);
     setPostsPage(false)
     setFollowersPage(false)
     setFollowingsPage(false)
@@ -262,8 +261,6 @@ const Profile = ({ initialProfile }) => {
     fetcher
   );
 
-	if (orgMembers) {console.log(orgMembers.organization.followers)}
-
 	const {
 		data: orgArticles,
 		error: orgArticleError,
@@ -353,12 +350,13 @@ const Profile = ({ initialProfile }) => {
                     currentTag={currentTag} />
                 	: null}
 
-              {isOrg ? orgArticles ?
-								isOrgSettings ? <GroupSetting page={"org"} currentOrg={currentOrg} /> :
-                isMembers ? <UserList users={orgMembers.organization.followers} /> :
+              {isOrg ? orgMembers ? orgArticles ?
+								isOrgSettings ? <GroupSetting page={"org"}
+								currentOrg={currentOrg} /> :
+                isMembers ? <UserList currentOrg={currentOrg} users={orgMembers.organization.followers.concat(orgMembers.organization.moderators)} /> :
 								<ArticleList
 									articles={orgArticles.articles}
-									currentOrg={currentOrg} /> : null : null}
+									currentOrg={currentOrg} /> : null : null : null}
 
               {isSettings ? <AccountSettings /> : null}
 
