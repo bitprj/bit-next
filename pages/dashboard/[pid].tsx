@@ -8,8 +8,6 @@ import UserAPI from "../../lib/api/user";
 import checkLogin from "../../lib/utils/checkLogin";
 
 import GroupSetting from "../../components/profile/GroupSetting";
-
-//DIFFERENT ONE
 import ArticleList from "../../components/global/ArticleList";
 import UserList from "../../components/global/UserList";
 import ErrorMessage from "../../components/common/ErrorMessage";
@@ -61,7 +59,6 @@ const Profile = ({ initialProfile }) => {
   } else {
     tabsList = ["Posts", "Followers", "Following", "Account Settings"]
   }
-  //here's where we're getting the list from
   const [list, setList] = React.useState(tabsList)
   const [tab_select_list, setTabList] = React.useState(["All Posts", "Published", "Drafts"])
   const [isPosts, setPostsPage] = React.useState(true)
@@ -171,6 +168,7 @@ const Profile = ({ initialProfile }) => {
     setOrg(key);
   }
 
+	{/*switching between top tabs*/}
   const TabView = (key) => {
     if (key == "All Posts") {
       setAllArticles(true);
@@ -353,7 +351,9 @@ const Profile = ({ initialProfile }) => {
               {isOrg ? orgMembers ? orgArticles ?
 								isOrgSettings ? <GroupSetting page={"org"}
 								currentOrg={currentOrg} /> :
-                isMembers ? <UserList currentOrg={currentOrg} users={orgMembers.organization.followers.concat(orgMembers.organization.moderators)} /> :
+                isMembers ? <UserList
+									currentOrg={currentOrg}
+									users={orgMembers.organization.followers.concat(orgMembers.organization.moderators)} /> :
 								<ArticleList
 									articles={orgArticles.articles}
 									currentOrg={currentOrg} /> : null : null : null}

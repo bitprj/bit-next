@@ -17,14 +17,6 @@ const { TextArea } = Input;
 
 const { Search } = Input;
 
-const StyledButton = styled(Button)`
-  margin: 0px 20px
-`
-
-const SettingButton = styled(Button)`
-  padding: 0px 50px
-`
-
 const StyledCard = styled(Card)`
   margin-right: 20px
 `
@@ -36,8 +28,6 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
     error: tagOrgError,
   } = currentOrg ? useSWR(`${SERVER_BASE_URL}/organizations/${currentOrg}`, fetcher) :
       useSWR(`${SERVER_BASE_URL}/tags/${currentTag}`, fetcher)
-
-  console.log(tagOrg);
 
   {/*returns description: etc*/}
   const editDescription = description => {
