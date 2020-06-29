@@ -36,7 +36,7 @@ const StyledRow = styled(Row)`
   margin-left: 2%;
 `;
 
-var Items = [["Name","Name",[],"Name","name"],["Github","Github",[{ type: 'url', message: 'Please enter valid url' }],"http://www.github.com","githubLink"],["Twitter","Twitter",[{ type: 'url', message: 'Please enter valid url' }],"http://www.twitter.com","twitterLink"],["LinkedIn","LinkedIn",[{ type: 'url', message: 'Please enter valid url' }],"http://www.linkedin.com","linkedinLink"],["Personal Website","Website",[{ type: 'url', message: 'Please enter valid url' }],"http://www.example.com","website"],["Location","Location",[],"Location","location"],["Occupation","Occupation",[],"Occupation","occupation"],["Username","Username",[{ required: true, message: 'Please input your username!' }],"Username","username"],["Email","Email",[{ type: 'email', message: 'The input is not valid E-mail!' }, { required: true, message: 'Please input your E-mail!' }],"Email","email"],["Password","Password",[],"New Password","password"]]
+var Items = [["Name", "Name", [], "Name", "name"], ["Github", "Github", [{ type: 'url', message: 'Please enter valid url' }], "http://www.github.com", "githubLink"], ["Twitter", "Twitter", [{ type: 'url', message: 'Please enter valid url' }], "http://www.twitter.com", "twitterLink"], ["LinkedIn", "LinkedIn", [{ type: 'url', message: 'Please enter valid url' }], "http://www.linkedin.com", "linkedinLink"], ["Personal Website", "Website", [{ type: 'url', message: 'Please enter valid url' }], "http://www.example.com", "website"], ["Location", "Location", [], "Location", "location"], ["Occupation", "Occupation", [], "Occupation", "occupation"], ["Username", "Username", [{ required: true, message: 'Please input your username!' }], "Username", "username"], ["Email", "Email", [{ type: 'email', message: 'The input is not valid E-mail!' }, { required: true, message: 'Please input your E-mail!' }], "Email", "email"], ["Password", "Password", [], "New Password", "password"]]
 
 const SettingsForm = () => {
   const [errors, setErrors] = React.useState([]);
@@ -196,7 +196,7 @@ const SettingsForm = () => {
               <Avatar src={userInfo.image} size={40} />
               <Styledlabel>Reupload Image<input style={{ display: "none" }} type="file" onChange={Reupload} /></Styledlabel>
             </Form.Item>
-            <Form_Items onChange={key=>updateState(key)} Item={Items}/>
+            <Form_Items onChange={key => updateState(key)} Item={Items} />
             <Form.Item label="Your Bio">
               <TextArea
                 className="form-control form-control-lg"
