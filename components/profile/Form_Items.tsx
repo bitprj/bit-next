@@ -7,12 +7,12 @@ import styled from "styled-components";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import { Avatar, Row, Col, Input, Form, Button, message } from 'antd';
 
-const Form_Items = (props) => {
+const FormItem = (props) => {
 	return(
 		<div>
-		{props.Item.map(item => <Form.Item label={item[0]} name={item[1]} rules={item[2]}><Input placeholder={item[3]} onChange={props.onChange(item[4])}/></Form.Item>)}
+		<Form.Item label={props.label} name={props.name} rules={props.rules}><Input placeholder={props.placeholder} onChange={props.onChange}/></Form.Item>
 		</div>
 	);
 };
 
-export default Form_Items;
+export default FormItem;
