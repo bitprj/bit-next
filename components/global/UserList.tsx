@@ -21,42 +21,44 @@ const UserList = (props) => {
   }
 
   return (
-    <>
-      <StyledHeader>{props.header}</StyledHeader>
-      <List
-        className="user-list"
-        itemLayout="horizontal"
-        dataSource={props.users}
-        renderItem={user => (
-          <List.Item style={{ border: 'none' }}>
-            <Skeleton avatar title={false} loading={props.loading} active>
-              <User
-                name={user['profile']['username']}
-                image={user['profile']['image']}
-                username={user['profile']['username']}
-                following={user['following']}
-                onClick={props['onClick']}
-              />
-              <Button
+  <>
+    <StyledHeader>{props.header}</StyledHeader>
+    <List
+      className="user-list"
+      itemLayout="horizontal"
+      dataSource={props.users}
+      renderItem={ user => (
+        <List.Item style={{border: 'none'}}>
+          <Skeleton avatar title={false} loading={props.loading} active>
+            <User
+              currentOrg = {props.currentOrg ? props.currentOrg : null}
+              name = {user['profile']['username']}
+              image = {user['profile']['image']}
+              username = {user['profile']['username']}
+              following = {user['profile']['following']}
+              hasButton = {true}
+            />
+            {props.currentOrg ? <Button
                 type={'primary'}
                 size={'middle'}
                 onClick={handleClick}
                 style={{
+                  fontSize: '1em',
+                  fontWeight: 'bold',
                   background: '#DD2E44',
                   borderColor: '#DD2E44',
                   borderRadius: '0.5em',
                   padding: '0em 1em',
-                  fontSize: '1em',
-                  fontWeight: 'bold',
                 }}
               >
                 Delete
-              </Button>
-            </Skeleton>
-          </List.Item>
-        )}
-      />
-    </>
+              </Button> : null
+            }
+          </Skeleton>
+        </List.Item>
+      )}
+    />
+  </>
   )
 }
 

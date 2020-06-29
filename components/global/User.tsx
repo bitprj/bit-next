@@ -39,8 +39,8 @@ const User = (props) =>(
   <StyledListItemMeta
     avatar={ <Avatar src= {props.image} size = { props.avatarSize || 50}/>}
     title={props.username}
-    description={props.username ||
-      (props.hasButton &&
+    description={
+      (props.hasButton && !props.currentOrg &&
         <Button
           type ={'primary'}
           size={'small'}
@@ -55,7 +55,7 @@ const User = (props) =>(
           }}>
             {props.following ? 'Following' : '+ Follow'}
         </Button>
-      )
+      ) || props.username
     }
   />
 )

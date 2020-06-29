@@ -68,7 +68,9 @@ const StyledEmoji = styled.span`
 `
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, currentTag = null, modReview=false, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
+const ArticleCard = ({ article, currentTag = null, currentOrg = null,
+   modReview=false, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null,
+    favoriteClick = null}) => {
 
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
@@ -167,7 +169,7 @@ const ArticleCard = ({ article, currentTag = null, modReview=false, showAuth = f
                 }}
               >
                 {
-                    modReview ? 'Published' : article.isPublished ? 'BookMark' :
+                    modReview ? 'Published' : article.isPublished ? article.bookmarked ? "Bookmarked" : 'BookMark' :
                     article.needsReview ? 'Published' : 'Edit'
                 }
               </Button>
