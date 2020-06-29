@@ -18,8 +18,7 @@ const StyledListItem = styled(List.Item)`
     background: #FFFFFF;
 `
 
-const FollowList = ({followings}) =>{
-
+const FollowList = ({followings, pageName = 'profiles'}) =>{
   const followStr = followings ? "followings" : "followers";
   const router = useRouter();
   const { query: { pid }} = router;
@@ -28,7 +27,7 @@ const FollowList = ({followings}) =>{
     data: fetchedFollwList,
     error: FollowListError,
   } = useSWR(
-    `${SERVER_BASE_URL}/profiles/${encodeURIComponent(String(pid))}/${followStr}`,
+    `${SERVER_BASE_URL}/${pageName}/${encodeURIComponent(String(pid))}/${followStr}`,
     fetcher,
   );
 
@@ -36,7 +35,7 @@ const FollowList = ({followings}) =>{
 
   const handleFollow = async (username, email) => {
     mutate(
-      `${SERVER_BASE_URL}/profiles/${pid}/${followStr}`,
+      `${SERVER_BASE_URL}/${pageName}/${pid}/${followStr}`,
        fetchedFollwList.map((Item)=>{
          if(Item.user.username === username){
            return {user: {...Item.user, following : true}}
@@ -46,12 +45,12 @@ const FollowList = ({followings}) =>{
        })
     )
     UserAPI.follow(username, email);
-    trigger(`${SERVER_BASE_URL}/profiles/${pid}/${followStr}`);
+    trigger(`${SERVER_BASE_URL}/${pageName}/${pid}/${followStr}`);
   };
 
   const handleUnfollow = async (username) => {
     mutate(
-      `${SERVER_BASE_URL}/profiles/${pid}/${followStr}`,
+      `${SERVER_BASE_URL}/${pageName}/${pid}/${followStr}`,
        fetchedFollwList.map((Item)=>{
          if(Item.user.username === username){
            return {user: {...Item.user, following : false}}
@@ -61,7 +60,7 @@ const FollowList = ({followings}) =>{
        })
     )
     UserAPI.unfollow(username);
-    trigger(`${SERVER_BASE_URL}/profiles/${pid}/${followStr}`);
+    trigger(`${SERVER_BASE_URL}/${pageName}/${pid}/${followStr}`);
   };
 
   return(

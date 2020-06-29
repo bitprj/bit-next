@@ -18,7 +18,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -52,7 +54,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -79,7 +83,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -105,7 +111,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -137,7 +145,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -185,7 +195,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(userToken)
@@ -224,7 +236,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs", "dragons"]
+                "tagList": ["reactjs", "angularjs", "dragons"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(userToken)
@@ -258,7 +272,9 @@ class TestTags:
                 "title": "How to train your dragon",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs"]
+                "tagList": ["reactjs", "angularjs"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(userToken)
@@ -286,7 +302,9 @@ class TestTags:
                 "title": "How to learn React",
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
-                "tagList": ["reactjs", "angularjs"]
+                "tagList": ["reactjs", "angularjs"],
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(userToken)
@@ -312,7 +330,3 @@ class TestTags:
         })
 
         assert resp.json['article']['needsReview'] == False
-
-
-
-

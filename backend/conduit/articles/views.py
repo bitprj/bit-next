@@ -114,6 +114,8 @@ def get_article(slug):
     article = Article.query.filter_by(slug=slug).first()
     if not article:
         raise InvalidUsage.article_not_found()
+    article.update(views=article.views+1)
+    article.save()
     return article
 
 
@@ -166,6 +168,20 @@ def bookmark_an_article(slug):
     return article
 
 
+#Route to remove a bookmark on a particular article
+@blueprint.route('/api/articles/<slug>/bookmark', methods=('DELETE',))
+@jwt_required
+@marshal_with(article_schema)
+def unbookmark_an_article(slug):
+    profile = current_user.profile
+    article = Article.query.filter_by(slug=slug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    article.unbookmark(profile)
+    article.save()
+    return article
+
+
 ##########
 # Comments
 ##########
@@ -190,6 +206,7 @@ def make_comment_on_article(slug, body, comment_id=None, **kwargs):
         raise InvalidUsage.article_not_found()
     if comment_id:
         comment = Comment(None, current_user.profile, body, comment_id, **kwargs)
+        comment.comment_id = comment_id
     else:
         comment = Comment(article, current_user.profile, body, comment_id, **kwargs)
     comment.save()
@@ -206,3 +223,16 @@ def delete_comment_on_article(slug, cid):
     comment = article.comments.filter_by(id=cid, author=current_user.profile).first()
     comment.delete()
     return '', 200
+
+
+@blueprint.route('/api/comments/<commentId>/favorite', methods=('POST',))
+@jwt_required
+@marshal_with(comment_schema)
+def like_comment_on_article(commentId):
+    profile = current_user.profile
+    comment = Comment.query.get(commentId)
+    if not comment:
+        raise InvalidUsage.comment_not_found()
+    comment.like_comment(profile)
+    comment.save()
+    return comment
