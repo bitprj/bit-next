@@ -1,29 +1,29 @@
+// Based on CommentInput.tsx
+
 import axios from "axios";
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR, { trigger } from "swr";
 
-import CustomImage from "../common/CustomImage";
-import CustomLink from "../common/CustomLink";
 import checkLogin from "../../lib/utils/checkLogin";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import storage from "../../lib/utils/storage";
 
 
-import {message, Form, Button, List, Input} from 'antd';
+import { Form, Button, Input} from 'antd';
 const { TextArea } = Input;
 
 
-const Editor = ({onChange, onSubmit, submitting, value, id }) => (
+const Editor = ( { onChange, onSubmit, submitting, value } ) => (
   <>
     <Form.Item>
-  <TextArea rows={4} onChange={onChange} value={value} />
-</Form.Item>
-<Form.Item>
-  <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-    Add Comment
-  </Button>
-</Form.Item>
+      <TextArea rows={4} onChange={onChange} value={value} />
+    </Form.Item>
+    <Form.Item>
+      <Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
+        Add Comment
+      </Button>
+    </Form.Item>
   </>
 )
 
@@ -36,12 +36,10 @@ const EditorBox = ( {commentId} ) => {
     } = router;
   
     const [content, setContent] = React.useState("");
-    const [theId, setId] = React.useState("");
     const [isLoading, setLoading] = React.useState(false);
   
     const handleChange = React.useCallback((e) => {
       setContent(e.target.value);
-      setId(e.target.id);
     }, []);
   
     const handleSubmit = async (e) => {
@@ -67,31 +65,21 @@ const EditorBox = ( {commentId} ) => {
       trigger(`${SERVER_BASE_URL}/articles/${pid}/comments`);
     };
 
-    if (!isLoggedIn) {//} && !clickedReplyTo) {
+    if (!isLoggedIn) {
         return (
-            <p>
-                Not Logged In RN
-            </p>
+            null
         );
 
-    } else if (isLoggedIn) {
+    } else { // is Logged In
       return (
         <Editor 
               onChange={handleChange}
               onSubmit={ handleSubmit }
               submitting = { isLoading }
               value={ content }
-              id = { theId }
             />
       );
     }
-    return (
-        <p>
-            Logged In RN
-
-        </p>
-           
-    );
 
 };
 

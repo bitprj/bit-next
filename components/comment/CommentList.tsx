@@ -2,15 +2,11 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 
-// ADDED
-import { Component } from 'react';
-import { useState, useEffect } from 'react';
-import {message, Form, Button, List, Input} from 'antd';
-const { TextArea } = Input;
+import { useState } from 'react';
+import { message } from 'antd';
 import checkLogin from "../../lib/utils/checkLogin";
 import storage from "../../lib/utils/storage";
 import EditorBox from "./EditorBox";
-// END ADDED
 
 import CommentInput from "./CommentInput";
 import ErrorMessage from "../common/ErrorMessage";
@@ -23,10 +19,10 @@ import { Comment, Avatar } from 'antd';
 
 
 const CommentList = () => {
+  // clickedComment is an array to store the ids of the comments that have clicked the Reply To button
+  // These comments will have the Editor Box and Hide Box button available
   var [clickedComment, setClick] = useState( [] );
 
-
-  // ADDED
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser)
 
@@ -35,31 +31,26 @@ const CommentList = () => {
     if (isLoggedIn) {
       
       if (clickedComment.includes(comment.id)) {
-        // Code to hide editor Box via 'Reply To' button
-        // NOT YET WORKING
-
+        // Code to hide editor Box via 'Hide Editor' button
+        // NOTE: There is a lag in closing the Editor Box
+    
         let temp = clickedComment;
         let spot = temp.indexOf(comment.id);
         if (spot > -1) {
           temp.splice(spot, 1);
         }
-        setClick(clickedComment = temp);
+        setClick(temp);
         
       } else {
         // Code to show editor box via 'Reply To' button
-        //console.log("Clicked, to show it", comment.id) // or comment.createdAt
         setClick(clickedComment.concat( comment.id ));
       }
 
 
-    } else {
+    } else { // Not Logged In
       message.info("Please log in to reply", 10)
     }
   }
-
-
-  // END ADDED
-
 
   const router = useRouter();
   const {
@@ -82,10 +73,9 @@ const CommentList = () => {
 
   const { comments } = data;
   
-  
+
   const recurseComments = (comments) => {
     
-
    return (
       
       comments.map((comment: CommentType) => (
@@ -93,12 +83,18 @@ const CommentList = () => {
         <Comment
           key={comment.id}
           actions= {[
+            /*
+            If the clickedComment array contains this id, then the Editor Box is currently visible
+            so offer option to Hide Editor
+            Else, the clickedComment array does NOT contain this id, 
+            so offer option to Reply To 
+            */
             clickedComment.includes(comment.id) ?
             <span key="comment-nested-reply-to" 
               onClick = {() =>
                 handleClickReplyTo(comment)
               }
-            >Hide Editor Box</span>
+            >Hide Editor</span>
             :
             <span key="comment-nested-reply-to"
               onClick= {() => 
@@ -106,7 +102,6 @@ const CommentList = () => {
               } 
     
             >Reply to </span>
-            
               
           ]}
           
@@ -120,14 +115,14 @@ const CommentList = () => {
           content={
             <div>
               <p>
-                {
-                  comment.body + comment.id
-                } 
+                { comment.body } 
               </p>
               <p>
                 {
+                  /*
+                  If the clickedComment array contains this id, then show the Editor Box
+                  */
                   clickedComment.includes(comment.id) ?  
-                    
                     <EditorBox 
                       commentId = {comment.id}
                     /> :  null    
@@ -144,7 +139,6 @@ const CommentList = () => {
 
         </Comment>
         
-        
       )))
   }
 
@@ -156,7 +150,5 @@ const CommentList = () => {
     </div>
   );
 };
-
-
 
 export default CommentList;
