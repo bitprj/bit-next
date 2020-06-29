@@ -75,7 +75,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
                   <Title level={4}>{currentOrg ? "Org Profile Pic" : "Tag Profile Pic"}</Title>
                 </Row>
                 <Row>
-                  <Avatar src={currentOrg ? tagOrg.organization.image : tagOrg.tag.icon} style={{ margin: "0px 0px 8px" }} />
+                  <Avatar src={currentOrg ? tagOrg.organization.image : tagOrg.tag.icon} style={{ margin: "0px 42px 10px" }} />
                 </Row>
                 <Row style={{ margin: "0px 0px 15px" }}>
                   <Button type="primary" onClick={() => uploadPic("placeholder")}>Reupload Icon</Button>

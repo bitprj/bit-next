@@ -94,8 +94,10 @@ const Profile = ({ initialProfile }) => {
 
   const [orgTagSettings, setOrgTagSettings] = React.useState(false);
 
-  {/*for article items*/ }
-  const TabChange = (key) => {
+	const [tabKey, setTabKey] = React.useState(null);
+
+  {/*for article items/admin/everything not orgs and tags in menu*/ }
+  const MenuChange = (key) => {
     setTagPage(false)
     setOrgPage(false)
     if (key == "Posts") {
@@ -105,6 +107,9 @@ const Profile = ({ initialProfile }) => {
       setFollowingsPage(false)
       setSettingsPage(false)
       setIsAdmin(false)
+
+			TabView("All Posts");
+			setTabKey("All Posts");
     }
     else if (key == "Followers") {
       setTabList(["Old -> New"])
@@ -138,6 +143,7 @@ const Profile = ({ initialProfile }) => {
       setFollowingsPage(false)
       setSettingsPage(false)
     }
+		setTabKey(tab_select_list[0]);
   }
 
   {/*for tag menu items*/ }
@@ -149,9 +155,12 @@ const Profile = ({ initialProfile }) => {
     setIsAdmin(false)
     setOrgPage(false)
 
-    setTabList(["Submitted", "Published", "Settings"])
-    setTagPage(true)
+		setTabList(["Submitted", "Published", "Settings"])
+		setTagPage(true);
     setTag(key);
+
+		TabView("Submitted");
+		setTabKey(tab_select_list[0]);
   }
 
   {/*for org menu items*/ }
@@ -166,10 +175,14 @@ const Profile = ({ initialProfile }) => {
     setTabList(["Submitted", "Members", "Settings"])
     setOrgPage(true);
     setOrg(key);
+
+		TabView("Submitted");
+		setTabKey(tab_select_list[0]);
   }
 
 	{/*switching between top tabs*/}
   const TabView = (key) => {
+		setTabKey(key);
     if (key == "All Posts") {
       setAllArticles(true);
       setDrafts(false);
@@ -316,7 +329,7 @@ const Profile = ({ initialProfile }) => {
             </Col>
             <Col span={24}>
               <StyledMenu>
-                {list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
+                {list.map(item => <Menu.Item key={item} onClick={item => MenuChange(item.key)}>{item}</Menu.Item>)}
                 <Menu.Divider />
                 {orgsMod.map(item => <Menu.Item key={item.slug} onClick={item => OrgChange(item.key)}>{item.name}</Menu.Item>)}
                 <Menu.Divider />
@@ -328,7 +341,7 @@ const Profile = ({ initialProfile }) => {
         <Col span={12}>
           <Row gutter={[16, 40]}>
             <Col span={24}>
-              <Tab_list tabs={tab_select_list} defaultActiveKey={tab_select_list[0]} onClick={key => TabView(key)} position={"top"} />
+              <Tab_list tabs={tab_select_list} activeKey={tabKey ? tabKey : tab_select_list[0]} defaultActiveKey={tab_select_list[0]} onClick={key => TabView(key)} position={"top"} />
             </Col>
             <Col span={24} style={{ paddingTop: "0" }}>
               {isPosts && articleData ? <ArticleList articles={articleData.articles} /> : null}
