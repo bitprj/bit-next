@@ -84,7 +84,9 @@ const StyleButton = styled(Button)`
 
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null, favoriteClick = null }) => {
+const ArticleCard = ({ article, currentTag = null, currentOrg = null,
+   modReview=false, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null,
+    favoriteClick = null}) => {
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
       <CustomLink
@@ -158,7 +160,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
             {/* rigt bottom: show two buttons */}
             <Col>
               <Button
-                disabled={article.isPublished}
+                disabled={article.isPublished && !modReview}
                 onClick={onLeftButtonClick}
                 style={{
                   border: "none",
@@ -169,6 +171,10 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                   article.isPublished ? (article.readtime && article.readtime + ' min read') :
                     article.needsReview ? 'Reject' : 'Delete'
                 }
+                {
+                  modReview ? 'Reject' : null
+                }
+
               </Button>
               <StyleButton
                 type={"primary"}
@@ -177,7 +183,7 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                 bookmarked={article.bookmarked}
               >
                 {
-                  article.isPublished ? article.bookmarked ? 'BookMarked' : 'Bookmark' :
+                    modReview ? 'Published' : article.isPublished ? article.bookmarked ? "Bookmarked" : 'BookMark' :
                     article.needsReview ? 'Published' : 'Edit'
                 }
               </StyleButton>

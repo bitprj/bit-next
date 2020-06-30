@@ -8,7 +8,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
     align-items: center;
     font-size : 1em;
     flex: none;
-    
+
     .ant-list-item-meta-avatar {
       margin-right: 1.2em;
     }
@@ -23,7 +23,7 @@ const StyledListItemMeta = styled(List.Item.Meta)`
       color: #000000
       word-wrap: break-word;
     }
-    
+
     .ant-list-item-meta-description {
       font-family: Open Sans, sans-serif;
       font-style: normal;
@@ -40,12 +40,12 @@ const User = (props) =>(
     avatar={ <Avatar src= {props.image} size = { props.avatarSize || 50}/>}
     title={props.username}
     description={
-      (props.hasButton &&
-        <Button 
-          type ={'primary'} 
+      (props.hasButton && !props.currentOrg &&
+        <Button
+          type ={'primary'}
           size={'small'}
           onClick = {props.onClick}
-          style={{ 
+          style={{
             background: props.following ? '#4EC700':'#007BED' ,
             borderColor :  props.following ? '#4EC700':'#007BED' ,
             borderRadius: '0.5em',

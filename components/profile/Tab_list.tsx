@@ -15,7 +15,7 @@ const Tab_list=(props)=>{
 	  } = router;
 	  return(
 	  	<>
-		<Tabs tabPosition={props.position} size={'large'} animated={false} onTabClick={key=>props.onClick(key)}>
+		<Tabs tabPosition={props.position} activeKey={props.activeKey} size={'large'} animated={false} onTabClick={key=>props.onClick(key)}>
 			{[...props.tabs].map(i=>(
 				<TabPane tab={i} key={i}>
             	</TabPane>
