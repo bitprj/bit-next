@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components'
-import { Row, Col, Card, Avatar, Button, Space, Layout, Typography, Form, Input } from 'antd';
+import { Row, Col, Card, Avatar, Button,
+   Space, Layout, Typography, Form,
+   Input, Upload, Message } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import UserAPI from "../../lib/api/user";
-import OrgAPI from "../../lib/api/org";
+import OrganizationsAPI from "../../lib/api/organizations";
 import TagAPI from "../../lib/api/tag";
 
 import useSWR from "swr";
@@ -32,24 +34,25 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
   {/*returns description: etc*/}
   const editDescription = description => {
     if (currentOrg) {
-      OrgAPI.changeModSettingOrg(currentOrg, description)
+      OrganizationsAPI.changeOrgDescription(currentOrg, description)
     } else {
       TagAPI.changeTagDescription(currentTag, description)
     }
   }
 
   const uploadPic = pic => {
-    if (currentOrg) {
-      OrgAPI.changeModSettingOrg(currentOrg, pic)
+    console.log(pic);
+    {/*if (currentOrg) {
+      OrganizationsAPI.changeModSettingOrg(currentOrg, pic)
     } else {
       TagAPI.changeTagPic(currentTag, pic)
-    }
+    }*/}
   }
 
   {/*returns string*/}
   const changeSlug = slug => {
     if (currentOrg) {
-      OrgAPI.changeModSettingOrg(currentOrg, slug)
+      OrganizationsAPI.changeOrgSlug(currentOrg, slug)
     } else {
       TagAPI.changeTagSlug(currentTag, slug)
     }
@@ -58,7 +61,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
   {/*returns number*/}
   const editModSettings = setting => {
     if (currentOrg) {
-      OrgAPI.changeModSettingOrg(currentOrg, setting)
+      OrganizationsAPI.changeModSettingOrg(currentOrg, setting)
     } else {
       TagAPI.changeModSettingTag(currentTag, setting)
     }
@@ -78,7 +81,9 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
                   <Avatar src={currentOrg ? tagOrg.organization.image : tagOrg.tag.icon} style={{ margin: "0px 42px 10px" }} />
                 </Row>
                 <Row style={{ margin: "0px 0px 15px" }}>
-                  <Button type="primary" onClick={() => uploadPic("placeholder")}>Reupload Icon</Button>
+                  <Upload onChange={uploadPic}>
+                    <Button type="primary" onClick={() => uploadPic("placeholder")}>Reupload Icon</Button>
+                  </Upload>
                 </Row>
                 <Row>
                   <Title level={4}>{currentOrg ? "Org Slug" : "Tag Slug"}</Title>
@@ -98,7 +103,9 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
                 <Title level={4}>{currentOrg ? "Org Description" : "Tag Description"}</Title>
                 <Form onFinish={editDescription}
                   initialValues={{
-                    description: currentOrg ? tagOrg.organization.description : tagOrg.tag.description
+                    description: currentOrg ? tagOrg.organization.description : tagOrg.tag.description,
+                    old_slug: currentOrg,
+                    slug: currentOrg
                   }}>
                   <Form.Item name="description">
                     <TextArea

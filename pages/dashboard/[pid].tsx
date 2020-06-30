@@ -345,9 +345,6 @@ const Profile = ({ initialProfile }) => {
         <Col span={12}>
           <Row gutter={[16, 40]}>
             <Col span={24}>
-						{(() => {
-					    console.log(internalTab,tabKey,tab_select_list[0])
-						})()}
               <Tab_list tabs={tab_select_list}
 							activeKey={internalTab ? tabKey : tab_select_list[0]}
 							defaultActiveKey={tab_select_list[0]}
