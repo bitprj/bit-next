@@ -91,15 +91,15 @@ const Profile = ({ initialProfile }) => {
   const isUser = currentUser && username === currentUser ?.username;
 
   const [articleType, setArticleType] = React.useState("all");
-
   const [orgTagSettings, setOrgTagSettings] = React.useState(false);
-
 	const [tabKey, setTabKey] = React.useState(null);
+	const [internalTab, setInternalTab] = React.useState(false);
 
   {/*for article items/admin/everything not orgs and tags in menu*/ }
   const MenuChange = (key) => {
     setTagPage(false)
     setOrgPage(false)
+		setInternalTab(false);
     if (key == "Posts") {
       setTabList(["All Posts", "Published", "Drafts"])
       setPostsPage(true)
@@ -148,6 +148,7 @@ const Profile = ({ initialProfile }) => {
 
   {/*for tag menu items*/ }
   const TagChange = (key) => {
+		setInternalTab(false);
     setPostsPage(false)
     setFollowersPage(false)
     setFollowingsPage(false)
@@ -165,6 +166,7 @@ const Profile = ({ initialProfile }) => {
 
   {/*for org menu items*/ }
   const OrgChange = (key) => {
+		setInternalTab(false)
     setPostsPage(false)
     setFollowersPage(false)
     setFollowingsPage(false)
@@ -343,7 +345,14 @@ const Profile = ({ initialProfile }) => {
         <Col span={12}>
           <Row gutter={[16, 40]}>
             <Col span={24}>
-              <Tab_list tabs={tab_select_list} activeKey={tabKey ? tabKey : tab_select_list[0]} defaultActiveKey={tab_select_list[0]} onClick={key => TabView(key)} position={"top"} />
+						{(() => {
+					    console.log(internalTab,tabKey,tab_select_list[0])
+						})()}
+              <Tab_list tabs={tab_select_list}
+							activeKey={internalTab ? tabKey : tab_select_list[0]}
+							defaultActiveKey={tab_select_list[0]}
+							onClick={key => {TabView(key); setInternalTab(true);}}
+							position={"top"} />
             </Col>
             <Col span={24} style={{ paddingTop: "0" }}>
               {isPosts && articleData ? <ArticleList articles={articleData.articles} /> : null}
