@@ -13,6 +13,69 @@ import Tab_list from "../../components/profile/Tab_list";
 import { UploadOutlined  } from '@ant-design/icons';
 import Twemoji from 'react-twemoji';
 
+var timeout = null
+
+const StyledTitle = styled.input`
+  margin-bottom: 2%;
+  border: none;
+  padding: 0;
+  font-size: 4em;
+  width: 100%;
+  color: black;
+  font-weight: lighter;
+`;
+
+const StyledDesc = styled.input`
+  border: none;
+  padding: 0;
+  font-size: 1.5em;
+  width: 100%;
+  color: black;
+  font-weight: lighter;
+`;
+
+const StyledDiv = styled.div`
+  background: white; 
+  width: 75%; 
+  margin-left: auto; 
+  margin-right: auto; 
+  margin-top: 5em;
+`;
+
+const StyledDivider = styled(Divider)`
+  margin-bottom: 0;
+`;
+
+const StyledRow = styled(Row)`
+  margin-left: 1em;
+  width: 100%;
+`;
+
+const StyledVerticalDivider = styled(Divider)`
+  height: 100%;
+  margin-right: 0;
+`;
+
+const StyledButton = styled(Button)`
+  margin-top: 1em;
+`;
+
+const StyledImg = styled.img`
+  width: -webkit-fill-available;
+`;
+
+const StyledDividerTop = styled(Divider)`
+  margin-top: 0;
+`;
+
+const StyledP = styled.p`
+  margin-bottom: 0;
+`;
+
+const Styleddiv = styled.div`
+  margin-left: 1em;
+`;
+
 const PublishArticleEditor = () => {
   var initialState = {
     title: "",
@@ -66,22 +129,28 @@ const PublishArticleEditor = () => {
   `;
 
   const addTag = (tag) => {
-    if(!tags.includes(tag) && tags.length<=4){
+    if(!tags.includes(tag) && tags.length <= 4){
       setTags([...tags, tag])
       setTagsDisplay([...tags_display,{slug:tag,tagname:tag}])
+      AutoSave_Call(title,description,value_dummy,tags,coverImg)
     }
   }
 
   const removeTag = (tag) => {
+    var tags_list=tags
+    tags_list=tags_list.filter(item => item != tag.slug)
     setTags(tags.filter(item => item != tag.slug))
     setTagsDisplay(tags_display.filter(item => item != tag))
+    AutoSave_Call(title,description,value_dummy,tags_list,coverImg)
   }
 
   const handleTitle = e => {
     setTitle(e.target.value)
+    AutoSave_Call(e.target.value,description,value_dummy,tags,coverImg)
   }
   const handleDesc = e => {
     setDesc(e.target.value)
+    AutoSave_Call(title,e.target.value,value_dummy,tags,coverImg)
   }
 
   const ChangeTheme = () => {
@@ -100,39 +169,73 @@ const PublishArticleEditor = () => {
 
   const handleChange = (value => {
     setDummyValue(value())
-    if (id != null) {
-      AutoSave()
-    }
+    console.log(value())
+    AutoSave_Call(title,description,value(),tags,coverImg)
   });
 
+  const AutoSave_Call = (title_save,desc_save,body_save,tags_save,coverImg_save) =>{
+    if (id != null && title != "") {
+      if(timeout){
+        clearTimeout(timeout)
+      }
+      timeout = setTimeout(()=>{
+        setLoading(true)
+        AutoSave(title_save,desc_save,body_save,tags_save,coverImg_save)
+      },5000);
+    }
+  }
+
   const uploadCover = async (file) => {
-    const cover = new FormData();
-    cover.append("file", file);
-    cover.append("upload_preset", 'upload')
-    const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
-      method: 'POST',
-      body: cover
-    });
-    const response = await res.json();
-    setCoverImg(response.secure_url);
+    if(file){ 
+      if(file.type.split("/")[0] == "image"){ 
+        if(file.size < 2097153){
+          const cover = new FormData();
+          cover.append("file", file);
+          cover.append("upload_preset", 'upload')
+          const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/image/upload", {
+            method: 'POST',
+            body: cover
+          });
+          const response = await res.json();
+          setCoverImg(response.secure_url);
+        }
+        else{
+          message.warning("File Size Error: Please Upload Image less than 2MB")
+        }
+      }
+      else{
+        message.warning("File Type Error: Please Upload an Image File")
+      } 
+    }
   }
 
   const uploadCoverChange = (info) => {
-    let fileList = [...info.fileList];
-    fileList = fileList.slice(-1);
-    if (fileList.length == 0) {
-      setCoverImg("")
+    if(info.file){
+      if(info.file.type.split("/")[0] == "image"){
+        if(info.file.size < 2097153){
+          let fileList = [...info.fileList];
+          fileList = fileList.slice(-1);
+          if (fileList.length == 0) {
+            setCoverImg("")
+          }
+          setCoverImgList(fileList)
+        }
+      }
     }
-    setCoverImgList(fileList)
   }
 
-  const AutoSave = async () => {
+  const RemoveCoverImage = () => {
+    console.log("Cover Image removed")
+  }
+
+  const AutoSave = async (title_save,desc_save,body_save,tags_save,coverImg_save) => {
     if (title != "") {
-      initialState.title = title
-      initialState.description = description ? description : "This article has no description"
-      initialState.body = value_dummy
-      initialState.tagList = tags
-      initialState.coverImage = coverImg
+      initialState.title = title_save
+      initialState.description = desc_save ? desc_save : "This article has no description"
+      initialState.body = body_save
+      initialState.tagList = tags_save
+      initialState.coverImage = coverImg_save
+      initialState.isPublished = false
       const { data, status } = await axios.put(
         `${SERVER_BASE_URL}/articles/${id}`,
         JSON.stringify({ article: initialState }),
@@ -143,6 +246,7 @@ const PublishArticleEditor = () => {
           },
         }
       );
+      setLoading(false)
     }
   }
 
@@ -171,7 +275,7 @@ const PublishArticleEditor = () => {
     }
     else {
       if (title != "") {
-        AutoSave()
+        AutoSave(title,description,value_dummy,tags,coverImg)
         message.success("Your Article Draft is Saved")
       }
       else {
@@ -222,7 +326,7 @@ const PublishArticleEditor = () => {
   };
 
   const TabView = (key) =>{
-    if(key=="Write"){
+    if(key == "Write"){
       SetReadOnly(false)
     }
     else{
@@ -231,25 +335,23 @@ const PublishArticleEditor = () => {
   }
 
   return (
-    <div style={{ background: "white", width: '75%', marginLeft: 'auto', marginRight: 'auto', marginTop: '5em' }}>
+    <StyledDiv>
     <Row>
-    <Col span={18} style={{paddingRight:"2em"}}>
-      <input
+    <Col span={18}>
+      <StyledTitle
         type="text"
         placeholder="Title..."
         value={title}
         onChange={handleTitle}
-        style={{ marginBottom: "2%", border: "none", padding: "0",fontSize:"4em",width:"100%",color:"black",fontWeight:"lighter"}}
         ref={Title}
       />
-      <input
+      <StyledDesc
         type="text"
         placeholder="Set a description"
         value={description}
         onChange={handleDesc}
-        style={{ marginBottom: "2%", border: "none", padding: "0",width:"100%",color:"black",fontWeight:"lighter",fontSize:"1.5em"}}
       />
-      <Divider style={{marginBottom:"0"}}></Divider>
+      <StyledDivider/>
       <Tab_list tabs={["Write","Preview"]} onClick={key => TabView(key)} position={"top"} />
       <Editor
         id="new_article"
@@ -259,42 +361,48 @@ const PublishArticleEditor = () => {
         onKeyDown={null}
         dark={dark_theme}
         uploadImage={async file => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", 'upload')
-          const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
-            method: 'POST',
-            body: data
-          });
-          const response = await res.json();
-          return response.secure_url;
+          if(file.size < 2097153){
+            const data = new FormData();
+            data.append("file", file);
+            data.append("upload_preset", 'upload')
+            const res = await fetch("https://api.cloudinary.com/v1_1/rajshah/upload", {
+              method: 'POST',
+              body: data
+            });
+            const response = await res.json();
+            return response.secure_url;
+          }
+          else{
+            message.warning("File Size Error: Please Upload Image less than 2MB")
+          }
         }}
       />
     </Col>
     <Row>
-    <Divider type="vertical" style={{height:"100%",marginRight:"0"}}></Divider>
+    <StyledVerticalDivider type="vertical"/>
     </Row>
     <Col span={5}>
-      <Row style={{marginLeft:"1em"}}>
-        {id? <div>{!isLoading?<p>✓ Draft Saved</p>:<p><Spin/> Saving Draft</p>}</div> :<Button style={{ marginTop: "2%"}}
+      {id? <Styleddiv>{!isLoading ? <StyledP>✓ Draft Saved</StyledP> : <StyledP><Spin/> AutoSaving Draft</StyledP>}</Styleddiv> : null}
+      <StyledRow>
+        <StyledButton
         type="primary"
         disabled={isLoading}
         onClick={Save_Draft}
         >
         Save Draft
-        </Button>}
-      </Row>
-      <Row style={{marginLeft:"1em"}}>
-        <Button style={{ marginTop: "2%" }}
+        </StyledButton>
+      </StyledRow>
+      <StyledRow>
+        <StyledButton
         type="primary"
         disabled={isLoading}
         onClick={Save}
         >
         Publish Article
-        </Button>
-      </Row>
-      <Divider></Divider>
-      <Row style={{marginLeft:"1em"}}>
+        </StyledButton>
+      </StyledRow>
+      <Divider/>
+      <StyledRow>
         <Twemoji options={{ className: 'twemoji' }}>
             <StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
         </Twemoji>
@@ -304,25 +412,27 @@ const PublishArticleEditor = () => {
         addTag={addTag}
         removeTag={removeTag}
         />
-      </Row>
-      <Divider style={{marginTop:"0"}}></Divider>
-      <Row style={{marginLeft:"1em"}}>
+      </StyledRow>
+      <StyledDividerTop/>
+      <StyledRow>
          <Twemoji options={{ className: 'twemoji' }}>
             <StyledEmoji>📷<StyledSpan> Select a cover for this story</StyledSpan></StyledEmoji>
         </Twemoji>
         <Upload
             beforeUpload={uploadCover}
             onChange={uploadCoverChange}
+            onRemove={RemoveCoverImage}
             fileList={coverImgList}>
-            <Button style={{marginTop:"1em"}}>
+            <StyledButton>
               <UploadOutlined/>Add Cover
-            </Button>
+            </StyledButton>
         </Upload>
-      </Row>
-      <Divider></Divider>
+        {coverImg ? <StyledImg src={coverImg}/> : null}
+      </StyledRow>
+      <Divider/>
     </Col>
     </Row>
-    </div>
+    </StyledDiv>
   )
 };
 
