@@ -34,7 +34,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
     if (currentOrg) {
       OrgAPI.changeModSettingOrg(currentOrg, description)
     } else {
-      TagAPI.changeModSettingTag(currentTag, description)
+      TagAPI.changeTagDescription(currentTag, description)
     }
   }
 
@@ -42,7 +42,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
     if (currentOrg) {
       OrgAPI.changeModSettingOrg(currentOrg, pic)
     } else {
-      TagAPI.changeModSettingTag(currentTag, pic)
+      TagAPI.changeTagPic(currentTag, pic)
     }
   }
 
@@ -51,7 +51,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
     if (currentOrg) {
       OrgAPI.changeModSettingOrg(currentOrg, slug)
     } else {
-      TagAPI.changeModSettingTag(currentTag, slug)
+      TagAPI.changeTagSlug(currentTag, slug)
     }
   }
 

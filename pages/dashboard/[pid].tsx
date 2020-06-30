@@ -270,7 +270,9 @@ const Profile = ({ initialProfile }) => {
 	} = useSWR(
     `${SERVER_BASE_URL}/organizations/${currentOrg}/members`,
     fetcher
-  );
+  )
+
+	if (membersError) {null}
 
 	const {
 		data: orgArticles,
