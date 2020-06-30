@@ -8,6 +8,7 @@ from conduit.user.models import User
 from conduit.profile.models import UserProfile
 from conduit.articles.models import Article, Comment
 from conduit.tags.models import Tags
+from conduit.organizations.models import Organization
 
 from .factories import UserFactory
 
@@ -179,3 +180,85 @@ class TestComment:
         assert comment1.article == article
         assert comment1.author == user.profile
         assert len(article.comments.all()) == 2
+
+
+@pytest.mark.usefixtures('db')
+class TestOrganization:
+
+    def test_add_moderator(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        
+        assert organization.add_moderator(user.profile)
+
+    def test_add_member(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        
+        assert organization.add_member(user.profile)
+
+    def test_remove_moderator(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        organization.add_member(user.profile)
+        
+        assert organization.remove_member(user.profile)
+
+
+    def test_update_slug_true(self):
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+
+        return organization.update_slug("New Slug")
+
+    def test_update_slug_false(self):
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+
+        return organization.update_slug("New Slug_of_organization") 
+        
+    def test_is_member(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        organization.add_member(user.profile)  
+        
+        assert organization.is_member(user.profile)
+
+    def test_moderator(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        organization.add_moderator(user.profile)
+        
+        assert organization.moderator(user.profile)
+
+    def test_promote(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        organization.add_member(user.profile)  
+        
+        assert organization.promote(user.profile)
+
+    def test_request_review(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
+        article.save()
+
+        return organization.request_review(article)
+
+    def test_remove_review_status(self, user):
+        user = user.get()
+        organization = Organization(name="Name_of_organization", description="Description_of_organization", slug="Slug_of_organization")
+        organization.save()
+        article = Article(user.profile, 'title', 'some body', description='some', isPublished='True', coverImage= "Image")
+        article.save()
+        organization.pending_articles.append(article)
+
+        return organization.remove_review_status(article)
