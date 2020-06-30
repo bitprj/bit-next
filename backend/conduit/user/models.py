@@ -24,13 +24,17 @@ class User(SurrogatePK, Model):
     linkedinLink = Column(db.String(100), nullable=True)
     website = Column(db.Text(), nullable = True)
     isAdmin = Column(db.Boolean, nullable=False, default=False)
+    github_access_token = Column(db.String(255), nullable = True)
+    github_id = Column(db.Integer, nullable = True)
     token: str = ''
 
-    def __init__(self, username, email, password=None, **kwargs):
+    def __init__(self, username, email, password=None, github_access_token=None, **kwargs):
         """Create instance."""
         db.Model.__init__(self, username=username, email=email, **kwargs)
         if password:
             self.set_password(password)
+        if github_access_token:
+            self.set_github_token(github_access_token)
         else:
             self.password = None
 
@@ -41,6 +45,9 @@ class User(SurrogatePK, Model):
     def check_password(self, value):
         """Check password."""
         return bcrypt.check_password_hash(self.password, value)
+
+    def set_github_token(self, github_access_token):
+        self.github_access_token = github_access_token
 
     def __repr__(self):
         """Represent instance as a unique string."""

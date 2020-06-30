@@ -7,6 +7,7 @@ from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy, Model
+from flask_github import GitHub
 
 
 class CRUDMixin(Model):
@@ -51,6 +52,7 @@ db = SQLAlchemy(model_class=CRUDMixin)
 migrate = Migrate()
 cache = Cache()
 cors = CORS()
+github = GitHub()
 
 from conduit.utils import jwt_identity, identity_loader  # noqa
 

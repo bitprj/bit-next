@@ -4,6 +4,7 @@ import { mutate } from "swr";
 
 import ListErrors from "../common/ListErrors";
 import UserAPI from "../../lib/api/user";
+import Authenticate from "./Authenticate";
 
 const LoginForm = () => {
   const [isLoading, setLoading] = React.useState(false);
@@ -20,6 +21,34 @@ const LoginForm = () => {
     []
   );
 
+  let logging_in;
+  if (typeof window !== "undefined"){
+    const code = new URLSearchParams(window.location.search).get("code");
+    if (code){
+      logging_in = (<p>Redirecting to home page...</p>);
+      React.useEffect(() => {
+
+          async function post_code(){
+              try{
+              const {data, status} = await UserAPI.post_code(code);
+              console.log("begun await");
+              if (data?.user){
+                  console.log(data.user)
+                  window.localStorage.setItem("user", JSON.stringify(data.user));
+                  mutate("user", data?.user);
+                  Router.push("/");
+              }
+              } catch(error){
+                  console.error(error);
+              }
+          }
+          
+      post_code();
+      }, [])
+    } 
+  }
+
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -77,8 +106,13 @@ const LoginForm = () => {
           </button>
         </fieldset>
       </form>
+      <a href="https://github.com/login/oauth/authorize?client_id=98574e099fa640413899&scope=user+repo"
+            className="btn btn-lg btn-primary pull-xs-left"
+            >
+               Sign in through GitHub REAL</a>
+      {logging_in}
     </>
   );
-};
+}
 
 export default LoginForm;
