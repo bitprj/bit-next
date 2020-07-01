@@ -33,6 +33,7 @@ const Profile = ({ initialProfile }) => {
     query: { pid },
   } = router;
 
+	{/*fetches profile of user*/}
   const {
     data: fetchedProfile,
     error: profileError,
@@ -44,12 +45,15 @@ const Profile = ({ initialProfile }) => {
 
   if (profileError) return <ErrorMessage message="Can't load profile" />;
 
+	{/*fetches all tags a user is part of*/}
   const {
     data: modTags,
     error: tagError,
   } = useSWR(`${SERVER_BASE_URL}/profiles/${encodeURIComponent(String(pid))}/tags`, fetcher)
 
-  let tagsList = [];
+	let tagsList = [];
+
+ 	if (modTags) {tagsList = modTags.tags.filter(modTag => modTag.moderator);}
 
   const { profile } = fetchedProfile || initialProfile;
   const { username, bio, image, following } = profile;
@@ -246,6 +250,7 @@ const Profile = ({ initialProfile }) => {
     }
   }
 
+	{/*fetches organizations user is part of*/}
   const {
     data: orgData,
     error: orgError,
@@ -256,16 +261,10 @@ const Profile = ({ initialProfile }) => {
 
   let orgsMod = [];
 
-  if (orgData) {
-    for (let i = 0; i < orgData.organizations.length; i++) {
-      for (let j = 0; j < orgData.organizations[i].moderators.length; j++) {
-        if (orgData.organizations[i].moderators[j].profile.username == username) {
-          orgsMod.push(orgData.organizations[i]);
-        }
-      }
-    }
-  }
+	if (orgData) {orgsMod = orgData.organizations.filter(({ moderators }) => (
+		moderators.some(profile => profile.profile.username == username)))}
 
+	{/*fetches members of an organization*/}
   const {
     data: orgMembers,
     error: membersError,
@@ -276,6 +275,7 @@ const Profile = ({ initialProfile }) => {
 
   if (membersError) { null }
 
+	{/*fetches all articles from an organization*/}
   const {
     data: orgArticles,
     error: orgArticleError,
@@ -284,6 +284,7 @@ const Profile = ({ initialProfile }) => {
     fetcher
   );
 
+	{/*fetches all articles, drafts or published articles from the user*/}
   const {
     data: articleData,
     error: articleError,
@@ -292,6 +293,7 @@ const Profile = ({ initialProfile }) => {
     fetcher
   );
 
+	{/*articles from the current tag*/}
   const {
     data: tagReviews,
     error: reviewsError,
@@ -303,23 +305,10 @@ const Profile = ({ initialProfile }) => {
   let needsReview = [];
   let publishedTags = [];
 
-  if (modTags) {
-    for (let i = 0; i < modTags.tags.length; i++) {
-      if (modTags.tags[i].moderator) {
-        tagsList.push(modTags.tags[i]);
-      }
-    }
-  }
-
-  if (tagReviews) {
-    for (let i = 0; i < tagReviews.articles.length; i++) {
-      if (tagReviews.articles[i].needsReview) {
-        needsReview.push(tagReviews.articles[i]);
-      } else if (tagReviews.articles[i].isPublished) {
-        publishedTags.push(tagReviews.articles[i]);
-      }
-    }
-  }
+	if (tagReviews) {
+		needsReview = tagReviews.articles.filter(tagData => tagData.needsReview);
+		publishedTags = tagReviews.articles.filter(tagData => tagData.isPublished);
+	}
 
   if (isUser) {
 

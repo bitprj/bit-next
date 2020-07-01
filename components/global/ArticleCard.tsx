@@ -77,8 +77,8 @@ const StyledEmoji2 = styled.span`
 const StyleButton = styled(Button)`
   font-weight: bold;
   border-radius: 0.5em;
-  background:  ${props => props.isPublished ? !props.bookmarked ? '#4EC700 !important' : '#007BED !important' : '#007BED !important'};
-  border-color:  ${props => props.isPublished ? !props.bookmarked ? '#4EC700 !important' : '#007BED !important' : '#007BED !important'};
+  background:  ${props => props.modReview ? '#007BED !important' : props.isPublished ? !props.bookmarked ? '#4EC700 !important' : '#007BED !important' : '#007BED !important'};
+  border-color:  ${props => props.modReview ? '#007BED !important' : props.isPublished ? !props.bookmarked ? '#4EC700 !important' : '#007BED !important' : '#007BED !important'};
 `
 
 
@@ -87,6 +87,7 @@ const StyleButton = styled(Button)`
 const ArticleCard = ({ article, currentTag = null, currentOrg = null,
    modReview=false, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null,
     favoriteClick = null}) => {
+
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
       <CustomLink
@@ -181,6 +182,7 @@ const ArticleCard = ({ article, currentTag = null, currentOrg = null,
                 onClick={onRightButtonClick}
                 isPublished={article.isPublished}
                 bookmarked={article.bookmarked}
+                modReview={modReview}
               >
                 {
                     modReview ? 'Published' : article.isPublished ? article.bookmarked ? "Bookmarked" : 'BookMark' :

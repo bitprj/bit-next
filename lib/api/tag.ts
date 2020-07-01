@@ -110,8 +110,7 @@ const TagAPI = {
     }
   },
   changeTagSlug: async (tag,slug) => {
-    console.log("current tag",tag,"new slug",slug);
-    const body = JSON.stringify({tag: {slug: slug }});
+    const body = JSON.stringify({tag: {slug: slug, old_slug: tag}});
     const user: any = window.localStorage.getItem("user");
     const user2: any = JSON.parse(user);
     const token = user2?.token;
