@@ -23,7 +23,6 @@ const OrganizationsAPI = {
   changeModSettingOrg: async (org,setting) => {
     const body = JSON.stringify({organization: {modSetting: setting, old_slug: org,
                                         slug: org}});
-    console.log()
     const user: any = window.localStorage.getItem("user");
     const user2: any = JSON.parse(user);
     const token = user2?.token;
@@ -38,7 +37,6 @@ const OrganizationsAPI = {
           },
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
       return error.response;
@@ -82,9 +80,49 @@ const OrganizationsAPI = {
           },
         }
       );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  changeOrgPic: async (org,pic) => {
+    const body = JSON.stringify({organization: {image: pic,
+                                  old_slug: org, slug: org}});
+    const user: any = window.localStorage.getItem("user");
+    const user2: any = JSON.parse(user);
+    const token = user2?.token;
+    try {
+      const response = await axios.put(
+        `${SERVER_BASE_URL}/organizations/${org}`,
+        body,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  },
+  removeFromOrg: async (org) => {
+    const user: any = window.localStorage.getItem("user");
+    const user2: any = JSON.parse(user);
+    const token = user2?.token;
+    try {
+      const response = await axios.delete(
+        `${SERVER_BASE_URL}/organizations/${org}/members`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
       console.log(response);
       return response;
     } catch (error) {
+      console.log(error);
       return error.response;
     }
   },

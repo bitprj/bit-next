@@ -92,14 +92,14 @@ const Profile = ({ initialProfile }) => {
 
   const [articleType, setArticleType] = React.useState("all");
   const [orgTagSettings, setOrgTagSettings] = React.useState(false);
-	const [tabKey, setTabKey] = React.useState(null);
-	const [internalTab, setInternalTab] = React.useState(false);
+  const [tabKey, setTabKey] = React.useState(null);
+  const [internalTab, setInternalTab] = React.useState(false);
 
   {/*for article items/admin/everything not orgs and tags in menu*/ }
   const MenuChange = (key) => {
     setTagPage(false)
     setOrgPage(false)
-		setInternalTab(false);
+    setInternalTab(false);
     if (key == "Posts") {
       setTabList(["All Posts", "Published", "Drafts"])
       setPostsPage(true)
@@ -108,8 +108,8 @@ const Profile = ({ initialProfile }) => {
       setSettingsPage(false)
       setIsAdmin(false)
 
-			TabView("All Posts");
-			setTabKey("All Posts");
+      TabView("All Posts");
+      setTabKey("All Posts");
     }
     else if (key == "Followers") {
       setTabList(["Old -> New"])
@@ -143,12 +143,12 @@ const Profile = ({ initialProfile }) => {
       setFollowingsPage(false)
       setSettingsPage(false)
     }
-		setTabKey(tab_select_list[0]);
+    setTabKey(tab_select_list[0]);
   }
 
   {/*for tag menu items*/ }
   const TagChange = (key) => {
-		setInternalTab(false);
+    setInternalTab(false);
     setPostsPage(false)
     setFollowersPage(false)
     setFollowingsPage(false)
@@ -156,17 +156,17 @@ const Profile = ({ initialProfile }) => {
     setIsAdmin(false)
     setOrgPage(false)
 
-		setTabList(["Submitted", "Published", "Settings"])
-		setTagPage(true);
+    setTabList(["Submitted", "Published", "Settings"])
+    setTagPage(true);
     setTag(key);
 
-		TabView("Submitted");
-		setTabKey(tab_select_list[0]);
+    TabView("Submitted");
+    setTabKey(tab_select_list[0]);
   }
 
   {/*for org menu items*/ }
   const OrgChange = (key) => {
-		setInternalTab(false)
+    setInternalTab(false)
     setPostsPage(false)
     setFollowersPage(false)
     setFollowingsPage(false)
@@ -178,13 +178,13 @@ const Profile = ({ initialProfile }) => {
     setOrgPage(true);
     setOrg(key);
 
-		TabView("Submitted");
-		setTabKey(tab_select_list[0]);
+    TabView("Submitted");
+    setTabKey(tab_select_list[0]);
   }
 
-	{/*switching between top tabs*/}
+  {/*switching between top tabs*/ }
   const TabView = (key) => {
-		setTabKey(key);
+    setTabKey(key);
     if (key == "All Posts") {
       setAllArticles(true);
       setDrafts(false);
@@ -266,23 +266,23 @@ const Profile = ({ initialProfile }) => {
     }
   }
 
-	const {
-		data: orgMembers,
-		error: membersError,
-	} = useSWR(
+  const {
+    data: orgMembers,
+    error: membersError,
+  } = useSWR(
     `${SERVER_BASE_URL}/organizations/${currentOrg}/members`,
     fetcher
   )
 
-	if (membersError) {null}
+  if (membersError) { null }
 
-	const {
-		data: orgArticles,
-		error: orgArticleError,
-	} = useSWR(
-		`${SERVER_BASE_URL}/organizations/${currentOrg}/articles`,
-		fetcher
-	);
+  const {
+    data: orgArticles,
+    error: orgArticleError,
+  } = useSWR(
+    `${SERVER_BASE_URL}/organizations/${currentOrg}/articles`,
+    fetcher
+  );
 
   const {
     data: articleData,
@@ -346,10 +346,10 @@ const Profile = ({ initialProfile }) => {
           <Row gutter={[16, 40]}>
             <Col span={24}>
               <Tab_list tabs={tab_select_list}
-							activeKey={internalTab ? tabKey : tab_select_list[0]}
-							defaultActiveKey={tab_select_list[0]}
-							onClick={key => {TabView(key); setInternalTab(true);}}
-							position={"top"} />
+                activeKey={internalTab ? tabKey : tab_select_list[0]}
+                defaultActiveKey={tab_select_list[0]}
+                onClick={key => { TabView(key); setInternalTab(true); }}
+                position={"top"} />
             </Col>
             <Col span={24} style={{ paddingTop: "0" }}>
               {isPosts && articleData ? <ArticleList articles={articleData.articles} /> : null}
@@ -364,20 +364,27 @@ const Profile = ({ initialProfile }) => {
                     modReview={true}
                     currentTag={currentTag}
                     articles={publishedTags} /> :
-									<ArticleList
+                  <ArticleList
                     articles={needsReview}
                     currentTag={currentTag} />
-                	: null}
+                : null}
 
-              {isOrg ? orgMembers ? orgArticles ?
-								isOrgSettings ? <GroupSetting page={"org"}
-								currentOrg={currentOrg} /> :
-                isMembers ? <UserList
-									currentOrg={currentOrg}
-									users={orgMembers.organization.followers.concat(orgMembers.organization.moderators)} /> :
-								<ArticleList
-									articles={orgArticles.articles}
-									currentOrg={currentOrg} /> : null : null : null}
+              {isOrg ?
+                orgMembers ?
+                  orgArticles ?
+                    isOrgSettings ?
+                      <GroupSetting page={"org"}
+                        currentOrg={currentOrg} /> :
+                      isMembers ?
+                        <UserList
+                          currentOrg={currentOrg}
+                          users={orgMembers.organization.followers.concat(orgMembers.organization.moderators)} /> :
+                        <ArticleList
+                          articles={orgArticles.articles}
+                          currentOrg={currentOrg} /> :
+                    null :
+                  null :
+                null}
 
               {isSettings ? <AccountSettings /> : null}
 

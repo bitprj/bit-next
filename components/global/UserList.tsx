@@ -2,7 +2,7 @@ import React from 'react';
 import User from './User'
 import styled from 'styled-components'
 import { List, Skeleton, Button } from 'antd';
-import OrgAPI from "../../lib/api/org";
+import OrganizationsAPI from "../../lib/api/organizations";
 
 const StyledHeader = styled.div`
   font-family: Open Sans, sans-serif;
@@ -17,7 +17,7 @@ const StyledHeader = styled.div`
 const UserList = (props) => {
 
   const handleClick = () => {
-    OrgAPI.removeFromOrg(props.currentOrg);
+    OrganizationsAPI.removeFromOrg(props.currentOrg);
   }
 
   return (
@@ -50,8 +50,7 @@ const UserList = (props) => {
                   borderColor: '#DD2E44',
                   borderRadius: '0.5em',
                   padding: '0em 1em',
-                }}
-              >
+              }}>
                 Delete
               </Button> : null
             }

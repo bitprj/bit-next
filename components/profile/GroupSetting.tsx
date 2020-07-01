@@ -34,6 +34,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
   {/*returns description: etc*/}
   const editDescription = description => {
     if (currentOrg) {
+      const description = description.description;
       OrganizationsAPI.changeOrgDescription(currentOrg, description)
     } else {
       TagAPI.changeTagDescription(currentTag, description)
@@ -41,9 +42,9 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
   }
 
   const uploadPic = pic => {
-    console.log(pic);
+    console.log(pic.file);
     {/*if (currentOrg) {
-      OrganizationsAPI.changeModSettingOrg(currentOrg, pic)
+      OrganizationsAPI.changeOrgPic(currentOrg, pic)
     } else {
       TagAPI.changeTagPic(currentTag, pic)
     }*/}
@@ -81,8 +82,8 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
                   <Avatar src={currentOrg ? tagOrg.organization.image : tagOrg.tag.icon} style={{ margin: "0px 42px 10px" }} />
                 </Row>
                 <Row style={{ margin: "0px 0px 15px" }}>
-                  <Upload onChange={uploadPic}>
-                    <Button type="primary" onClick={() => uploadPic("placeholder")}>Reupload Icon</Button>
+                  <Upload customRequest={uploadPic} showUploadList={false}>
+                    <Button type="primary" >Reupload Icon</Button>
                   </Upload>
                 </Row>
                 <Row>
@@ -103,9 +104,7 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
                 <Title level={4}>{currentOrg ? "Org Description" : "Tag Description"}</Title>
                 <Form onFinish={editDescription}
                   initialValues={{
-                    description: currentOrg ? tagOrg.organization.description : tagOrg.tag.description,
-                    old_slug: currentOrg,
-                    slug: currentOrg
+                    description: currentOrg ? tagOrg.organization.description : tagOrg.tag.description
                   }}>
                   <Form.Item name="description">
                     <TextArea
@@ -119,6 +118,8 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
               </Col>
             </Row>
 
+            {currentTag ?
+            <>
             <Row>
               <Title level={4}>Mod Settings</Title>
             </Row>
@@ -142,6 +143,8 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
                 <StyledCard>Only moderators can post on the tag. Fit for internal tags.</StyledCard>
               </Col>
             </Row>
+            </>
+            : null}
           </Col>
         </Row>
       </>
