@@ -42,12 +42,11 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
   }
 
   const uploadPic = pic => {
-    console.log(pic.file);
-    {/*if (currentOrg) {
-      OrganizationsAPI.changeOrgPic(currentOrg, pic)
+    if (currentOrg) {
+      OrganizationsAPI.changeOrgPic(pic)
     } else {
-      TagAPI.changeTagPic(currentTag, pic)
-    }*/}
+      TagAPI.changeTagPic(pic)
+    }
   }
 
   {/*returns string*/}

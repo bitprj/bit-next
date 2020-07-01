@@ -27,7 +27,6 @@ const TagAPI = {
   rejectTag: async (article, currentTag) => {
     const user: any = JSON.parse(window.localStorage.getItem("user"));
     const token = user?.token;
-    console.log(`${SERVER_BASE_URL}/tags/${currentTag}/articles/${article.slug}`)
     try {
       const response = await axios.put(
         `${SERVER_BASE_URL}/tags/${currentTag}/articles/${article.slug}`,
@@ -38,10 +37,8 @@ const TagAPI = {
           },
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
-      console.log(error);
       return error.response;
     }
   },
@@ -79,7 +76,6 @@ const TagAPI = {
           },
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
       return error.response;
@@ -90,8 +86,6 @@ const TagAPI = {
     const user: any = window.localStorage.getItem("user");
     const user2: any = JSON.parse(user);
     const token = user2?.token;
-    console.log(body);
-    console.log(token);
     try {
       const response = await axios.put(
         `${SERVER_BASE_URL}/tags/${tag}`,
@@ -103,7 +97,6 @@ const TagAPI = {
           },
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
       return error.response;
@@ -125,14 +118,12 @@ const TagAPI = {
           },
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
-      console.log(error);
       return error.response;
     }
   },
-  changeTagPic: () => console.log("put this in later"),
+  changeTagPic: async (pic) => console.log("this will change the pic of the tag",pic),
   moderators: async (slug,member) => {
   const user: any = JSON.parse(window.localStorage.getItem("user"));
   const token = user?.token;

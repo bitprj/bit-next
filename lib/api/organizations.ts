@@ -64,7 +64,7 @@ const OrganizationsAPI = {
     }
   },
   changeOrgDescription: async (org,description) => {
-    const body = JSON.stringify({organization: {description: description.description,
+    const body = JSON.stringify({organization: {description: description,
                                   old_slug: org, slug: org}});
     const user: any = window.localStorage.getItem("user");
     const user2: any = JSON.parse(user);
@@ -85,27 +85,7 @@ const OrganizationsAPI = {
       return error.response;
     }
   },
-  changeOrgPic: async (org,pic) => {
-    const body = JSON.stringify({organization: {image: pic,
-                                  old_slug: org, slug: org}});
-    const user: any = window.localStorage.getItem("user");
-    const user2: any = JSON.parse(user);
-    const token = user2?.token;
-    try {
-      const response = await axios.put(
-        `${SERVER_BASE_URL}/organizations/${org}`,
-        body,
-        {
-          headers: {
-            Authorization: `Token ${encodeURIComponent(token)}`,
-          },
-        }
-      );
-      return response;
-    } catch (error) {
-      return error.response;
-    }
-  },
+  changeOrgPic: async (pic) => console.log("this will change the pic of the org",pic),
   removeFromOrg: async (org) => {
     const user: any = window.localStorage.getItem("user");
     const user2: any = JSON.parse(user);
@@ -119,10 +99,8 @@ const OrganizationsAPI = {
           },
         }
       );
-      console.log(response);
       return response;
     } catch (error) {
-      console.log(error);
       return error.response;
     }
   },
