@@ -86,15 +86,19 @@ const OrganizationsAPI = {
     }
   },
   changeOrgPic: async (pic) => console.log("this will change the pic of the org",pic),
-  removeFromOrg: async (org) => {
+  removeFromOrg: async (org,member) => {
+    const body = JSON.stringify({profile: {
+        username: member}})
     const user: any = window.localStorage.getItem("user");
     const user2: any = JSON.parse(user);
     const token = user2?.token;
     try {
       const response = await axios.delete(
         `${SERVER_BASE_URL}/organizations/${org}/members`,
+        body,
         {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `Token ${encodeURIComponent(token)}`,
           },
         }

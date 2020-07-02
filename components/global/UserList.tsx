@@ -16,8 +16,8 @@ const StyledHeader = styled.div`
 
 const UserList = (props) => {
 
-  const handleClick = () => {
-    OrganizationsAPI.removeFromOrg(props.currentOrg);
+  const handleClick = (org,user) => {
+    OrganizationsAPI.removeFromOrg(org,user);
   }
 
   return (
@@ -42,7 +42,7 @@ const UserList = (props) => {
             {props.currentOrg ? <Button
                 type={'primary'}
                 size={'middle'}
-                onClick={handleClick}
+                onClick={() => handleClick(props.currentOrg,user['profile']['username'])}
                 style={{
                   fontSize: '1em',
                   fontWeight: 'bold',
