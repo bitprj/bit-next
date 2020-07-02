@@ -1,4 +1,3 @@
-// EDIT HERE
 
 import marked from "marked";
 import Router, { useRouter } from "next/router";
@@ -84,17 +83,6 @@ const ArticlePage = (initialArticle) => {
   const [preview, setPreview] = React.useState({ ...article, bookmarked: false, bookmarkCount: null });
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
-
-  // ADDED
-  const handleClickReplyTo = () => {
-    if (!isLoggedIn) {
-      console.log("[PID]Not logged in");
-    }
-    else {
-      console.log("[PID] Yes Logged in");
-    }
-  };
-  // END ADDED
 
 
   const handleClickFavorite = async slug => {
