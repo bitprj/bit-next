@@ -49,10 +49,128 @@ class TestOrganizationViews:
             })
 
         slug = resp1.json['organization']['slug']
-        resp = testapp.post_json(url_for('organizations.get_organization',      
+        resp = testapp.get(url_for('organizations.get_organization',
                 slug=slug), 
             headers = {
             'Authorization': 'Token {}'.format(token)
             })
 
         assert slug == 'ree'
+
+
+    def test_update_org(self, testapp, user):
+        user = user.get()
+        resp = testapp.post_json(url_for('user.login_user'), 
+        {'user': {
+            'email': user.email,
+            'password': 'myprecious'
+        }})
+
+        token = str(resp.json['user']['token'])
+
+        resp = testapp.post_json(url_for('organizations.make_organization'),{'organization': {
+            'name': 'BitProject',
+            'description': 'Description here',
+            'slug': 'bitprj'
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        resp1 = testapp.put_json(url_for('organizations.update_organization', 
+            slug = "new slug"),{'organization': {
+            'old_slug': resp.json['organization']['slug']
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        assert resp1.json['organization']['slug'] == 'new slug'
+
+
+    def test_delete_org(self, testapp, user):
+        user = user.get()
+        resp = testapp.post_json(url_for('user.login_user'), 
+        {'user': {
+            'email': user.email,
+            'password': 'myprecious'
+        }})
+
+        token = str(resp.json['user']['token'])
+
+        resp = testapp.post_json(url_for('organizations.make_organization'),{'organization': {
+            'name': 'BitProject',
+            'description': 'Description here',
+            'slug': 'bitprj'
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        resp1 = testapp.delete(url_for('organizations.delete_organization', 
+            slug = resp.json['organization']['slug']),
+            headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        assert resp1.status_code == 200
+        assert resp1.text == ''
+
+
+    def test_follow_organization(self, testapp, user):
+        user = user.get()
+        resp = testapp.post_json(url_for('user.login_user'), 
+        {'user': {
+            'email': user.email,
+            'password': 'myprecious'
+        }})
+
+        token = str(resp.json['user']['token'])
+
+        resp = testapp.post_json(url_for('organizations.make_organization'),{'organization': {
+            'name': 'BitProject',
+            'description': 'Description here',
+            'slug': 'bitprj'
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        resp1 = testapp.post_json(url_for('organizations.follow_organization',
+            slug = resp.json['organization']['slug']), headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        assert resp1.json['organization']['name'] == 'BitProject'
+        assert resp1.json['organization']['is_following'] == True
+        assert resp1.json['organization']['slug'] == 'bitprj'
+
+
+    def test_promote_member(self, testapp, user):
+        user = user.get()
+        resp = testapp.post_json(url_for('user.login_user'), 
+        {'user': {
+            'email': user.email,
+            'password': 'myprecious'
+        }})
+
+        token = str(resp.json['user']['token'])
+
+        resp = testapp.post_json(url_for('organizations.make_organization'),{'organization': {
+            'name': 'BitProject',
+            'description': 'Description here',
+            'slug': 'bitprj'
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        resp1 = testapp.post_json(url_for('organizations.promote_member',
+            slug = resp.json['organization']['slug']),{'profile': {
+            "username": user.username
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
+
+        assert resp1.json['profile']['username'] == user.username
