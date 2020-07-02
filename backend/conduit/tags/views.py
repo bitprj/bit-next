@@ -1,5 +1,5 @@
 from .models import Tags
-from .serializers import tag_schema, tag_mebership_schema
+from .serializers import tag_schema, tag_form_schema, tag_mebership_schema
 
 from conduit.decorators import isAdmin
 from conduit.exceptions import InvalidUsage
@@ -46,10 +46,10 @@ def get_tag(slug, **kwargs):
 
 @blueprint.route('/api/tags/<slug>', methods=('PUT',))
 @jwt_required
-@use_kwargs(tag_schema)
-@marshal_with(tag_schema)
-def update_tag(slug, **kwargs):
-    tag = Tags.query.filter_by(slug=slug).first()
+@use_kwargs(tag_form_schema)
+@marshal_with(tag_form_schema)
+def update_tag(old_slug, **kwargs):
+    tag = Tags.query.filter_by(slug=old_slug).first()
     if not tag:
         raise InvalidUsage.tag_not_found()
     tag.update(**kwargs)
