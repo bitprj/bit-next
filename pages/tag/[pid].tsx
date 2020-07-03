@@ -42,52 +42,72 @@ const StickyLeft = styled(Affix)`
   }
 `;
 
-const TagPage = (initialTag) => {
+const TagPage = (id) => {
 	const router = useRouter();
-	const [top] = useState(10);
 
 	const {
 		query: { pid },
-	} = router;
+	} = router
 
 	const {
 		data: fetchedArticles,
 	} = useSWR(
-		`${SERVER_BASE_URL}/articles/?tag=${encodeURIComponent(String(pid))}`,
+		`${SERVER_BASE_URL}/articles/?tag=${encodeURIComponent(String(id.id))}`,
 		fetcher
 	);
 
-	const tag = initialTag.initialTag;
+	const [top] = useState(10);
 
-	return (
-		<>
-			<Head>
-				<title>{tag.tag.tagname}</title>
-			</Head>
-			<div className="home-page">
-				<div className="container page">
-					<div className="row">
-						<div className="col-md-3">
-							<StickyLeft offsetTop={top}>
-								<StyledTagTitle>
-									<Twemoji options={{ className: 'twemoji' }}>
-										<StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
-									</Twemoji>
-								</StyledTagTitle>
-								<Tags />
-							</StickyLeft>
+	const [tags, setTags] = React.useState(JSON.parse("[{}]"))
+	const getTags = async (currentUser) => {
+		if (id != null) {
+			const { data: initialTag } = await TagAPI.get(id.id, currentUser);
+			setTags(initialTag)
+		}
+	}
+	
+	React.useEffect(() => {
+		let user = JSON.parse(localStorage.getItem("user"))
+		getTags(user)
+	}, [id]);
+
+	const tag = tags;
+	if (tag.tag != null) {
+		return (
+			<>
+				<Head>
+					<title>{tag.tag.tagname}</title>
+				</Head>
+				<div className="home-page">
+					<div className="container page">
+						<div className="row">
+							<div className="col-md-3">
+								<StickyLeft offsetTop={top}>
+									<StyledTagTitle>
+										<Twemoji options={{ className: 'twemoji' }}>
+											<StyledEmoji>🏷️<StyledSpan> Tags</StyledSpan></StyledEmoji>
+										</Twemoji>
+									</StyledTagTitle>
+									<Tags />
+								</StickyLeft>
+							</div>
+							<TagView {...fetchedArticles} {...tag} />
 						</div>
-						<TagView {...fetchedArticles} {...tag} />
 					</div>
 				</div>
-			</div>
-		</>
-	)
+			</>
+		)
+	}
+	else {
+		return (
+			<div></div>
+		)
+	}
+}
+TagPage.getInitialProps = async ({ query: { pid } }) => {
+	let id = pid
+	return { id };
 };
 
-TagPage.getInitialProps = async ({ query: { pid } }) => {
-	const { data: initialTag } = await TagAPI.get(pid);
-	return { initialTag };
-};
 
 export default TagPage;

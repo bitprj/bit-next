@@ -26,6 +26,24 @@ class TagSchema(Schema):
         return {'tag': data}
 
 
+class TagFormSchema(Schema):
+    tagname = fields.Str()
+    description = fields.Str()
+    slug = fields.Str()
+    old_slug = fields.Str()
+    icon = fields.Str()
+    modSetting = fields.Int()
+    tag = fields.Nested('self', exclude=('tag',), default=True, load_only=True)
+
+    @pre_load
+    def make_Tag(self, data, **kwargs):
+        return data['tag']
+
+    @post_dump
+    def dump_Tag(self, data, **kwargs):
+        return {'tag': data}
+
+
 class TagsSchema(TagSchema):
     class Meta:
         exclude = ('tagFollowers', 'moderators',)
@@ -49,5 +67,6 @@ class TagMembershipSchema(Schema):
 
 
 tag_schema = TagSchema()
+tag_form_schema = TagFormSchema()
 tags_schemas = TagsSchema(many=True)
 tag_mebership_schema = TagMembershipSchema()
