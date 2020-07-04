@@ -133,9 +133,8 @@ def promote_member(slug, username, **kwargs):
     return user.profile
 
 
-@blueprint.route('/api/organizations/<slug>/members', methods=('DELETE',))
+@blueprint.route('/api/organizations/<slug>/members/<username>', methods=('DELETE',))
 @jwt_required
-@use_kwargs(profile_schema)
 @marshal_with(profile_schema)
 def remove_member(slug, username, **kwargs):
     profile = current_user.profile

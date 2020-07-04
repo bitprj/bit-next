@@ -326,37 +326,34 @@ class TestOrganizationViews:
         assert resp2.text == ''
 
 
-    # def test_remove_member(self, testapp, user):
-    #     user = user.get()
-    #     resp = testapp.post_json(url_for('user.login_user'), 
-    #     {'user': {
-    #         'email': user.email,
-    #         'password': 'myprecious'
-    #     }})
+    def test_remove_member(self, testapp, user):
+        user = user.get()
+        resp = testapp.post_json(url_for('user.login_user'), 
+        {'user': {
+            'email': user.email,
+            'password': 'myprecious'
+        }})
 
-    #     token = str(resp.json['user']['token'])
+        token = str(resp.json['user']['token'])
 
-    #     resp = testapp.post_json(url_for('organizations.make_organization'),{'organization': {
-    #         'name': 'BitProject',
-    #         'description': 'Description here',
-    #         'slug': 'bitprj'
-    #         }
-    #     }, headers={
-    #         'Authorization': 'Token {}'.format(token)
-    #     })
+        resp = testapp.post_json(url_for('organizations.make_organization'),{'organization': {
+            'name': 'BitProject',
+            'description': 'Description here',
+            'slug': 'bitprj'
+            }
+        }, headers={
+            'Authorization': 'Token {}'.format(token)
+        })
 
-    #     resp1 = testapp.post_json(url_for('organizations.follow_organization',
-    #         slug = resp.json['organization']['slug']), headers={
-    #         'Authorization': 'Token {}'.format(token)
-    #     })
+        resp1 = testapp.post_json(url_for('organizations.follow_organization',
+            slug = resp.json['organization']['slug']), headers={
+            'Authorization': 'Token {}'.format(token)
+        })
 
-    #     resp2 = testapp.delete(url_for('organizations.remove_member', 
-    #         slug = resp.json['organization']['slug']),{'profile': {
-    #         "name": user.name
-    #         }
-    #     }, headers={
-    #         'Authorization': 'Token {}'.format(token)
-    #     })
+        resp2 = testapp.delete(url_for('organizations.remove_member',
+            slug = resp.json['organization']['slug'], username = user.username), headers={
+            'Authorization': 'Token {}'.format(token),
+        })
 
-    #     assert resp2.status_code == 200
-    #     assert resp2.text == ''
+        assert resp2.status_code == 200
+        assert resp2.json['profile'] == {}
