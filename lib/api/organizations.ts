@@ -94,13 +94,12 @@ const OrganizationsAPI = {
     const token = user2?.token;
     try {
       const response = await axios.delete(
-        `${SERVER_BASE_URL}/organizations/${org}/members`,
-        body,
-        {
+        `${SERVER_BASE_URL}/organizations/${org}/members`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Token ${encodeURIComponent(token)}`,
           },
+          data: body
         }
       );
       return response;

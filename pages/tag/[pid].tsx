@@ -30,7 +30,7 @@ const StyledTagTitle = styled.div`
   padding-bottom: 1.5em;
 `;
 
-const StickyLeft = styled(Affix)`  
+const StickyLeft = styled(Affix)`
   display: none;
   @media screen and (min-width: 850px) {
       display:block;
@@ -61,11 +61,11 @@ const TagPage = (id) => {
 	const [tags, setTags] = React.useState(JSON.parse("[{}]"))
 	const getTags = async (currentUser) => {
 		if (id != null) {
-			const { data: initialTag } = await TagAPI.get(id.id, currentUser);
+			const { data: initialTag } = await TagAPI.get(id.id);
 			setTags(initialTag)
 		}
 	}
-	
+
 	React.useEffect(() => {
 		let user = JSON.parse(localStorage.getItem("user"))
 		getTags(user)

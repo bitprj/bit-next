@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components'
 import { Row, Col, Card, Avatar, Button,
    Space, Layout, Typography, Form,
-   Input, Upload, Message } from 'antd';
+   Input, Upload } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import UserAPI from "../../lib/api/user";
 import OrganizationsAPI from "../../lib/api/organizations";
@@ -32,12 +32,12 @@ const GroupSetting = ({ currentOrg = null, currentTag = null, page }) => {
       useSWR(`${SERVER_BASE_URL}/tags/${currentTag}`, fetcher)
 
   {/*returns description: etc*/}
-  const editDescription = description => {
+  const editDescription = desc => {
     if (currentOrg) {
-      const description = description.description;
-      OrganizationsAPI.changeOrgDescription(currentOrg, description)
+      const description = desc.description;
+      OrganizationsAPI.changeOrgDescription(currentOrg, desc)
     } else {
-      TagAPI.changeTagDescription(currentTag, description)
+      TagAPI.changeTagDescription(currentTag, desc)
     }
   }
 
