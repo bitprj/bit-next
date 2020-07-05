@@ -21,14 +21,12 @@ import { Comment, Avatar } from 'antd';
 const CommentList = () => {
   // clickedComment is the value of the id of the comment that has clicked the Reply To button
   var [clickedComment, setClick] = useState( '' );
-  var [submittedReply, setSubmit] = useState( false );
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser)
 
-  const getSubmitData = (handleClick) => {
-    console.log("Getting Submit data")
-    console.log("IT is ", handleClick, "OK")
+  // After the editor box is submitted, this sets the clickedComment ID back to default (-1)
+  const setSubmitData = (handleClick) => {
     setClick( handleClick );
   }
 
@@ -89,12 +87,6 @@ const CommentList = () => {
     
             >Reply to </span>,
 
-            /*
-            submittedReply == true ?
-            clickedComment = '-1'
-            :
-            null
-            */
           ]}
           
           author={comment.author.username}
@@ -117,10 +109,10 @@ const CommentList = () => {
                   clickedComment == comment.id ?  
                     <EditorBox 
                       commentId = {comment.id}
-                      handleClick = { getSubmitData }
+                      handleClick = { setSubmitData }
                     /> 
                     :
-                    <p>ClickedComment is { clickedComment } ok </p>    
+                    null   
                 }
               </p>
 

@@ -14,7 +14,6 @@ import { Form, Button, Input} from 'antd';
 const { TextArea } = Input;
 
 var clickedSubmit = false;
-var submittedReply = false;
 
 const Editor = ( { onChange, onSubmit, submitting, value } ) => (
   <>
@@ -68,10 +67,8 @@ const EditorBox = (  props  ) => {
       setContent("");
       trigger(`${SERVER_BASE_URL}/articles/${pid}/comments`);
       
-      console.log("EditorBox: set it to true")
-      clickedSubmit = true;
-
-      props.handleClick("CLICKEDIT");
+      // This editor box has been submitted, so set the CommentID to -1 to hide the editor box
+      props.handleClick("-1");
 
     };
 
