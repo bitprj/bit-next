@@ -21,9 +21,16 @@ import { Comment, Avatar } from 'antd';
 const CommentList = () => {
   // clickedComment is the value of the id of the comment that has clicked the Reply To button
   var [clickedComment, setClick] = useState( '' );
+  var [submittedReply, setSubmit] = useState( false );
 
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser)
+
+  const getSubmitData = (handleClick) => {
+    console.log("Getting Submit data")
+    console.log("IT is ", handleClick, "OK")
+    setClick( handleClick );
+  }
 
   const handleClickReplyTo = (comment) => {
 
@@ -80,8 +87,14 @@ const CommentList = () => {
                 handleClickReplyTo(comment)
               } 
     
-            >Reply to </span>
-              
+            >Reply to </span>,
+
+            /*
+            submittedReply == true ?
+            clickedComment = '-1'
+            :
+            null
+            */
           ]}
           
           author={comment.author.username}
@@ -104,11 +117,15 @@ const CommentList = () => {
                   clickedComment == comment.id ?  
                     <EditorBox 
                       commentId = {comment.id}
-                    /> :  null    
+                      handleClick = { getSubmitData }
+                    /> 
+                    :
+                    <p>ClickedComment is { clickedComment } ok </p>    
                 }
               </p>
 
             </div>
+            
           }
         >
           

@@ -13,6 +13,8 @@ import storage from "../../lib/utils/storage";
 import { Form, Button, Input} from 'antd';
 const { TextArea } = Input;
 
+var clickedSubmit = false;
+var submittedReply = false;
 
 const Editor = ( { onChange, onSubmit, submitting, value } ) => (
   <>
@@ -27,7 +29,7 @@ const Editor = ( { onChange, onSubmit, submitting, value } ) => (
   </>
 )
 
-const EditorBox = ( {commentId} ) => {
+const EditorBox = (  props  ) => {
     const { data: currentUser } = useSWR("user", storage);
     const isLoggedIn = checkLogin(currentUser);
     const router = useRouter();
@@ -37,6 +39,8 @@ const EditorBox = ( {commentId} ) => {
   
     const [content, setContent] = React.useState("");
     const [isLoading, setLoading] = React.useState(false);
+
+    clickedSubmit = false;
   
     const handleChange = React.useCallback((e) => {
       setContent(e.target.value);
@@ -50,7 +54,7 @@ const EditorBox = ( {commentId} ) => {
         JSON.stringify({
           comment: {
             body: content,
-            comment_id: commentId,
+            comment_id: props.commentId,
           },
         }),
         {
@@ -63,6 +67,12 @@ const EditorBox = ( {commentId} ) => {
       setLoading(false);
       setContent("");
       trigger(`${SERVER_BASE_URL}/articles/${pid}/comments`);
+      
+      console.log("EditorBox: set it to true")
+      clickedSubmit = true;
+
+      props.handleClick("CLICKEDIT");
+
     };
 
     if (!isLoggedIn) {
@@ -73,11 +83,11 @@ const EditorBox = ( {commentId} ) => {
     } else { // is Logged In
       return (
         <Editor 
-              onChange={handleChange}
+              onChange={ handleChange }
               onSubmit={ handleSubmit }
               submitting = { isLoading }
               value={ content }
-            />
+        />
       );
     }
 
