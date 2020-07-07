@@ -42,7 +42,29 @@ const ArticleAPI = {
   feed: (page, limit = 10) =>
     axios.get(`${SERVER_BASE_URL}/articles/feed?${getQuery(limit, page)}`),
 
-  get: (slug) => axios.get(`${SERVER_BASE_URL}/articles/${slug}`),
+  get:  async(slug,user) => {
+    const token = user?.token;
+    try {
+      if(token != null){
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/articles/${slug}`,
+        {
+          headers: {
+            Authorization: `Token ${encodeURIComponent(token)}`,
+          },
+        }
+      );
+      return response;
+      }else{
+        const response = await axios.get(
+          `${SERVER_BASE_URL}/articles/${slug}`
+        );
+        return response;
+
+      }
+    } catch (error) {
+      return error.response;
+    }},
 
   unfavorite: (slug) =>
     axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`),

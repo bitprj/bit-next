@@ -116,43 +116,7 @@ const ArticleList = (props) => {
     }
 
   }
-    const handleClickFavorite = async (e,slug,favorited) => {
-    e.preventDefault()
-    if (!isLoggedIn) {
-      Router.push(`/user/login`);
-      return;
-    }
-    try {
-      if (favorited) {
-       await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
-          headers: {
-            Authorization: `Token ${currentUser?.token}`,
-          },
-        });
-        
-      } else {
-        await axios.post(
-          `${SERVER_BASE_URL}/articles/${slug}/favorite`,
-          {},
-          {
-            headers: {
-              Authorization: `Token ${currentUser?.token}`,
-            },
-          }
-        );
-     
-      }
-      for (let index in props.articles){
-        if(props.articles[index].slug== slug){
-          props.articles[index].favorited = !favorited
-          break;
-        }
-      }
-      setRefresh(!refresh)
-    } catch (error) {
-     
-    }
-  };
+    
   return (
     <>
       {articles?.map((article) => (
@@ -161,7 +125,7 @@ const ArticleList = (props) => {
           as={`/article/${article.slug}`}
           className="preview-link"
         >
-          <ArticleCard key={article.slug} article={article} onRightButtonClick ={(e)=>rightButtonClicked(e,article.slug,article.bookmarked)} favoriteClick = {(e)=>handleClickFavorite(e,article.slug,article.favorited)}  />
+          <ArticleCard key={article.slug} article={article} onRightButtonClick ={(e)=>rightButtonClicked(e,article.slug,article.bookmarked)}   />
         </CustomLink>
       ))}
 

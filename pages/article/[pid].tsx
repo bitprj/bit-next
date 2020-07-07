@@ -17,6 +17,7 @@ import CommentList from "../../components/comment/CommentList";
 import ArticleAPI from "../../lib/api/article";
 import { Article } from "../../lib/types/articleType";
 import ArticleTags from "../../components/article/ArticleTags";
+import { ppid } from "process";
 
 const ArticleContain = styled.div`  
   width: 880px;
@@ -73,10 +74,10 @@ border-radius: 22px;
 const StyledEmoji2 = styled.div`
 background: red;
 border-radius: 22px;
-padding: 0.2em 0.4em 0.2em 0.4em;
+padding: 0.5em;
 margin :0.5em;
   img {
-      width: 16px;
+      width: 20px;
     }
 `
 
@@ -85,28 +86,38 @@ width :100%;
 object-fit: cover;
 object-position: 0 40%;
 `
-
-const ArticlePage = (initialArticle) => {
+const ArticlePage = (id) => {
+  const [mainArticles,setMainArticles] = React.useState([])
+  const [fetchedArticle,setFetchedArticle] =React.useState([])
   const router = useRouter();
   const {
     query: { pid },
   } = router;
 
-  const {
-    data: fetchedArticle,
-  } = useSWR(
-    `${SERVER_BASE_URL}/articles/${encodeURIComponent(String(pid))}`,
-    fetcher
-  );
+  const getArticles = async (currentUser) => {
+		if (id != null) {
+      const { data: fetchedArticle } = await ArticleAPI.get(id.id, currentUser);
+      setPreview({ ...article, favorited: fetchedArticle.article.favorited,bookmarked: false, bookmarkCount: null 
+    })
+    setMainArticles(fetchedArticle)
+		}
+	}
+	
+	React.useEffect(() => {
+    let user = JSON.parse(localStorage.getItem("user"))
+    getArticles(user)
+    let  { article }: any = mainArticles;
+    if(article != null){
+    const { data: fetchedArticles } = useSWR(
+      `${SERVER_BASE_URL}/articles?author=${article.author.username}`,
+      fetcher
+    );
+    setFetchedArticle(fetchedArticles)
+    }
+	}, [id]);
 
-  const { article }: Article = fetchedArticle || initialArticle;
-
-  const { data: fetchedArticles } = useSWR(
-    `${SERVER_BASE_URL}/articles?author=${article.author.username}`,
-    fetcher
-  );
-
-  let { articles } = fetchedArticles || [];
+  let  { article }: any = mainArticles;
+  let { articles } : any = fetchedArticle || [];
 
   articles = articles ? articles.slice(0, Math.min(articles.length, 5)) : [];
 
@@ -134,7 +145,7 @@ const ArticlePage = (initialArticle) => {
             : preview.favoritesCount + 1,
         });
       } else {
-        await axios.post(
+       await axios.post(
           `${SERVER_BASE_URL}/articles/${slug}/favorite`,
           {},
           {
@@ -142,7 +153,7 @@ const ArticlePage = (initialArticle) => {
               Authorization: `Token ${currentUser?.token}`,
             },
           }
-        );
+        )
       }
       setPreview({
         ...preview,
@@ -198,11 +209,10 @@ const ArticlePage = (initialArticle) => {
       });
     }
   };
-
+if(article != null){
   const markup = {
     __html: marked(article.body, { sanitize: true }),
   };
-
   return (
     <div className="article-page">
     
@@ -233,11 +243,14 @@ const ArticlePage = (initialArticle) => {
       </StickyRight>
     </div>
   );
-};
+}else{
+  return (<div></div>)
+}
+}
 
 ArticlePage.getInitialProps = async ({ query: { pid } }) => {
-  const { data } = await ArticleAPI.get(pid);
-  return data;
+  let id = pid
+  return { id };
 };
 
 export default ArticlePage;
