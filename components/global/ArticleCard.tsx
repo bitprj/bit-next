@@ -66,19 +66,18 @@ const StyledEmoji = styled.span`
       width: 20px;
     }
 `
-
 const StyleButton = styled(Button)`
-font-weight: bold;
-border-radius: 0.5em;
-background:  ${props => props.isPublished ? ! props.bookmarked ? '#4EC700 !important' : '#007BED !important': '#007BED !important' };
-border-color:  ${props => props.isPublished ?  !props.bookmarked  ?'#4EC700 !important' : '#007BED !important' : '#007BED !important'};
-
+  font-weight: bold;
+  border-radius: 0.5em;
+  background:  ${props => props.isPublished ? !props.bookmarked ? '#4EC700 !important' : '#007BED !important' : '#007BED !important'};
+  border-color:  ${props => props.isPublished ? !props.bookmarked ? '#4EC700 !important' : '#007BED !important' : '#007BED !important'};
 `
 
 
 
 /* article state: draft, review, pubished, complete*/
-const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null}) => {
+const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRightButtonClick = null }) => {
+
   const tags = article.tagList.map((tag, i) =>
     (<StyledSpan>
       <CustomLink
@@ -157,18 +156,18 @@ const ArticleCard = ({ article, showAuth = false, onLeftButtonClick = null, onRi
                 }}
               >
                 {
-                    article.isPublished ? (article.readtime && article.readtime + ' min read') :
+                  article.isPublished ? (article.readtime && article.readtime + ' min read') :
                     article.needsReview ? 'Reject' : 'Delete'
                 }
               </Button>
               <StyleButton
                 type={"primary"}
                 onClick={onRightButtonClick}
-                isPublished = {article.isPublished }
-                bookmarked = {article.bookmarked}
+                isPublished={article.isPublished}
+                bookmarked={article.bookmarked}
               >
                 {
-                    article.isPublished ? article.bookmarked  ? 'BookMarked' :'Bookmark':
+                  article.isPublished ? article.bookmarked ? 'BookMarked' : 'Bookmark' :
                     article.needsReview ? 'Published' : 'Edit'
                 }
               </StyleButton>

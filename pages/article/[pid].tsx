@@ -54,16 +54,16 @@ const ArticleBody = styled.div`
 `
 
 const ArticleDisplay = styled.div`
-width :100%;
+  width :100%;
 `
 
 const ArticleMD = styled.div`
   margin-top: 2em;
 `
 const StyledEmoji = styled.div`
-padding: 0.5em;
-margin :0.5em;
-border-radius: 22px;
+  padding: 0.5em;
+  margin :0.5em;
+  border-radius: 22px;
 
   img {
       width: 20px;
@@ -82,9 +82,9 @@ margin :0.5em;
 `
 
 const Image = styled.img`
-width :100%;
-object-fit: cover;
-object-position: 0 40%;
+  width :100%;
+  object-fit: cover;
+  object-position: 0 40%;
 `
 const ArticlePage = (id) => {
   const [mainArticles,setMainArticles] = React.useState([])
@@ -129,7 +129,7 @@ const ArticlePage = (id) => {
       Router.push(`/user/login`);
       return;
     }
-    
+
     try {
       if (preview.favorited) {
         await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
@@ -163,7 +163,7 @@ const ArticlePage = (id) => {
           : preview.favoritesCount + 1,
       });
     } catch (error) {
-      
+
     }
   };
 
@@ -215,23 +215,23 @@ if(article != null){
   };
   return (
     <div className="article-page">
-    
+
       <ArticleContain>
-      <Twemoji options={{ className: 'twemoji' }}>
-                  {!preview.favorited?
-                   <StyledEmoji2  onClick = {()=>handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
-                   : <StyledEmoji onClick = {()=>handleClickFavorite(article.slug)}>{"❤️ "}</StyledEmoji>}
-                 
-                  </Twemoji>
+        <Twemoji options={{ className: 'twemoji' }}>
+          {!preview.favorited ?
+            <StyledEmoji2 onClick={() => handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
+            : <StyledEmoji onClick={() => handleClickFavorite(article.slug)}>{"❤️ "}</StyledEmoji>}
+
+        </Twemoji>
         <ArticleBody>
-        <Image src={(article as any).image} />
+          <Image src={(article as any).image} />
           <ArticleDisplay>
-          <ArticleTags article={article} />
-          <h1>{article.title}</h1>
-          <ArticleMeta article={article} />
-          <ArticleMD dangerouslySetInnerHTML={markup} />
-          <div className="article-actions" />
-          <CommentList />
+            <ArticleTags article={article} />
+            <h1>{article.title}</h1>
+            <ArticleMeta article={article} />
+            <ArticleMD dangerouslySetInnerHTML={markup} />
+            <div className="article-actions" />
+            <CommentList />
           </ArticleDisplay>
         </ArticleBody>
       </ArticleContain>
