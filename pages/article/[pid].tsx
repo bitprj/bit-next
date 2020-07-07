@@ -217,6 +217,7 @@ if(article != null){
     <div className="article-page">
 
       <ArticleContain>
+        <img src={(article as any).coverImage} style={{ objectFit: 'cover', objectPosition: '0 40%', width: '100%' }} />
         <Twemoji options={{ className: 'twemoji' }}>
           {!preview.favorited ?
             <StyledEmoji2 onClick={() => handleClickFavorite(article.slug)}>{'🤍 '}</StyledEmoji2>
