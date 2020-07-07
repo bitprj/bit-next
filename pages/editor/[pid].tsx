@@ -432,7 +432,7 @@ const UpdateArticleEditor = ({ article: initialArticle }) => {
 UpdateArticleEditor.getInitialProps = async ({ query: { pid } }) => {
   const {
     data: { article },
-  } = await ArticleAPI.get(pid);
+  } = await ArticleAPI.get(pid,null);
   return { article };
 };
 
