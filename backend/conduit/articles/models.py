@@ -162,8 +162,17 @@ class Article(SurrogatePK, Model):
 
     def add_organization(self, articles):
         self.needsReview = False
-        self.org_articles.append(articles)
-        return True
+        if articles not in self.org_articles:
+            self.org_articles.append(articles)
+            return True
+        return False
+
+    def remove_organiztion(self, articles):
+        self.needsReview = False
+        if articles in self.org_articles:
+            self.org_articles.remove(articles)
+            return True
+        return False
 
     def add_needReviewTag(self, tag):
         self.needReviewTags.append(tag)

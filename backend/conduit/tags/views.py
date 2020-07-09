@@ -134,7 +134,7 @@ def invite_moderator(slug, username):
 @blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('PUT',))
 @jwt_required
 @marshal_with(article_schema)
-def review_article(slug, articleSlug):
+def add_article(slug, articleSlug):
     profile = current_user.profile
     tag = Tags.query.filter_by(slug=slug).first()
     if not tag:
@@ -147,12 +147,34 @@ def review_article(slug, articleSlug):
         raise InvalidUsage.article_not_found()
     if article.needsReview:
         article.remove_needReviewTag(tag)
+        article.add_tag(tag)
         if article.is_allTagReviewed():
             article.set_needsReview(False)
     article.save()
     return article
 
+@blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('DELETE',))
+@jwt_required
+@marshal_with(article_schema)
+def remove_article(slug, articleSlug):
+    profile = current_user.profile
+    tag = Tags.query.filter_by(slug=slug).first()
+    if not tag:
+        raise InvalidUsage.tag_not_found()
+    if tag not in profile.moderated_tags:
+        raise InvalidUsage.not_moderator()
 
+    article = Article.query.filter_by(slug=articleSlug).first()
+    if not article:
+        raise InvalidUsage.article_not_found()
+    if article.needsReview:
+        article.remove_needReviewTag(tag)
+        article.remove_tag(tag)
+        if article.is_allTagReviewed():
+            article.set_needsReview(False)
+    article.save()
+    return article
+    
 #Route to return an article filtered by tag names
 @blueprint.route('/api/user/tags/articles', methods=('GET',))
 @jwt_optional

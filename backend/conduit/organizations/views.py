@@ -164,11 +164,10 @@ def submit_article_for_review(org_slug, slug):
     
     return article
     
-
 @blueprint.route('/api/organizations/<org_slug>/articles/<slug>', 
                 methods=('DELETE',))
 @jwt_required
-def reviewed_article(slug, org_slug, **kwargs):
+def remove_article(slug, org_slug, **kwargs):
     profile = current_user.profile
     organization = Organization.query.filter_by(slug=org_slug).first()
     article = Article.query.filter_by(slug=slug).first()
@@ -179,6 +178,24 @@ def reviewed_article(slug, org_slug, **kwargs):
     if article not in organization.pending_articles:
         raise InvalidUsage.article_not_found()
 
+    organization.pending_articles.remove(article)
+    organization.save()
+    article.remove_organization(organization)    
+    article.save()
+
+    return '', 200
+
+@blueprint.route('/api/organizations/<org_slug>/articles/<slug>', 
+                methods=('PUT',))
+@jwt_required
+def add_article(slug, org_slug, **kwargs):
+    profile = current_user.profile
+    organization = Organization.query.filter_by(slug=org_slug).first()
+    article = Article.query.filter_by(slug=slug).first()
+    if not organization.moderator(profile):
+        raise InvalidUsage.not_admin()
+    if article not in organization.pending_articles:
+        raise InvalidUsage.article_not_found()
     organization.pending_articles.remove(article)
     organization.save()
     article.add_organization(organization)    
