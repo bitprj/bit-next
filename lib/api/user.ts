@@ -138,11 +138,10 @@ const UserAPI = {
   },
   get: async (username) => axios.get(`${SERVER_BASE_URL}/profiles/${username}`),
 
-  post_code: async (username) => {
+  post_code: async (github_code, state) => {
     try{
-      const response = await axios.post(
-        `${SERVER_BASE_URL}/user/callback`,
-        JSON.stringify({ user: { username } }),
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/user/callback/${encodeURIComponent(github_code)}/${encodeURIComponent(state)}`,
         {
           headers: {
             "Content-Type": "application/json",

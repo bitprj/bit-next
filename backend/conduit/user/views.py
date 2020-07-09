@@ -11,7 +11,9 @@ from conduit.exceptions import InvalidUsage
 from conduit.profile.models import UserProfile
 from .models import User
 from .serializers import user_schema
+from conduit.config import GITHUB_CLIENT, GITHUB_SECRET, ACCESS_TOKEN_URL, GITHUB_API, STATE
 import requests
+import os
 
 blueprint = Blueprint('user', __name__)
 
@@ -65,62 +67,39 @@ def update_user(**kwargs):
     user.update(**kwargs)
     return user
 
-#TODO:
-#1) we have to add the state to make sure no third party access when sending code
-#2) change this away from username, only allows me to call the thing username cause of user_schema.
-#if bit_token invalid and access_tok still valid, just reauthenticate with new code and stuff
-#if access_token invalid but bit_token valid, ignore until bit_token gets invalid
-
-#Note: the parameter is username but it should be changed to github_code
-#i just get errors thrown if 
-
-@blueprint.route('/api/user/callback', methods = ('POST',))
+@blueprint.route('/api/user/callback/<github_code>/<state>', methods = ('GET',)) 
 @use_kwargs(user_schema)   
 @marshal_with(user_schema)
-def github_oauth(username, **kwargs):
-    #refactor and hide these
+def github_oauth(github_code, state):
+    try:    
+        if (state.strip() != STATE):
+            raise InvalidUsage.user_not_found()
 
-    #NOTE: use try catch block later
-    payload = { 'client_id': "98574e099fa640413899",  
-                'client_secret': "272ac3010797de4cc29c5c0caf0bbd9df4d79832",
-                'code': username,
-                }
-    header = {
-        'Accept': 'application/json',
-    }
+        payload = { 'client_id': GITHUB_CLIENT,  
+                    'client_secret': GITHUB_SECRET,
+                    'code': github_code,
+                    }
+        header = {
+            'Accept': 'application/json',
+        }
 
-    auth_response = requests.post('https://github.com/login/oauth/access_token', params=payload, headers=header).json()
-    
-    #if it's an error response, the access_token will not work (like if code is invalid)
-    #it won't have access_token key-value pair
-    #build in try catch!
-    access_token = auth_response["access_token"]
-    
-    auth_header = {"Authorization": "Bearer " + access_token}
-    data_response = requests.get('https://api.github.com/user', headers=auth_header).json()
-    email_response = requests.get('https://api.github.com/user/emails', headers=auth_header).json()
+        auth_response = requests.post(ACCESS_TOKEN_URL, params=payload, headers=header).json()
+        access_token = auth_response["access_token"]
 
-    username = data_response["login"]
-    email = email_response[0]["email"]
-    github_id = data_response["id"]
+        auth_header = {"Authorization": "Bearer " + access_token}
+        data_response = requests.get(GITHUB_API + 'user', headers=auth_header).json()
+        email_response = requests.get(GITHUB_API + 'user/emails', headers=auth_header).json()
 
-    user = User.query.filter_by(email=email).first()
-    if user is None:
-        userprofile = UserProfile(User(username, email, github_access_token = access_token).save()).save()
-        user = userprofile.user
+        username = data_response["login"]
+        email = email_response[0]["email"]
+        github_id = data_response["id"]
 
-    user.token = create_access_token(identity=user, fresh=True)
-    return user
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            userprofile = UserProfile(User(username, email, github_access_token = access_token).save()).save()
+            user = userprofile.user
 
-# Flask Migrate
-
-# write code
-# run flaskdb migrate in the code
-# flaskdb upgrade in the code
-# Code isn't working because staging db uses staging code
-# Code isn't working on local because we don't have db
-
-# When doing github auth, we need to use flask db migrate to be able to add our cols 
-# to our remote db
-
-
+        user.token = create_access_token(identity=user, fresh=True)
+        return user
+    except:
+        raise InvalidUsage.user_not_found() 
