@@ -68,7 +68,6 @@ def update_user(**kwargs):
     return user
 
 @blueprint.route('/api/user/callback/<github_code>/<state>', methods = ('GET',)) 
-@use_kwargs(user_schema)   
 @marshal_with(user_schema)
 def github_oauth(github_code, state):
     try:    
