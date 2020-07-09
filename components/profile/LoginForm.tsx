@@ -22,7 +22,7 @@ const LoginForm = () => {
   );
 
   const authorize_url = CODE_URL + "?client_id=" + GITHUB_CLIENT + "&scope=" + SCOPE 
-  + "&state=" + STATE;
+  + "&state=" + encodeURIComponent(STATE);
   
   let logging_in;
   if (typeof window !== "undefined"){
