@@ -2,6 +2,12 @@ import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
 
+import { useState } from 'react';
+import { message } from 'antd';
+import checkLogin from "../../lib/utils/checkLogin";
+import storage from "../../lib/utils/storage";
+import EditorBox from "./EditorBox";
+
 import CommentInput from "./CommentInput";
 import ErrorMessage from "../common/ErrorMessage";
 import LoadingSpinner from "../common/LoadingSpinner";
@@ -11,7 +17,29 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import { Comment, Avatar } from 'antd';
 
+
 const CommentList = () => {
+  // clickedComment is the value of the id of the comment that has clicked the Reply To button
+  var [clickedComment, setClick] = useState( '' );
+
+  const { data: currentUser } = useSWR("user", storage);
+  const isLoggedIn = checkLogin(currentUser)
+
+  // After the editor box is submitted, this sets the clickedComment ID back to default (-1)
+  const setSubmitData = (handleClick) => {
+    setClick( handleClick );
+  }
+
+  const handleClickReplyTo = (comment) => {
+
+    if (isLoggedIn) {
+      setClick( comment.id );
+    } 
+    else { // Not Logged In
+      message.info("Please log in to reply", 10)
+    }
+  }
+
   const router = useRouter();
   const {
     query: { pid },
@@ -32,13 +60,35 @@ const CommentList = () => {
     );
 
   const { comments } = data;
+  
 
   const recurseComments = (comments) => {
-    return (
+    
+   return (
+      
       comments.map((comment: CommentType) => (
+        
         <Comment
           key={comment.id}
-          actions={[<span key="comment-nested-reply-to">Reply to</span>]}
+          actions= {[
+            /*
+            If the clickedComment has this id, then there is the Editor Box, so hide the Reply To
+            Else, the clickedComment does NOT have this id, 
+            so show the Reply To option
+            */
+            
+            clickedComment == comment.id ?
+            null
+            :
+            <span key="comment-nested-reply-to"
+              onClick= {() => 
+                handleClickReplyTo(comment)
+              } 
+    
+            >Reply to </span>,
+
+          ]}
+          
           author={comment.author.username}
           avatar={
             <Avatar
@@ -47,11 +97,36 @@ const CommentList = () => {
             />
           }
           content={
-            <p>{comment.body}</p>
+            <div>
+              <p>
+                { comment.body } 
+              </p>
+              <p>
+                {
+                  /*
+                  If the clickedComment has this id, then show the Editor Box
+                  */
+                  clickedComment == comment.id ?  
+                    <EditorBox 
+                      commentId = {comment.id}
+                      handleClick = { setSubmitData }
+                    /> 
+                    :
+                    null   
+                }
+              </p>
+
+            </div>
+            
           }
         >
-          {comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null}
+          
+          {
+            comment.parentComment.comments.length > 0 ? recurseComments(comment.parentComment.comments) : null
+          }
+
         </Comment>
+        
       )))
   }
 
@@ -59,6 +134,7 @@ const CommentList = () => {
     <div>
       <CommentInput />
       {recurseComments(comments)}
+
     </div>
   );
 };

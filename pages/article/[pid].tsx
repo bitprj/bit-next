@@ -1,3 +1,4 @@
+
 import marked from "marked";
 import Router, { useRouter } from "next/router";
 import React from "react";
@@ -16,6 +17,7 @@ import CommentList from "../../components/comment/CommentList";
 import ArticleAPI from "../../lib/api/article";
 import { Article } from "../../lib/types/articleType";
 import ArticleTags from "../../components/article/ArticleTags";
+import { emitKeypressEvents } from "readline";
 
 const ArticleContain = styled.div`  
   width: 880px;
@@ -81,6 +83,7 @@ const ArticlePage = (initialArticle) => {
   const [preview, setPreview] = React.useState({ ...article, bookmarked: false, bookmarkCount: null });
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
+
 
   const handleClickFavorite = async slug => {
     if (!isLoggedIn) {

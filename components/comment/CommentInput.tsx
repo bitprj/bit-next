@@ -10,6 +10,7 @@ import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import storage from "../../lib/utils/storage";
 
 const CommentInput = () => {
+
   const { data: currentUser } = useSWR("user", storage);
   const isLoggedIn = checkLogin(currentUser);
   const router = useRouter();

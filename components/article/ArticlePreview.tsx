@@ -28,7 +28,7 @@ const ArticlePreview = ({ article }) => {
     if (!isLoggedIn) {
       Router.push(`/user/login`);
       return;
-    }
+    } 
 
     setPreview({
       ...preview,
