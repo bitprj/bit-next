@@ -111,3 +111,9 @@ class Organization(Model, SurrogatePK):
         if current_user:
             return current_user.profile in self.members or current_user.profile in self.moderators 
         return False
+
+    @property
+    def is_moderator(self):
+        if current_user:
+            return current_user.profile in self.moderators
+        return False

@@ -73,10 +73,10 @@ const Profile = ({ initialProfile }) => {
                     <ArticleList />
                   </TabPane>
                   <TabPane key="2" tab={"Followers"}>
-                    <FollowList followings={false} />
+                    <FollowList followings={false} pageName={"profiles"}/>
                   </TabPane>
                   <TabPane key="3" tab={"Following"}>
-                    <FollowList followings={true} />
+                    <FollowList followings={true} pageName={"profiles"}/>
                   </TabPane>
                 </Tabs>
               </div>

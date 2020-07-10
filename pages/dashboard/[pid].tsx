@@ -185,7 +185,7 @@ const Profile = ({ initialProfile }) => {
 							<User name={username} image={image} username={username} />
 						</Col>
 						<Col span={24}>
-							<StyledMenu>
+							<StyledMenu defaultSelectedKeys={[list[0]]}>
 								{list.map(item => <Menu.Item key={item} onClick={item => TabChange(item.key)}>{item}</Menu.Item>)}
 							</StyledMenu>
 						</Col>

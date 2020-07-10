@@ -1,6 +1,11 @@
 import { useRouter } from "next/router";
 import React from "react";
 import useSWR from "swr";
+import storage from "../../lib/utils/storage";
+import checkLogin from "../../lib/utils/checkLogin";
+import Router from "next/router";
+import axios from "axios";
+
 
 import ErrorMessage from "../common/ErrorMessage";
 import LoadingSpinner from "../common/LoadingSpinner";
@@ -16,8 +21,13 @@ import { SERVER_BASE_URL, DEFAULT_LIMIT } from "../../lib/utils/constant";
 import fetcher from "../../lib/utils/fetcher";
 import ArticleCard from "../../components/global/ArticleCard";
 import CustomLink from "../common/CustomLink";
+import ArticleAPI from "../../lib/api/article";
+import {message} from 'antd';
+
 
 const ArticleList = (props) => {
+  const [refresh,setRefresh] = React.useState(false)
+
   const page = usePageState();
   const pageCount = usePageCountState();
   const setPageCount = usePageCountDispatch();
@@ -32,6 +42,8 @@ const ArticleList = (props) => {
   const isProfilePage = pathname.startsWith(`/profile`);
 
   let fetchURL = `${SERVER_BASE_URL}/articles?offset=${page * DEFAULT_LIMIT}`;
+  const { data: currentUser } = useSWR("user", storage);
+  const isLoggedIn = checkLogin(currentUser);
 
   switch (true) {
     case !!tag:
@@ -80,7 +92,67 @@ const ArticleList = (props) => {
   if (articles && articles.length === 0) {
     return <div className="article-preview">No articles are here... yet.</div>;
   }
+  
+  const rightButtonClicked=async(e,slug,bookmarked)=>{
+    e.preventDefault()
+    if(currentUser == null){
+      message.info('Please Sign in');
+    }else{
 
+      if(!bookmarked){
+        
+        await ArticleAPI.bookmark(slug,currentUser.token);
+      }else{
+        await ArticleAPI.removeBookmark(slug,currentUser.token); 
+      }
+      for (let index in props.articles){
+        if(props.articles[index].slug== slug){
+          props.articles[index].bookmarked = !bookmarked
+          break;
+        }
+      }
+      setRefresh(!refresh)
+
+    }
+
+  }
+    const handleClickFavorite = async (e,slug,favorited) => {
+    e.preventDefault()
+    if (!isLoggedIn) {
+      Router.push(`/user/login`);
+      return;
+    }
+    try {
+      if (favorited) {
+       await axios.delete(`${SERVER_BASE_URL}/articles/${slug}/favorite`, {
+          headers: {
+            Authorization: `Token ${currentUser?.token}`,
+          },
+        });
+        
+      } else {
+        await axios.post(
+          `${SERVER_BASE_URL}/articles/${slug}/favorite`,
+          {},
+          {
+            headers: {
+              Authorization: `Token ${currentUser?.token}`,
+            },
+          }
+        );
+     
+      }
+      for (let index in props.articles){
+        if(props.articles[index].slug== slug){
+          props.articles[index].favorited = !favorited
+          break;
+        }
+      }
+      setRefresh(!refresh)
+    } catch (error) {
+     
+    }
+  };
   return (
     <>
       {articles?.map((article) => (
@@ -89,7 +161,7 @@ const ArticleList = (props) => {
           as={`/article/${article.slug}`}
           className="preview-link"
         >
-          <ArticleCard key={article.slug} article={article} />
+          <ArticleCard key={article.slug} article={article} onRightButtonClick ={(e)=>rightButtonClicked(e,article.slug,article.bookmarked)} favoriteClick = {(e)=>handleClickFavorite(e,article.slug,article.favorited)}  />
         </CustomLink>
       ))}
 

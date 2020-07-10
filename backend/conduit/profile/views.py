@@ -14,6 +14,7 @@ from .serializers import profile_schema
 from conduit.tags.serializers import tags_schemas
 from conduit.user.serializers import followers_schema
 from conduit.articles.serializers import articles_schema
+from conduit.organizations.serializers import organizations_schema
 
 blueprint = Blueprint('profiles', __name__)
 
@@ -98,3 +99,10 @@ def get_user_articles(type=None):
             raise InvalidUsage.article_not_found()
     res = res.join(Article.author).join(User).filter_by(username=current_user.username)
     return res.all()
+
+
+@blueprint.route('/api/profile/organizations', methods=('GET',))
+@jwt_required
+@marshal_with(organizations_schema)
+def get_user_organizations():
+    return current_user.profile.mem_organization + current_user.profile.mod_organization

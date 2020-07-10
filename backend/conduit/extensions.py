@@ -27,7 +27,11 @@ class CRUDMixin(Model):
                 tags = []
                 for tag in value:
                     tag = Tags.query.filter_by(slug=tag).first()
-                    tags.append(tag)
+                    if tag:
+                        tags.append(tag)
+                    else:
+                        tag = Tags(tag)
+                        tag.save()
                 self.tagList = tags
             else:
                 setattr(self, attr, value)

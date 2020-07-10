@@ -20,7 +20,8 @@ class TestArticleViews:
                     "description": "Ever wonder how?",
                     "body": "You have to believe",
                     "tagList": ["reactjs", "angularjs", "dragons"],
-                    "isPublished": "True"
+                    "isPublished": "True",
+                    "coverImage": "Image"
                 }
             }, headers={
                 'Authorization': 'Token {}'.format(token)
@@ -43,7 +44,8 @@ class TestArticleViews:
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
                 "tagList": ["reactjs", "angularjs", "dragons"],
-                "isPublished": "True"
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -72,7 +74,8 @@ class TestArticleViews:
                     "description": "Ever wonder how?",
                     "body": "You have to believe",
                     "tagList": ["reactjs", "angularjs", "dragons"],
-                    "isPublished": "True"
+                    "isPublished": "True",
+                    "coverImage": "Image"
                 }
             }, headers={
                 'Authorization': 'Token {}'.format(token)
@@ -95,7 +98,8 @@ class TestArticleViews:
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
                 "tagList": ["reactjs", "angularjs", "dragons"],
-                "isPublished": "True"
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -118,7 +122,8 @@ class TestArticleViews:
                 "description": "Ever wonder how?",
                 "body": "You have to believe",
                 "tagList": ["reactjs", "angularjs", "dragons"],
-                "isPublished": "True"
+                "isPublished": "True",
+                "coverImage": "Image"
             }
         }, headers={
             'Authorization': 'Token {}'.format(token)
@@ -137,5 +142,6 @@ class TestArticleViews:
         # check
         authorp = resp.json['comment']['author']
         del authorp['following']
+        del authorp['joined']
         # assert profile_schema.dump(user).data['profile'] == authorp
         assert profile_schema.dump(user)['profile'] == authorp

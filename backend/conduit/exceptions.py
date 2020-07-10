@@ -15,6 +15,7 @@ ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
 SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
 TAG_NOT_FOUND = template(['Tag not found'], code=404)
 COMMENT_NOT_OWNED = template(['Not your article'], code=422)
+COMMENT_NOT_FOUND = template(['Comment not found'], code=422)
 ORGANIZATION_NOT_FOUND = template(['Organization not found'], code=404)
 SLUG_ALREADY_EXISTS = template(['This slug already exists'], code=400)
 NOT_ADMIN = template(['Not Admin'], code=403)
@@ -60,6 +61,10 @@ class InvalidUsage(Exception):
     def tag_not_found(cls):
         return cls(**TAG_NOT_FOUND)
     
+    @classmethod
+    def comment_not_found(cls):
+        return cls(**COMMENT_NOT_FOUND)
+
     @classmethod
     def not_admin(cls):
         return cls(**NOT_ADMIN)

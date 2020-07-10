@@ -12,10 +12,11 @@ class OrganizationSchema(Schema):
     slug = fields.Str()
     old_slug = fields.Str()
     description = fields.Str()
-    createdAt = fields.DateTime()
+    createdAt = fields.DateTime(format='%m-%d-%Y')
     username = fields.Str()
     image = fields.Str()
     is_following = fields.Bool()
+    is_moderator = fields.Bool()
     moderators = fields.Nested(ProfileSchema, many=True)
     members = fields.Nested(ProfileSchema, many=True, data_key='followers')
 
