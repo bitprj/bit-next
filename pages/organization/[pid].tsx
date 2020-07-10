@@ -1,8 +1,5 @@
 import React from "react";
-import useSWR, { mutate, trigger } from "swr";
-import axios from "axios";
-import styled from 'styled-components';
-import storage from "../../lib/utils/storage";
+import useSWR from "swr";
 import { SERVER_BASE_URL } from "../../lib/utils/constant";
 import OrganizationsAPI from "../../lib/api/organizations";
 import { Col, Row } from 'antd';
