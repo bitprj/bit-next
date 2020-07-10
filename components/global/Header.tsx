@@ -29,7 +29,8 @@ const SyledDetailContainer = styled.div`
 
 const StyledBio = styled.p`
   color: black;
-  padding-top: 3em;
+  padding-top: 1em;
+  margin-left: 94.4px;
   overflow-wrap: break-word;
 `
 
@@ -76,9 +77,9 @@ const Header = ({ user, follow, unfollow }) => {
         <StyledBio>{user.bio}</StyledBio>
       </Col>
       <Col span={10}>
-        {<DetailInfo infoName={'Location'} infoData={user.location} />}
+        {user.location?<DetailInfo infoName={'Location'} infoData={user.location} />:null}
         {<DetailInfo infoName={'Joined'} infoData={user.joined} />}
-        {<DetailInfo infoName={'Occupation'} infoData={user.occupation} />}
+        {user.occupation?<DetailInfo infoName={'Occupation'} infoData={user.occupation} />:null}
       </Col>
     </Row>
   )
