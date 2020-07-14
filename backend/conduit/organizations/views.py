@@ -185,9 +185,11 @@ def remove_article(slug, org_slug, **kwargs):
 
     return '', 200
 
+
 @blueprint.route('/api/organizations/<org_slug>/articles/<slug>', 
                 methods=('PUT',))
 @jwt_required
+@marshal_with(article_schema)
 def add_article(slug, org_slug, **kwargs):
     profile = current_user.profile
     organization = Organization.query.filter_by(slug=org_slug).first()
@@ -201,4 +203,4 @@ def add_article(slug, org_slug, **kwargs):
     article.add_organization(organization)    
     article.save()
 
-    return '', 200
+    return article

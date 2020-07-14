@@ -153,6 +153,7 @@ def add_article(slug, articleSlug):
     article.save()
     return article
 
+
 @blueprint.route('/api/tags/<slug>/articles/<articleSlug>', methods=('DELETE',))
 @jwt_required
 @marshal_with(article_schema)
@@ -174,6 +175,7 @@ def remove_article(slug, articleSlug):
             article.set_needsReview(False)
     article.save()
     return article
+    
     
 #Route to return an article filtered by tag names
 @blueprint.route('/api/user/tags/articles', methods=('GET',))
