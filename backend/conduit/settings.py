@@ -33,7 +33,8 @@ class Config(object):
         'https://bit-next-git-master.bitproject.now.sh',
         'https://staging.bitproject.org',
         'https://dev.bitproject.org',
-        'https://bit-next.now.sh'
+        'https://bit-next.now.sh',
+        'https://github.com/login/oauth/authorize?client_id=98574e099fa640413899'
     ]
     JWT_HEADER_TYPE = 'Token'
 

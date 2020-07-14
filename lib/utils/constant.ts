@@ -2,10 +2,10 @@
 // export const SERVER_BASE_URL = `https://conduit.productionready.io/api`;
 
 // Local backend url
-// export const SERVER_BASE_URL = `http://127.0.0.1:5000/api`;
+export const SERVER_BASE_URL = `http://127.0.0.1:5000/api`;
 
 // Staging url
-export const SERVER_BASE_URL = `https://bit-devs-staging.herokuapp.com/api`;
+// export const SERVER_BASE_URL = `https://bit-devs-staging.herokuapp.com/api`;
 
 // Production url. ONLY USE IN PRODUCTION
 // export const SERVER_BASE_URL = `https://bit-devs.herokuapp.com/api`;
@@ -13,6 +13,12 @@ export const SERVER_BASE_URL = `https://bit-devs-staging.herokuapp.com/api`;
 
 
 export const APP_NAME = `conduit`;
+
+export const CODE_URL = 'https://github.com/login/oauth/authorize';
+export const GITHUB_CLIENT = '98574e099fa640413899';
+export const SCOPE = 'user+repo';
+//must conceal state later
+export const STATE = 'd3Asp0fK03M0Ldnwoi2Pnbh9knB2K335Ln';
 
 export const ARTICLE_QUERY_MAP = {
   "tab=feed": `${SERVER_BASE_URL}/articles/feed`,

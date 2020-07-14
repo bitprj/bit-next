@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 """The app module, containing the app factory function."""
 from flask import Flask
-from conduit.extensions import bcrypt, cache, db, migrate, jwt, cors
+from conduit.extensions import bcrypt, cache, db, migrate, jwt, cors, github
 from conduit import commands, user, profile, articles, organizations, tags
 from conduit.settings import ProdConfig
 from conduit.exceptions import InvalidUsage
-
 
 def create_app(config_object=ProdConfig):
     """An application factory, as explained here:
@@ -23,7 +22,6 @@ def create_app(config_object=ProdConfig):
     register_commands(app)
     return app
 
-
 def register_extensions(app):
     """Register Flask extensions."""
     bcrypt.init_app(app)
@@ -31,6 +29,9 @@ def register_extensions(app):
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
+    app.config['GITHUB_CLIENT_ID'] = '98574e099fa640413899'
+    app.config['GITHUB_CLIENT_SECRET'] = '272ac3010797de4cc29c5c0caf0bbd9df4d79832'
+    github.init_app(app)
 
 
 def register_blueprints(app):

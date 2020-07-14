@@ -2,6 +2,8 @@ import axios from "axios";
 
 import { SERVER_BASE_URL } from "../utils/constant";
 
+const url = require('url');
+
 const UserAPI = {
   current: async () => {
     const user: any = window.localStorage.getItem("user");
@@ -135,6 +137,24 @@ const UserAPI = {
     }
   },
   get: async (username) => axios.get(`${SERVER_BASE_URL}/profiles/${username}`),
+
+  post_code: async (github_code, state) => {
+    try{
+      const response = await axios.get(
+        `${SERVER_BASE_URL}/user/callback/${encodeURIComponent(github_code)}/${encodeURIComponent(state)}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      return response;
+    } catch (error){
+      return error.response;
+    }
+
+  },
+
 };
 
 export default UserAPI;
